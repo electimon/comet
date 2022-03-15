@@ -14,14 +14,14 @@ Engine::Engine()
     m_TimeDelta = 0.0;
 
     p_WindowHandler = std::make_shared<WindowHandler>(this);
+    GetWindowHandler()->CreateWindow();
+
     p_EventHandler = std::make_shared<EventHandler>(this);
     p_KeyboardHandler = std::make_shared<KeyboardHandler>(this);
     p_MouseHandler = std::make_shared<MouseHandler>(this);
     p_ErrorHandler = std::make_shared<ErrorHandler>(this);
     p_Renderer = std::make_shared<Renderer>(this);
     p_Camera = std::make_shared<Camera>(this);
-
-    GetWindowHandler()->CreateWindow();
 }
 
 Engine::~Engine()
@@ -59,6 +59,10 @@ void Engine::MainLoop()
 
         // Poll events for next frame
         GetEventHandler()->PollEvents();
+
+
+        m_TimeDelta = glfwGetTime() - m_TimeLast;
+        m_TimeLast = glfwGetTime();
     }
 
     Terminate();
