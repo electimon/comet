@@ -64,6 +64,7 @@ void WindowHandler::CenterWindow()
 
     glfwSetWindowPos(p_GLFWwindow, monitorX + (videoMode->width - m_WindowWidth) / 2, monitorY + (videoMode->height - m_WindowHeight) / 2);
     glfwSetWindowSize(p_GLFWwindow, m_WindowWidth, m_WindowHeight);
+    glViewport(0, 0, m_WindowWidth, m_WindowHeight);
 }
 
 void WindowHandler::SetupCallbacks()
