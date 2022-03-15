@@ -7,7 +7,7 @@
 struct Vertex
 {
     glm::vec3 position;
-    glm::vec3 color;
+    // glm::vec3 color;
 };
 
 class Mesh
@@ -30,10 +30,12 @@ public:
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
+        // glEnableVertexAttribArray(1);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 
         glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     ~Mesh()
@@ -53,15 +55,9 @@ public:
         glBindVertexArray(m_VAO);
     }
 
-    void AttachShader(unsigned int id)
-    {
-        m_Shader = id;
-    }
-
-    unsigned int GetCount()
-    {
-        return (unsigned int)m_Indices.size();
-    }
+    void SetShaderID(unsigned int id) { m_Shader = id; }
+    unsigned int GetShaderID() { return m_Shader; }
+    unsigned int GetCount() { return (unsigned int)m_Indices.size(); }
 
 private:
     std::vector<Vertex> m_Vertices;
