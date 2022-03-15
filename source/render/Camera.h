@@ -4,6 +4,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Engine.h"
+#include "handlers/WindowHandler.h"
 
 /*
 
@@ -35,8 +36,13 @@ public:
         m_Pitch = 0.0f;
         m_Roll = 0.0f;
 
+        m_MovementSensitivity = 1000.0f;
+        m_RotationSensitivity = 1000.0f;
+
         CalcViewMatrix();
         CalcProjMatrix();
+
+        p_GLFWwindow = p_Engine->GetWindowHandler()->GetGLFWWindow();
     }
 
     ~Camera()
@@ -45,10 +51,32 @@ public:
 
     void Update()
     {
+        Move();
+        // Rotate();
     }
 
     void Move()
     {
+        double magnitude = m_MovementSensitivity * p_Engine->GetTimeDelta();
+
+        if (glfwGetKey(p_GLFWwindow, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            m_CameraPosition += glm::vec3(0.0f, 0.0f, -magnitude);
+        }
+        if (glfwGetKey(p_GLFWwindow, GLFW_KEY_S) == GLFW_PRESS)
+        {
+            m_CameraPosition += glm::vec3(0.0f, 0.0f, magnitude);
+        }
+        if (glfwGetKey(p_GLFWwindow, GLFW_KEY_A) == GLFW_PRESS)
+        {
+            m_CameraPosition += glm::vec3(-magnitude, 0.0f, 0.0f);
+        }
+        if (glfwGetKey(p_GLFWwindow, GLFW_KEY_D) == GLFW_PRESS)
+        {
+            m_CameraPosition += glm::vec3(magnitude, 0.0f, 0.0f);
+        }
+
+        CalcViewMatrix();
     }
 
     void Rotate(double deltaX, double deltaY)
@@ -93,9 +121,11 @@ public:
 
 private:
     Engine *p_Engine;
+    GLFWwindow* p_GLFWwindow;
 
     float m_FOV, m_Aspect, m_Near, m_Far, m_Sensitivity;
     float m_Yaw, m_Pitch, m_Roll;
+    float m_MovementSensitivity, m_RotationSensitivity;
 
     glm::vec3 m_CameraPosition;
     glm::vec3 m_CameraDirection;
