@@ -2,33 +2,17 @@
 
 #include <fstream>
 #include <string>
+#include <unordered_map>
 
 #include "glad/gl.h"
 
 class Shader
 {
 public:
-    Shader()
+    Shader(char *vertFile, char *fragFile)
     {
         m_ID = glCreateProgram();
-    }
 
-    ~Shader()
-    {
-        glDeleteProgram(m_ID);
-    }
-
-    void Bind()
-    {
-        glUseProgram(m_ID);
-    }
-    void Unbind()
-    {
-        glUseProgram(0);
-    }
-
-    void CompileShaders(char *vertFile, char *fragFile)
-    {
         unsigned int vertexID, fragmentID;
         int success;
         char infoLog[512];
@@ -44,10 +28,11 @@ public:
         }
 
         glGetShaderiv(vertexID, GL_COMPILE_STATUS, &success);
-        if(!success)
+        if (!success)
         {
             glGetShaderInfoLog(vertexID, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                      << infoLog << std::endl;
         }
 
         // Fragment Shader
@@ -61,10 +46,11 @@ public:
         }
 
         glGetShaderiv(fragmentID, GL_COMPILE_STATUS, &success);
-        if(!success)
+        if (!success)
         {
             glGetShaderInfoLog(fragmentID, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+                      << infoLog << std::endl;
         }
 
         glAttachShader(m_ID, vertexID);
@@ -72,19 +58,54 @@ public:
         glLinkProgram(m_ID);
 
         glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
-        if(!success)
+        if (!success)
         {
             glGetProgramInfoLog(m_ID, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+            std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+                      << infoLog << std::endl;
         }
-
 
         glDeleteShader(vertexID);
         glDeleteShader(fragmentID);
     }
 
+    ~Shader()
+    {
+        glDeleteProgram(m_ID);
+    }
+
+    void Bind()
+    {
+        glUseProgram(m_ID);
+    }
+
+    void Unbind()
+    {
+        glUseProgram(0);
+    }
+
     unsigned int GetID() { return m_ID; }
+
+    int GetUniformLocation(const std::string &name)
+    {
+        if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+        {
+            return m_UniformLocationCache[name];
+        }
+
+        int location = glGetUniformLocation(m_ID, name.c_str());
+
+        if (location == -1)
+        {
+            std::cout << "[Shader] Uniform " << name << " not found. Ignoring..." << std::endl;
+        }
+
+        m_UniformLocationCache[name] = location;
+
+        return location;
+    }
 
 private:
     unsigned int m_ID;
+    std::unordered_map<std::string, int> m_UniformLocationCache;
 };
