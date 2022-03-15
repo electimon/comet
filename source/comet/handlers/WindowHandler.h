@@ -24,7 +24,7 @@ private:
     void FramebufferSizeCallback(int width, int height);
 
 public:
-    GLFWwindow *GetWindow() { return p_GLFWwindow; }
+    GLFWwindow *GetGLFWWindow() { return p_GLFWwindow; }
     int GetWindowWidth() {return m_WindowWidth;}
     int GetWindowHeight() {return m_WindowHeight;}
 };

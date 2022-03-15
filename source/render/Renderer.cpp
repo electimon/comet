@@ -25,7 +25,7 @@ void Renderer::NewFrame()
 
 void Renderer::SwapBuffers()
 {
-    glfwSwapBuffers(p_Engine->GetWindowHandler()->GetWindow());
+    glfwSwapBuffers(p_Engine->GetWindowHandler()->GetGLFWWindow());
 }
 
 void Renderer::AddToMeshQueue(Mesh *mesh)
