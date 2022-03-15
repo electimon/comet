@@ -23,12 +23,15 @@ public:
     void Start();
     void Terminate();
     void MainLoop();
-    double GetTimeDelta();
+
+    // Returns the time delta from frame to frame in seconds
+    double GetTimeDelta() { return m_TimeDelta / 1000; }
 
 private:
-    double m_TimeDelta;
+    double m_TimeDelta = 0.0; // ms
+    double m_TimeLast = 0.0; // ms
 
-// Engine Components
+    // Engine Components
 public:
     std::shared_ptr<WindowHandler> GetWindowHandler() { return p_WindowHandler; }
     std::shared_ptr<MouseHandler> GetMouseHandler() { return p_MouseHandler; }
