@@ -12,7 +12,7 @@ public:
     ~Renderer();
 
     void NewFrame();
-    void EndFrame();
+    void SwapBuffers();
 
     void AddToMeshQueue(Mesh *mesh);
     void DrawMeshQueue();
