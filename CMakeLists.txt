@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16) # pre-compiled headers
+cmake_minimum_required(VERSION 3.16)
 
 get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
@@ -13,7 +13,6 @@ include_directories(
     source
     source/comet
 
-    # libraries/assimp/include
     libraries/glad/include
     libraries/glfw/include
     libraries/glm/include
@@ -25,7 +24,6 @@ include_directories(
 
 link_directories(
     libraries/glfw/lib
-    # libraries/assimp/lib
 )
 
 file(GLOB_RECURSE CPP_FILES source/*.cpp)
@@ -51,10 +49,7 @@ target_link_libraries(
     ${PROJECT_NAME}
 
     debug glfw3.lib
-    # debug assimp-vc143-mtd.lib
-
     optimized glfw3.lib
-    # optimized assimp-vc143-mt.lib
 )
 
 # Added to that OpenGL context does not start terminal
