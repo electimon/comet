@@ -3,10 +3,22 @@
 
 #include "render/containers/Shader.h"
 
+#include "world/World.h"
+#include "world/Chunk.h"
+#include "world/Block.h"
+
 int main(void)
 {
     Engine *p_Engine = new Engine;
     p_Engine->Start();
+
+    double startTime = glfwGetTime();
+
+    World world;
+    world.GenerateChunk(glm::ivec3(0, 0, 0));
+
+    double timeTaken = glfwGetTime() - startTime;
+    std::cout << "Chunk generated in: " << timeTaken << " seconds." << std::endl;
 
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};

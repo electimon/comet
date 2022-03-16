@@ -1,10 +1,21 @@
 #pragma once
 
-struct Block
+#include <iostream>
+
+class Block
 {
-    Block()
-        : id(0)
+public:
+    Block(unsigned int id)
+        : m_ID(id)
     {
+        std::cout << "Block::Block()" << std::endl;
     }
-    unsigned int id;
+
+    ~Block()
+    {
+        std::cout << "Block::~Block()" << std::endl;
+    }
+
+private:
+    unsigned int m_ID;
 };
