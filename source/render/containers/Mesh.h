@@ -1,63 +1,21 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 #include "glm/glm.hpp"
+#include "glad/gl.h"
 
-struct Vertex
-{
-    glm::vec3 position;
-    // glm::vec3 color;
-};
+#include "Vertex.h"
 
 class Mesh
 {
 public:
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
-    {
-        m_Vertices = vertices;
-        m_Indices = indices;
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+    ~Mesh();
 
-        glGenVertexArrays(1, &m_VAO);
-        glGenBuffers(1, &m_VBO);
-        glGenBuffers(1, &m_IBO);
+    void Bind();
 
-        glBindVertexArray(m_VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-        glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
-        // glEnableVertexAttribArray(1);
-        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
-
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    }
-
-    ~Mesh()
-    {
-        std::cout << "Mesh::~Mesh()" << std::endl;
-        std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
-        glDeleteVertexArrays(1, &m_VAO);
-        std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
-        glDeleteBuffers(1, &m_VBO);
-        std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
-        glDeleteBuffers(1, &m_IBO);
-    }
-
-    void Bind()
-    {
-        glUseProgram(m_Shader);
-        glBindVertexArray(m_VAO);
-    }
-
-    void SetShaderID(unsigned int id) { m_Shader = id; }
-    unsigned int GetShaderID() { return m_Shader; }
-    unsigned int GetCount() { return (unsigned int)m_Indices.size(); }
 
 private:
     std::vector<Vertex> m_Vertices;
@@ -67,4 +25,9 @@ private:
     unsigned int m_VBO;
     unsigned int m_IBO;
     unsigned int m_Shader;
+
+public:
+    void SetShaderID(unsigned int id) { m_Shader = id; }
+    unsigned int GetShaderID() { return m_Shader; }
+    unsigned int GetCount() { return (unsigned int)m_Indices.size(); }
 };
