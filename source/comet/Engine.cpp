@@ -2,7 +2,6 @@
 
 #include "handlers/MouseHandler.h"
 #include "handlers/KeyboardHandler.h"
-#include "handlers/WindowHandler.h"
 #include "handlers/EventHandler.h"
 #include "handlers/ErrorHandler.h"
 
@@ -13,13 +12,14 @@ Engine::Engine()
 {
     m_TimeDelta = 0.0;
 
-    p_WindowHandler = std::make_shared<WindowHandler>(this);
-    GetWindowHandler()->CreateWindow();
+    WindowHandler::Create();
+    WindowHandler::Get().CreateWindow();
 
-    p_EventHandler = std::make_shared<EventHandler>(this);
-    p_KeyboardHandler = std::make_shared<KeyboardHandler>(this);
-    p_MouseHandler = std::make_shared<MouseHandler>(this);
-    p_ErrorHandler = std::make_shared<ErrorHandler>(this);
+    EventHandler::Create();
+    KeyboardHandler::Create();
+    MouseHandler::Create();
+    ErrorHandler::Create();
+
     p_Renderer = std::make_shared<Renderer>(this);
     p_Camera = std::make_shared<Camera>(this);
 }
@@ -30,10 +30,11 @@ Engine::~Engine()
 
 void Engine::Start()
 {
-    p_WindowHandler->SetupCallbacks();
-    p_KeyboardHandler->SetupCallbacks();
-    p_MouseHandler->SetupCallbacks();
-    p_ErrorHandler->SetupCallbacks();
+    WindowHandler::Get().SetupCallbacks();
+
+    KeyboardHandler::Get().SetupCallbacks();
+    MouseHandler::Get().SetupCallbacks();
+    ErrorHandler::Get().SetupCallbacks();
 }
 
 void Engine::Terminate()
@@ -58,7 +59,7 @@ void Engine::MainLoop()
         GetRenderer()->SwapBuffers();
 
         // Poll events for next frame
-        GetEventHandler()->PollEvents();
+        EventHandler::Get().PollEvents();
 
 
         m_TimeDelta = glfwGetTime() - m_TimeLast;

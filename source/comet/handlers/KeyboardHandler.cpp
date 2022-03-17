@@ -1,9 +1,6 @@
 #include "KeyboardHandler.h"
 
-#include "WindowHandler.h"
-
-KeyboardHandler::KeyboardHandler(Engine *engine)
-    : p_Engine(engine)
+KeyboardHandler::KeyboardHandler()
 {
     SetupCallbacks();
 
@@ -34,11 +31,10 @@ void KeyboardHandler::KeyCallback(int key, int scancode, int action, int mods)
     }
     if (key == GLFW_KEY_HOME && action == GLFW_PRESS)
     {
-        p_Engine->GetWindowHandler()->CenterWindow();
+        WindowHandler::Get().CenterWindow();
     }
     if (key == GLFW_KEY_A)
     {
         std::cout << "A" << std::endl;
     }
-
 }

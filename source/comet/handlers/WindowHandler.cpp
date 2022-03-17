@@ -1,11 +1,6 @@
 #include "WindowHandler.h"
 
-WindowHandler::WindowHandler(Engine *engine)
-    : p_Engine(engine)
-{
-}
-
-WindowHandler::~WindowHandler()
+WindowHandler::WindowHandler()
 {
 }
 
@@ -14,6 +9,7 @@ int WindowHandler::CreateWindow()
     // Initialize the library
     if (!glfwInit())
     {
+        std::cout << "[Error] Failed to initialize GLFW." << std::endl;
         return -1;
     }
 
@@ -26,6 +22,7 @@ int WindowHandler::CreateWindow()
     p_GLFWwindow = glfwCreateWindow(1, 1, "Comet (OpenGL 4.6)", NULL, NULL);
     if (!p_GLFWwindow)
     {
+        std::cout << "[Error] Failed to create OpenGL window." << std::endl;
         glfwTerminate();
         return -1;
     }
@@ -36,7 +33,7 @@ int WindowHandler::CreateWindow()
     int version = gladLoadGL(glfwGetProcAddress);
     if (version == 0)
     {
-        printf("Failed to initialize OpenGL context\n");
+        std::cout << "[Error] Failed to initialize OpenGL context." << std::endl;
         return -1;
     }
 

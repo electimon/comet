@@ -1,7 +1,8 @@
 #include "EventHandler.h"
 
-EventHandler::EventHandler(Engine *engine)
-    : p_Engine(engine)
+#include "glfw/glfw3.h"
+
+EventHandler::EventHandler()
 {
 }
 

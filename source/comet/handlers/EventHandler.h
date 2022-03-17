@@ -1,15 +1,22 @@
 #pragma once
 
-#include "Engine.h"
-
 class EventHandler
 {
 public:
-    EventHandler(Engine *engine);
-    ~EventHandler();
+    EventHandler(const EventHandler &) = delete;
+    static void Create()
+    {
+        static EventHandler s_Instance;
+    }
+    static EventHandler &Get()
+    {
+        static EventHandler s_Instance;
+        return s_Instance;
+    }
 
     void PollEvents();
 
 private:
-    Engine *p_Engine;
+    EventHandler();
+    ~EventHandler();
 };

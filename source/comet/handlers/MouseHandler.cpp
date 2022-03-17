@@ -1,9 +1,6 @@
 #include "MouseHandler.h"
 
-#include "WindowHandler.h"
-
-MouseHandler::MouseHandler(Engine *engine)
-    : p_Engine(engine)
+MouseHandler::MouseHandler()
 {
     SetupCallbacks();
 }

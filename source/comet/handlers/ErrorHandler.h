@@ -1,17 +1,24 @@
 #pragma once
 
-#include "Engine.h"
-
 class ErrorHandler
 {
 public:
-    ErrorHandler(Engine *engine);
-    ~ErrorHandler();
+    ErrorHandler(const ErrorHandler &) = delete;
+    static void Create()
+    {
+        static ErrorHandler s_Instance;
+    }
+    static ErrorHandler &Get()
+    {
+        static ErrorHandler s_Instance;
+        return s_Instance;
+    }
 
     void SetupCallbacks();
 
 private:
-    Engine *p_Engine;
+    ErrorHandler();
+    ~ErrorHandler();
 
-    void ErrorCallback(int error_code, const char* description);
+    void ErrorCallback(int error_code, const char *description);
 };
