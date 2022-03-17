@@ -1,26 +1,33 @@
 #pragma once
 
-#include "Engine.h"
-
 #include "render/containers/Mesh.h"
 #include "render/containers/Shader.h"
 
 class Renderer
 {
 public:
-    Renderer(Engine *engine);
-    ~Renderer();
+    Renderer(const Renderer&) = delete;
+    static void Create()
+    {
+        static Renderer s_Instance;
+    }
+    static Renderer &Get()
+    {
+        static Renderer s_Instance;
+        return s_Instance;
+    }
 
-    void NewFrame();
-    void SwapBuffers();
+    static void NewFrame();
+    static void SwapBuffers();
+    static void DrawMeshQueue() { Get().DrawMeshQueueFunction(); }
 
     void AddToMeshQueue(Mesh *mesh);
-    void DrawMeshQueue();
-
-    // TODO: add functions to add stuff to rendering queue
 
 private:
-    Engine *p_Engine;
+    Renderer();
+    ~Renderer();
+
+    void DrawMeshQueueFunction();
 
     std::vector<Mesh *> m_MeshQueue;
 };

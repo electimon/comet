@@ -6,8 +6,7 @@
 #include "render/containers/Shader.h"
 #include "render/Camera.h"
 
-Renderer::Renderer(Engine *engine)
-    : p_Engine(engine)
+Renderer::Renderer()
 {
 }
 
@@ -33,14 +32,14 @@ void Renderer::AddToMeshQueue(Mesh *mesh)
     m_MeshQueue.push_back(mesh);
 }
 
-void Renderer::DrawMeshQueue()
+void Renderer::DrawMeshQueueFunction()
 {
     for (unsigned int i = 0; i < m_MeshQueue.size(); i++)
     {
         m_MeshQueue[i]->Bind();
 
-        glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &p_Engine->GetCamera()->GetViewMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &p_Engine->GetCamera()->GetProjMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
 
         glDrawElements(GL_TRIANGLES, m_MeshQueue[i]->GetCount(), GL_UNSIGNED_INT, (void *)0);
     }
