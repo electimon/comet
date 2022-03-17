@@ -22,6 +22,9 @@ include_directories(
     game
 )
 
+# Added so that glad would shut the fuck up
+add_definitions(-DGLFW_INCLUDE_NONE)
+
 link_directories(
     libraries/glfw/lib
 )
