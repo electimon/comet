@@ -2,7 +2,14 @@
 
 #include <unordered_map>
 
+#include "glm/gtx/hash.hpp"
+
 #include "Chunk.h"
+
+/*
+index = used to describe chunk locations
+coordinate = used to describe block locations
+*/
 
 class World
 {
@@ -16,9 +23,9 @@ public:
         std::cout << "World::~World()" << std::endl;
     }
 
-    void GenerateChunk(glm::ivec3 coordinate)
+    void GenerateChunk(glm::ivec3 index)
     {
-        m_Chunks.insert_or_assign(coordinate, Chunk(coordinate));
+        m_Chunks.insert_or_assign(index, Chunk(index));
     }
 
 private:
