@@ -42,7 +42,7 @@ public:
         CalcViewMatrix();
         CalcProjMatrix();
 
-        p_GLFWwindow = p_Engine->GetWindowHandler()->GetGLFWWindow();
+        p_GLFWwindow = WindowHandler::Get().GetGLFWWindow();
     }
 
     ~Camera()

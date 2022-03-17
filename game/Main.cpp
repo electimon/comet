@@ -7,6 +7,8 @@
 #include "world/Chunk.h"
 #include "world/Block.h"
 
+#include "glfw/glfw3.h"
+
 int main(void)
 {
     Engine *p_Engine = new Engine;
