@@ -1,6 +1,32 @@
 #include "Mesh.h"
 
+Mesh::Mesh()
+{
+}
+
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+{
+    AddGemoetry(vertices, indices);
+}
+
+Mesh::~Mesh()
+{
+    std::cout << "Mesh::~Mesh()" << std::endl;
+    std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
+    glDeleteVertexArrays(1, &m_VAO);
+    std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
+    glDeleteBuffers(1, &m_VBO);
+    std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
+    glDeleteBuffers(1, &m_IBO);
+}
+
+void Mesh::Bind()
+{
+    glUseProgram(m_Shader);
+    glBindVertexArray(m_VAO);
+}
+
+void Mesh::AddGemoetry(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 {
     m_Vertices = vertices;
     m_Indices = indices;
@@ -23,21 +49,4 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-Mesh::~Mesh()
-{
-    std::cout << "Mesh::~Mesh()" << std::endl;
-    std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
-    glDeleteVertexArrays(1, &m_VAO);
-    std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
-    glDeleteBuffers(1, &m_VBO);
-    std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
-    glDeleteBuffers(1, &m_IBO);
-}
-
-void Mesh::Bind()
-{
-    glUseProgram(m_Shader);
-    glBindVertexArray(m_VAO);
 }
