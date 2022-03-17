@@ -1,6 +1,6 @@
 #pragma once
 
-#include "WindowHandler.h"
+#include "glfw/glfw3.h"
 
 class MouseHandler
 {
@@ -16,7 +16,7 @@ public:
         return s_Instance;
     }
 
-    void SetupCallbacks();
+    static void SetupCallbacks();
 
 private:
     MouseHandler();

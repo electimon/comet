@@ -19,18 +19,14 @@ public:
         return s_Instance;
     }
 
+    static void CenterWindow();
+    static void SetupCallbacks();
+
     int CreateWindow();
-    int GetWindowWidth() { return m_WindowWidth; }
-    int GetWindowHeight() { return m_WindowHeight; }
-    void CenterWindow();
-    void SetupCallbacks();
     GLFWwindow *GetGLFWWindow() { return p_GLFWwindow; }
 
 private:
     WindowHandler();
-
-    int m_WindowWidth;
-    int m_WindowHeight;
 
     void WindowSizeCallback(int width, int height);
     void FramebufferSizeCallback(int width, int height);

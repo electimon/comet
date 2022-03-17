@@ -2,7 +2,6 @@
 
 MouseHandler::MouseHandler()
 {
-    SetupCallbacks();
 }
 
 MouseHandler::~MouseHandler()
@@ -11,7 +10,7 @@ MouseHandler::~MouseHandler()
 
 void MouseHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), this);
+    glfwSetWindowUserPointer(glfwGetCurrentContext(), &MouseHandler::Get());
 
     auto ScrollCallbackWrapper = [](GLFWwindow *window, double xoffset, double yoffset)
     {

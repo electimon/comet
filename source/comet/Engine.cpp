@@ -30,11 +30,11 @@ Engine::~Engine()
 
 void Engine::Start()
 {
-    WindowHandler::Get().SetupCallbacks();
+    WindowHandler::SetupCallbacks();
 
-    KeyboardHandler::Get().SetupCallbacks();
-    MouseHandler::Get().SetupCallbacks();
-    ErrorHandler::Get().SetupCallbacks();
+    KeyboardHandler::SetupCallbacks();
+    MouseHandler::SetupCallbacks();
+    ErrorHandler::SetupCallbacks();
 }
 
 void Engine::Terminate()

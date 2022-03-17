@@ -54,19 +54,19 @@ void WindowHandler::CenterWindow()
     GLFWmonitor **monitors = glfwGetMonitors(&count);
     const GLFWvidmode *videoMode = glfwGetVideoMode(monitors[0]);
 
-    m_WindowWidth = int(videoMode->width / 1.5);
-    m_WindowHeight = int(m_WindowWidth / 16 * 9);
+    int newWindowWidth = int(videoMode->width / 1.5);
+    int newWindowHeight = int(newWindowWidth / 16 * 9);
 
     glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
 
-    glfwSetWindowPos(p_GLFWwindow, monitorX + (videoMode->width - m_WindowWidth) / 2, monitorY + (videoMode->height - m_WindowHeight) / 2);
-    glfwSetWindowSize(p_GLFWwindow, m_WindowWidth, m_WindowHeight);
-    glViewport(0, 0, m_WindowWidth, m_WindowHeight);
+    glfwSetWindowPos(glfwGetCurrentContext(), monitorX + (videoMode->width - newWindowWidth) / 2, monitorY + (videoMode->height - newWindowHeight) / 2);
+    glfwSetWindowSize(glfwGetCurrentContext(), newWindowWidth, newWindowHeight);
+    glViewport(0, 0, newWindowWidth, newWindowHeight);
 }
 
 void WindowHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), this);
+    glfwSetWindowUserPointer(glfwGetCurrentContext(), &WindowHandler::Get());
 
     auto WindowSizeCallbackWrapper = [](GLFWwindow *window, int width, int height)
     {

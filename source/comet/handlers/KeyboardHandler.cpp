@@ -2,8 +2,6 @@
 
 KeyboardHandler::KeyboardHandler()
 {
-    SetupCallbacks();
-
     glfwSetInputMode(glfwGetCurrentContext(), GLFW_STICKY_KEYS, GLFW_TRUE);
 }
 
@@ -13,7 +11,7 @@ KeyboardHandler::~KeyboardHandler()
 
 void KeyboardHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), this);
+    glfwSetWindowUserPointer(glfwGetCurrentContext(), &KeyboardHandler::Get());
 
     auto KeyCallbackWrapper = [](GLFWwindow *window, int key, int scancode, int action, int mods)
     {

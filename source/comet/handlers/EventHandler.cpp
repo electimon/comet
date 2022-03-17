@@ -1,7 +1,5 @@
 #include "EventHandler.h"
 
-#include "glfw/glfw3.h"
-
 EventHandler::EventHandler()
 {
 }

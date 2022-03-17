@@ -14,7 +14,7 @@ public:
         return s_Instance;
     }
 
-    void SetupCallbacks();
+    static void SetupCallbacks();
 
 private:
     ErrorHandler();
