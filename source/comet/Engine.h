@@ -25,7 +25,7 @@ public:
     void MainLoop();
 
     // Returns the time delta from frame to frame in seconds
-    double GetTimeDelta() { return m_TimeDelta / 1000; }
+    double GetTimeDelta() { return m_TimeDelta / 1000.0; }
 
 private:
     double m_TimeDelta = 0.0; // ms
