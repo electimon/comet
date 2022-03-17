@@ -29,7 +29,7 @@ void KeyboardHandler::KeyCallback(int key, int scancode, int action, int mods)
     }
     if (key == GLFW_KEY_HOME && action == GLFW_PRESS)
     {
-        WindowHandler::Get().CenterWindow();
+        WindowHandler::CenterWindow();
     }
     if (key == GLFW_KEY_A)
     {
