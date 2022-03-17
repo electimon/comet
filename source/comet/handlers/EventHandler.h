@@ -16,7 +16,7 @@ public:
         return s_Instance;
     }
 
-    void PollEvents();
+    static void PollEvents();
 
 private:
     EventHandler();
