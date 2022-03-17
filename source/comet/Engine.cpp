@@ -10,6 +10,7 @@
 
 Engine::Engine()
 {
+    std::cout << "Engine created." << std::endl;
     m_TimeDelta = 0.0;
 
     WindowHandler::Create();
@@ -19,9 +20,8 @@ Engine::Engine()
     KeyboardHandler::Create();
     MouseHandler::Create();
     ErrorHandler::Create();
-
-    p_Renderer = std::make_shared<Renderer>(this);
-    p_Camera = std::make_shared<Camera>(this);
+    Renderer::Create();
+    Camera::Create();
 }
 
 Engine::~Engine()
@@ -31,7 +31,6 @@ Engine::~Engine()
 void Engine::Start()
 {
     WindowHandler::SetupCallbacks();
-
     KeyboardHandler::SetupCallbacks();
     MouseHandler::SetupCallbacks();
     ErrorHandler::SetupCallbacks();
@@ -47,19 +46,19 @@ void Engine::MainLoop()
     while (!glfwWindowShouldClose(glfwGetCurrentContext()))
     {
         // Clears color and depth buffers
-        GetRenderer()->NewFrame();
+        Renderer::NewFrame();
 
         // Update camera views for inputs
-        GetCamera()->Update();
+        Camera::Update();
 
         // Drawing the mesh render queue
-        GetRenderer()->DrawMeshQueue();
+        Renderer::DrawMeshQueue();
 
         // Swaps buffers to display new drawn frame
-        GetRenderer()->SwapBuffers();
+        Renderer::SwapBuffers();
 
         // Poll events for next frame
-        EventHandler::Get().PollEvents();
+        EventHandler::PollEvents();
 
 
         m_TimeDelta = glfwGetTime() - m_TimeLast;
