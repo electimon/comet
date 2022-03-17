@@ -11,8 +11,8 @@
 
 int main(void)
 {
-    Engine *p_Engine = new Engine;
-    p_Engine->Start();
+    Engine::Create();
+    Engine::Start();
 
     double startTime = glfwGetTime();
 
@@ -48,9 +48,13 @@ int main(void)
 
     square.SetShaderID(basic.GetID());
 
-    p_Engine->GetRenderer()->AddToMeshQueue(&square);
+    Renderer::Get().AddToMeshQueue(&square);
 
-    p_Engine->MainLoop();
+
+
+
+
+    Engine::Get().MainLoop();
 
     return 0;
 }
