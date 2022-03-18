@@ -33,7 +33,7 @@ public:
     static glm::mat4 GetProjMatrix() { return GetInstance().GetProjMatrixFunc(); }
 
     void Move();
-    void Rotate(double deltaX, double deltaY);
+    void Rotate();
     void SetFOV(float fov) { m_FOV = fov; }
     void SetYaw(float yaw) { m_Yaw = yaw; }
     void SetPitch(float pitch) { m_Pitch = pitch; }
@@ -66,8 +66,8 @@ private:
     glm::mat4 m_ProjMatrix;
 
     /* World Variables */
-    glm::vec3 WORLD_X = glm::vec3(1.0f, 0.0f, 0.0f);
-    glm::vec3 WORLD_Y = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 WORLD_Z = glm::vec3(0.0f, 0.0f, 1.0f);
+    glm::vec3 POSITIVE_X = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 POSITIVE_Y = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 POSITIVE_Z = glm::vec3(0.0f, 0.0f, 1.0f);
     glm::vec3 WORLD_ORIGIN = glm::vec3(0.0f, 0.0f, 0.0f);
 };

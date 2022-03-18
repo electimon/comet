@@ -1,24 +1,25 @@
 #include "Camera.h"
 
+#include "handlers/MouseHandler.h"
+
 void Camera::InitializeFunc()
 {
-    m_CameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
-    m_CameraRight = glm::vec3(1.0f, 0.0f, 0.0f);
-    m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    m_CameraForward = glm::vec3(0.0f, 0.0f, -1.0f);
+    m_CameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_CameraRight = glm::vec3(0.0f, -1.0f, 0.0f);
+    m_CameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
+    m_CameraForward = glm::vec3(1.0f, 0.0f, 0.0f);
 
     m_FOV = glm::radians(85.0f);
     m_Aspect = 16.0f / 9.0f;
     m_Near = 0.1f;
     m_Far = 1000.0f;
-    m_Sensitivity = 10.0f;
 
-    m_Yaw = 0.0f;
-    m_Pitch = 0.0f;
-    m_Roll = 0.0f;
+    m_Yaw = glm::radians(0.0f);
+    m_Pitch = glm::radians(0.0f);
+    m_Roll = glm::radians(0.0f);
 
-    m_MovementSensitivity = 5000.0f;
-    m_RotationSensitivity = 5000.0f;
+    m_MovementSensitivity = 2000.0f;
+    m_RotationSensitivity = 1500.0f;
 
     CalcViewMatrixFunc();
     CalcProjMatrixFunc();
@@ -26,7 +27,7 @@ void Camera::InitializeFunc()
 
 void Camera::CalcViewMatrixFunc()
 {
-    m_ViewMatrix = glm::lookAt(m_CameraPosition, m_CameraPosition + m_CameraForward, WORLD_Y);
+    m_ViewMatrix = glm::lookAt(m_CameraPosition, m_CameraPosition + m_CameraForward, POSITIVE_Z);
 }
 
 void Camera::CalcProjMatrixFunc()
@@ -34,62 +35,101 @@ void Camera::CalcProjMatrixFunc()
     m_ProjMatrix = glm::perspective(m_FOV, m_Aspect, m_Near, m_Far);
 }
 
-void Camera::Rotate(double deltaX, double deltaY)
-{
-    m_Yaw += float(deltaX) * m_Sensitivity * float(Engine::GetTimeDelta());
-    m_Pitch += float(deltaY) * m_Sensitivity * float(Engine::GetTimeDelta());
-
-    if (m_Yaw > 180.0f)
-    {
-        m_Yaw -= 360.0f;
-    }
-    else if (m_Yaw < -180.0f)
-    {
-        m_Yaw += 360.0f;
-    }
-
-    if (m_Pitch > 89.999f)
-    {
-        m_Pitch = 89.999f;
-    }
-    else if (m_Pitch < -89.999f)
-    {
-        m_Pitch = -89.999f;
-    }
-
-    m_CameraDirection.x = glm::cos(glm::radians(m_Pitch)) * glm::cos(glm::radians(m_Yaw));
-    m_CameraDirection.y = glm::cos(glm::radians(m_Pitch)) * glm::sin(glm::radians(m_Yaw));
-    m_CameraDirection.z = glm::sin(glm::radians(m_Pitch));
-
-    m_CameraForward = glm::normalize(m_CameraDirection);
-}
-
 void Camera::Move()
 {
-    double magnitude = m_MovementSensitivity * Engine::GetTimeDelta();
+    float magnitude = m_MovementSensitivity * Engine::GetTimeDelta();
+    glm::vec3 movementDirection = {0.0f, 0.0f, 0.0f};
 
+    // Used so when walking forward vertical movement doesn't occur.
+    glm::vec3 cameraFowardXY = {m_CameraForward.x, m_CameraForward.y, 0.0f};
+
+    // Sprinting
+    if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    {
+        magnitude *= 5;
+    }
+
+    // Basic movement processing
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_W) == GLFW_PRESS)
     {
-        m_CameraPosition += glm::vec3(0.0f, 0.0f, -magnitude);
+        movementDirection += cameraFowardXY;
     }
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_S) == GLFW_PRESS)
     {
-        m_CameraPosition += glm::vec3(0.0f, 0.0f, magnitude);
+        movementDirection -= cameraFowardXY;
     }
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_A) == GLFW_PRESS)
     {
-        m_CameraPosition += glm::vec3(-magnitude, 0.0f, 0.0f);
+        movementDirection -= m_CameraRight;
     }
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_D) == GLFW_PRESS)
     {
-        m_CameraPosition += glm::vec3(magnitude, 0.0f, 0.0f);
+        movementDirection += m_CameraRight;
     }
 
-    CalcViewMatrix();
+    // Fixes diagonal directed movement to not be faster than along an axis.
+    // Only happens when holding two buttons that are off axis from each other.
+    if (movementDirection.x != 0.0f || movementDirection.y != 0.0f)
+    {
+        movementDirection = glm::normalize(movementDirection);
+    }
+
+    // Still perform up/down movements after normalization.
+    // Don't care about limiting speed along verticals.
+    if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        movementDirection += POSITIVE_Z;
+    }
+    if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    {
+        movementDirection -= POSITIVE_Z;
+    }
+
+    m_CameraPosition += movementDirection * magnitude;
 }
+
+void Camera::Rotate()
+{
+    m_Yaw += float(MouseHandler::GetDeltaX()) * float(Engine::GetTimeDelta()) * m_RotationSensitivity;
+    m_Pitch += float(MouseHandler::GetDeltaY()) * float(Engine::GetTimeDelta()) * m_RotationSensitivity;
+
+    // Keep yaw angle from getting to imprecise
+    if (m_Yaw > glm::radians(360.0f))
+    {
+        m_Yaw -= glm::radians(360.0f);
+    }
+    else if (m_Yaw < glm::radians(-360.0f))
+    {
+        m_Yaw += glm::radians(360.0f);
+    }
+
+    // Keep pitch angle from rolling over
+    if (m_Pitch > glm::radians(89.999f))
+    {
+        m_Pitch = glm::radians(89.999f);
+    }
+    else if (m_Pitch < glm::radians(-89.999f))
+    {
+        m_Pitch = glm::radians(-89.999f);
+    }
+
+    m_CameraDirection.x = glm::cos(-m_Yaw) * glm::cos(m_Pitch);
+    m_CameraDirection.y = glm::sin(-m_Yaw) * glm::cos(m_Pitch);
+    m_CameraDirection.z = glm::sin(m_Pitch);
+
+    m_CameraForward = glm::normalize(m_CameraDirection);
+    m_CameraRight = glm::cross(m_CameraForward, POSITIVE_Z);
+}
+
+
 
 void Camera::UpdateFunc()
 {
     Move();
-    // Rotate();
+    Rotate();
+
+    CalcViewMatrix();
+
+    // Does not need to be done unless fov changes?
+    // CalcProjMatrix();
 }
