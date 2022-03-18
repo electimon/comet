@@ -4,6 +4,8 @@
 
 #include "glm/gtx/hash.hpp"
 
+#include "render/Renderer.h"
+
 #include "Chunk.h"
 
 /*
@@ -26,6 +28,16 @@ public:
     void GenerateChunk(glm::ivec3 index)
     {
         m_Chunks.insert_or_assign(index, Chunk(index));
+    }
+
+    void AddChunkToRenderQueue(glm::ivec3 index)
+    {
+        Renderer::AddToMeshQueue(m_Chunks.at(index).GetMesh());
+    }
+
+    void AddShaderToChunk(glm::ivec3 index, Shader shader)
+    {
+        m_Chunks.at(index).GetMesh()->SetShaderID(shader.GetID());
     }
 
 private:
