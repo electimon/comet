@@ -25,11 +25,6 @@ void Renderer::SwapBuffers()
     glfwSwapBuffers(WindowHandler::GetInstance().GetGLFWWindow());
 }
 
-void Renderer::AddToMeshQueue(Mesh *mesh)
-{
-    m_MeshQueue.push_back(mesh);
-}
-
 void Renderer::DrawMeshQueueFunction()
 {
     for (unsigned int i = 0; i < m_MeshQueue.size(); i++)
@@ -39,6 +34,8 @@ void Renderer::DrawMeshQueueFunction()
         glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
 
-        glDrawElements(GL_TRIANGLES, m_MeshQueue[i]->GetCount(), GL_UNSIGNED_INT, (void *)0);
+        unsigned int count = m_MeshQueue[i]->GetCount();
+
+        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void *)0);
     }
 }

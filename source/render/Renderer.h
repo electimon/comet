@@ -15,8 +15,7 @@ public:
     static void NewFrame();
     static void SwapBuffers();
     static void DrawMeshQueue() { GetInstance().DrawMeshQueueFunction(); }
-
-    void AddToMeshQueue(Mesh *mesh);
+    static void AddToMeshQueue(Mesh *mesh) { GetInstance().m_MeshQueue.push_back(mesh); }
 
 private:
     Renderer() {}
