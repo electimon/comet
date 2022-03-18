@@ -1,5 +1,7 @@
 #include "KeyboardHandler.h"
 
+#include "MouseHandler.h"
+
 void KeyboardHandler::SetupCallbacks()
 {
     glfwSetWindowUserPointer(glfwGetCurrentContext(), &KeyboardHandler::GetInstance());
@@ -16,14 +18,11 @@ void KeyboardHandler::KeyCallback(int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(glfwGetCurrentContext(), 1);
+        // glfwSetWindowShouldClose(glfwGetCurrentContext(), 1);
+        MouseHandler::ReleaseCursor();
     }
     if (key == GLFW_KEY_HOME && action == GLFW_PRESS)
     {
         WindowHandler::CenterWindow();
-    }
-    if (key == GLFW_KEY_A)
-    {
-        std::cout << "A" << std::endl;
     }
 }
