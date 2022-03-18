@@ -25,10 +25,10 @@ int main(void)
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
     vertices.resize(4);
-    vertices[0].position = {-0.5f, -0.5f, 0.0f};
-    vertices[1].position = {0.5f, -0.5f, 0.0f};
-    vertices[2].position = {0.5f, 0.5f, 0.0f};
-    vertices[3].position = {-0.5f, 0.5f, 0.0f};
+    vertices[0].position = {5.0f, 0.5f, -0.5f};
+    vertices[1].position = {5.0f, -0.5f, -0.5f};
+    vertices[2].position = {5.0f, -0.5f, 0.5f};
+    vertices[3].position = {5.0f, 0.5f, 0.5f};
     char vertexshader[] = "../source/render/shaders/basic.vert";
     char fragshader[] = "../source/render/shaders/basic.frag";
     Mesh square(vertices, indices);
