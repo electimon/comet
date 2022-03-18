@@ -17,8 +17,8 @@ struct Chunk
 {
     Chunk(glm::ivec3 id)
         : m_Chunk(id),
-          m_ChunkSize(16),
-          m_ChunkHeight(64)
+          m_ChunkSize(8),
+          m_ChunkHeight(8)
     {
         std::cout << "Chunk::Chunk()" << std::endl;
         m_Blocks.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight);
@@ -95,6 +95,8 @@ struct Chunk
         }
         m_Mesh.AddGemoetry(m_Vertices, m_Indices);
     }
+
+    Mesh *GetMesh() { return &m_Mesh; }
 
 private:
     std::unordered_map<glm::ivec3, Block> m_Blocks;
