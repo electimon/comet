@@ -1,17 +1,8 @@
 #include "KeyboardHandler.h"
 
-KeyboardHandler::KeyboardHandler()
-{
-    glfwSetInputMode(glfwGetCurrentContext(), GLFW_STICKY_KEYS, GLFW_TRUE);
-}
-
-KeyboardHandler::~KeyboardHandler()
-{
-}
-
 void KeyboardHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), &KeyboardHandler::Get());
+    glfwSetWindowUserPointer(glfwGetCurrentContext(), &KeyboardHandler::GetInstance());
 
     auto KeyCallbackWrapper = [](GLFWwindow *window, int key, int scancode, int action, int mods)
     {

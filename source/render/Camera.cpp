@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera()
+void Camera::InitializeFunc()
 {
     m_CameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
     m_CameraRight = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -17,15 +17,11 @@ Camera::Camera()
     m_Pitch = 0.0f;
     m_Roll = 0.0f;
 
-    m_MovementSensitivity = 1000.0f;
-    m_RotationSensitivity = 1000.0f;
+    m_MovementSensitivity = 5000.0f;
+    m_RotationSensitivity = 5000.0f;
 
     CalcViewMatrixFunc();
     CalcProjMatrixFunc();
-}
-
-Camera::~Camera()
-{
 }
 
 void Camera::CalcViewMatrixFunc()

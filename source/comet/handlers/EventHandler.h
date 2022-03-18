@@ -5,12 +5,7 @@
 class EventHandler
 {
 public:
-    EventHandler(const EventHandler &) = delete;
-    static void Create()
-    {
-        static EventHandler s_Instance;
-    }
-    static EventHandler &Get()
+    static EventHandler &GetInstance()
     {
         static EventHandler s_Instance;
         return s_Instance;
@@ -19,6 +14,7 @@ public:
     static void PollEvents();
 
 private:
-    EventHandler();
-    ~EventHandler();
+    EventHandler() {}
+    EventHandler(EventHandler const &);
+    void operator=(EventHandler const &);
 };

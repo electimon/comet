@@ -1,10 +1,6 @@
 #include "ErrorHandler.h"
 
-ErrorHandler::ErrorHandler()
-{
-}
-
-ErrorHandler::~ErrorHandler()
+void ErrorHandler::InitializeFunc()
 {
 }
 

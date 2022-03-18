@@ -8,12 +8,7 @@
 class WindowHandler
 {
 public:
-    WindowHandler(const WindowHandler &) = delete;
-    static void Create()
-    {
-        static WindowHandler s_Instance;
-    }
-    static WindowHandler &Get()
+    static WindowHandler &GetInstance()
     {
         static WindowHandler s_Instance;
         return s_Instance;
@@ -26,7 +21,9 @@ public:
     GLFWwindow *GetGLFWWindow() { return p_GLFWwindow; }
 
 private:
-    WindowHandler();
+    WindowHandler() {}
+    WindowHandler(WindowHandler const &);
+    void operator=(WindowHandler const &);
 
     void WindowSizeCallback(int width, int height);
     void FramebufferSizeCallback(int width, int height);

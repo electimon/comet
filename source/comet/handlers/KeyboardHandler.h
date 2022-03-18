@@ -5,12 +5,7 @@
 class KeyboardHandler
 {
 public:
-    KeyboardHandler(const KeyboardHandler &) = delete;
-    static void Create()
-    {
-        static KeyboardHandler s_Instance;
-    }
-    static KeyboardHandler &Get()
+    static KeyboardHandler &GetInstance()
     {
         static KeyboardHandler s_Instance;
         return s_Instance;
@@ -19,8 +14,9 @@ public:
     static void SetupCallbacks();
 
 private:
-    KeyboardHandler();
-    ~KeyboardHandler();
+    KeyboardHandler() {}
+    KeyboardHandler(KeyboardHandler const &);
+    void operator=(KeyboardHandler const &);
 
     void KeyCallback(int key, int scancode, int action, int mods);
 };

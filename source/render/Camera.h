@@ -19,22 +19,18 @@ Coordinate System:
 class Camera
 {
 public:
-    Camera(const Camera &) = delete;
-    static void Create()
-    {
-        static Camera s_Instance;
-    }
-    static Camera &Get()
+    static Camera &GetInstance()
     {
         static Camera s_Instance;
         return s_Instance;
     }
 
-    static void Update() { Get().UpdateFunc(); }
-    static void CalcViewMatrix() { Get().CalcViewMatrixFunc(); }
-    static void CalcProjMatrix() { Get().CalcProjMatrixFunc(); }
-    static glm::mat4 GetViewMatrix() { return Get().GetViewMatrixFunc(); }
-    static glm::mat4 GetProjMatrix() { return Get().GetProjMatrixFunc(); }
+    static void Initialize() { GetInstance().InitializeFunc(); }
+    static void Update() { GetInstance().UpdateFunc(); }
+    static void CalcViewMatrix() { GetInstance().CalcViewMatrixFunc(); }
+    static void CalcProjMatrix() { GetInstance().CalcProjMatrixFunc(); }
+    static glm::mat4 GetViewMatrix() { return GetInstance().GetViewMatrixFunc(); }
+    static glm::mat4 GetProjMatrix() { return GetInstance().GetProjMatrixFunc(); }
 
     void Move();
     void Rotate(double deltaX, double deltaY);
@@ -43,11 +39,12 @@ public:
     void SetPitch(float pitch) { m_Pitch = pitch; }
     void SetRoll(float roll) { m_Roll = roll; }
 
-
 private:
-    Camera();
-    ~Camera();
+    Camera() {}
+    Camera(Camera const &);
+    void operator=(Camera const &);
 
+    void InitializeFunc();
     void UpdateFunc();
     void CalcViewMatrixFunc();
     void CalcProjMatrixFunc();

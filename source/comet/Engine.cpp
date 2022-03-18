@@ -8,28 +8,22 @@
 #include "render/Renderer.h"
 #include "render/Camera.h"
 
-Engine::Engine()
+void Engine::StartFunc()
 {
-    std::cout << "Engine created." << std::endl;
     m_TimeDelta = 0.0;
 
-    WindowHandler::Create();
-    WindowHandler::Get().CreateWindow();
+    WindowHandler::GetInstance();
+    WindowHandler::GetInstance().CreateWindow();
 
-    EventHandler::Create();
-    KeyboardHandler::Create();
-    MouseHandler::Create();
-    ErrorHandler::Create();
-    Renderer::Create();
-    Camera::Create();
-}
+    EventHandler::GetInstance();
+    KeyboardHandler::GetInstance();
+    MouseHandler::GetInstance();
+    ErrorHandler::GetInstance();
+    Renderer::GetInstance();
 
-Engine::~Engine()
-{
-}
+    Camera::GetInstance();
+    Camera::Initialize();
 
-void Engine::Start()
-{
     WindowHandler::SetupCallbacks();
     KeyboardHandler::SetupCallbacks();
     MouseHandler::SetupCallbacks();
@@ -41,7 +35,7 @@ void Engine::Terminate()
     glfwTerminate();
 }
 
-void Engine::MainLoop()
+void Engine::MainLoopFunc()
 {
     while (!glfwWindowShouldClose(glfwGetCurrentContext()))
     {
@@ -59,7 +53,6 @@ void Engine::MainLoop()
 
         // Poll events for next frame
         EventHandler::PollEvents();
-
 
         m_TimeDelta = glfwGetTime() - m_TimeLast;
         m_TimeLast = glfwGetTime();

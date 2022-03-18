@@ -6,12 +6,7 @@
 class Renderer
 {
 public:
-    Renderer(const Renderer&) = delete;
-    static void Create()
-    {
-        static Renderer s_Instance;
-    }
-    static Renderer &Get()
+    static Renderer &GetInstance()
     {
         static Renderer s_Instance;
         return s_Instance;
@@ -19,13 +14,14 @@ public:
 
     static void NewFrame();
     static void SwapBuffers();
-    static void DrawMeshQueue() { Get().DrawMeshQueueFunction(); }
+    static void DrawMeshQueue() { GetInstance().DrawMeshQueueFunction(); }
 
     void AddToMeshQueue(Mesh *mesh);
 
 private:
-    Renderer();
-    ~Renderer();
+    Renderer() {}
+    Renderer(Renderer const &);
+    void operator=(Renderer const &);
 
     void DrawMeshQueueFunction();
 

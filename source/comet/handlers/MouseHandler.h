@@ -5,12 +5,7 @@
 class MouseHandler
 {
 public:
-    MouseHandler(const MouseHandler &) = delete;
-    static void Create()
-    {
-        static MouseHandler s_Instance;
-    }
-    static MouseHandler &Get()
+    static MouseHandler &GetInstance()
     {
         static MouseHandler s_Instance;
         return s_Instance;
@@ -19,8 +14,9 @@ public:
     static void SetupCallbacks();
 
 private:
-    MouseHandler();
-    ~MouseHandler();
+    MouseHandler() {}
+    MouseHandler(MouseHandler const &);
+    void operator=(MouseHandler const &);
 
     GLFWwindow *p_GLFWwindow;
 

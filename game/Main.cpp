@@ -11,50 +11,33 @@
 
 int main(void)
 {
-    Engine::Create();
     Engine::Start();
 
-    double startTime = glfwGetTime();
-
     World world;
-    world.GenerateChunk(glm::ivec3(0, 0, 0));
+    { // Generating a chunk
+        double startTime = glfwGetTime();
+        world.GenerateChunk(glm::ivec3(0, 0, 0));
+        double timeTaken = glfwGetTime() - startTime;
+        std::cout << "Chunk generated in: " << timeTaken << " seconds." << std::endl;
+    }
 
-    double timeTaken = glfwGetTime() - startTime;
-    std::cout << "Chunk generated in: " << timeTaken << " seconds." << std::endl;
-
+    // Square for testing
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
-
-    std::vector<Vertex> v;
-    v.resize(4);
-    v[0].position = {-0.5f, -0.5f, 0.0f};
-    v[1].position = {0.5f, -0.5f, 0.0f};
-    v[2].position = {0.5f, 0.5f, 0.0f};
-    v[3].position = {-0.5f, 0.5f, 0.0f};
-
-    vertices.push_back(v[0]);
-    vertices.push_back(v[1]);
-    vertices.push_back(v[2]);
-    vertices.push_back(v[3]);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-
+    vertices.resize(4);
+    vertices[0].position = {-0.5f, -0.5f, 0.0f};
+    vertices[1].position = {0.5f, -0.5f, 0.0f};
+    vertices[2].position = {0.5f, 0.5f, 0.0f};
+    vertices[3].position = {-0.5f, 0.5f, 0.0f};
     char vertexshader[] = "../source/render/shaders/basic.vert";
     char fragshader[] = "../source/render/shaders/basic.frag";
-
     Mesh square(vertices, indices);
     Shader basic(vertexshader, fragshader);
-
     square.SetShaderID(basic.GetID());
-
-    Renderer::Get().AddToMeshQueue(&square);
-
+    Renderer::GetInstance().AddToMeshQueue(&square);
 
 
-
-
-    Engine::Get().MainLoop();
+    Engine::MainLoop();
 
     return 0;
 }

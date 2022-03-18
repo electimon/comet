@@ -1,9 +1,5 @@
 #include "WindowHandler.h"
 
-WindowHandler::WindowHandler()
-{
-}
-
 int WindowHandler::CreateWindow()
 {
     // Initialize the library
@@ -66,7 +62,7 @@ void WindowHandler::CenterWindow()
 
 void WindowHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), &WindowHandler::Get());
+    glfwSetWindowUserPointer(glfwGetCurrentContext(), &WindowHandler::GetInstance());
 
     auto WindowSizeCallbackWrapper = [](GLFWwindow *window, int width, int height)
     {
