@@ -12,18 +12,23 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
 Mesh::~Mesh()
 {
     std::cout << "Mesh::~Mesh()" << std::endl;
-    std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
-    glDeleteVertexArrays(1, &m_VAO);
-    std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
-    glDeleteBuffers(1, &m_VBO);
-    std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
-    glDeleteBuffers(1, &m_IBO);
+
+    // TODO learn how to handle this correctly.
+
+    // std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
+    // std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
+    // std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
+
+    // glDeleteVertexArrays(1, &m_VAO);
+    // glDeleteBuffers(1, &m_VBO);
+    // glDeleteBuffers(1, &m_IBO);
 }
 
 void Mesh::Bind()
 {
     glUseProgram(m_Shader);
     glBindVertexArray(m_VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 }
 
 void Mesh::AddGemoetry(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
@@ -34,6 +39,10 @@ void Mesh::AddGemoetry(std::vector<Vertex> vertices, std::vector<unsigned int> i
     glGenVertexArrays(1, &m_VAO);
     glGenBuffers(1, &m_VBO);
     glGenBuffers(1, &m_IBO);
+
+    std::cout << "Generating VAO (id: " << m_VAO << ")" << std::endl;
+    std::cout << "Generating VBO (id: " << m_VBO << ")" << std::endl;
+    std::cout << "Generating IBO (id: " << m_IBO << ")" << std::endl;
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -47,6 +56,7 @@ void Mesh::AddGemoetry(std::vector<Vertex> vertices, std::vector<unsigned int> i
     // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 
     glBindVertexArray(0);
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
