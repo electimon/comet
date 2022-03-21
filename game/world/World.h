@@ -25,35 +25,29 @@ public:
         std::cout << "World::~World()" << std::endl;
     }
 
-    void GenerateChunk(int x, int y, int z)
-    {
-        GenerateChunk(glm::ivec3(x, y, z));
-    }
-
     void GenerateChunk(glm::ivec3 index)
     {
         Chunk *chunk = new Chunk(index);
         m_Chunks.insert_or_assign(index, chunk);
     }
-
-    void AddChunkToRenderQueue(int x, int y, int z)
-    {
-        AddChunkToRenderQueue(glm::ivec3(x, y, z));
-    }
+    void GenerateChunk(int x, int y, int z) { GenerateChunk(glm::ivec3(x, y, z)); }
 
     void AddChunkToRenderQueue(glm::ivec3 index)
     {
-        Renderer::AddToMeshQueue(m_Chunks.at(index)->GetMesh());
+        Renderer::AddMesh(index, m_Chunks.at(index)->GetMesh());
     }
+    void AddChunkToRenderQueue(int x, int y, int z) { AddChunkToRenderQueue(glm::ivec3(x, y, z)); }
 
     void AddShaderToChunk(glm::ivec3 index, Shader shader)
     {
         m_Chunks.at(index)->GetMesh()->SetShaderID(shader.GetID());
     }
-    void AddShaderToChunk(int x, int y, int z, Shader &shader)
-    {
-        m_Chunks.at(glm::ivec3(x, y, z))->GetMesh()->SetShaderID(shader.GetID());
-    }
+    void AddShaderToChunk(int x, int y, int z, Shader &shader) { AddShaderToChunk(glm::ivec3(x, y, z), shader); }
+
+    // void RedrawChunk(glm::ivec3 index)
+    // {
+    //     m_Chunks.at(index)->Redraw();
+    // }
 
 private:
     // This will be a temporary cache of the loaded chunks.
