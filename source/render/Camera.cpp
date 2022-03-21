@@ -90,12 +90,12 @@ void Camera::Move()
 
 void Camera::Rotate()
 {
-    double deltax = MouseHandler::GetDeltaX();
-    double deltay = MouseHandler::GetDeltaY();
-    // double dt = Engine::GetTimeDelta();
-
-    m_Yaw += (deltax * m_RotationSensitivity) / 300.0; // * dt ;
-    m_Pitch += (deltay * m_RotationSensitivity) / 300.0; // * dt ;
+    // This no longer requires a delta time variable.
+    // The delta x and delta y variables from the mouse handler are an
+    // accumulation of movement over each frame, and this function is
+    // run each frame as well, so no need to rely on a dt.
+    m_Yaw += (MouseHandler::GetDeltaX() * m_RotationSensitivity) / 300.0;
+    m_Pitch += (MouseHandler::GetDeltaY() * m_RotationSensitivity) / 300.0;
 
     // Keep yaw angle from getting to imprecise
     if (m_Yaw > glm::radians(360.0f))
