@@ -20,10 +20,10 @@ int main(void)
     World world;
     { // Generating a chunk
         double startTime = glfwGetTime();
-        world.GenerateChunk(glm::ivec3(0, 0, 0));
-        world.AddChunkToRenderQueue(glm::ivec3(0, 0, 0));
-        world.AddShaderToChunk(glm::ivec3(0, 0, 0), basic);
-        // std::cout << "Chunk generated in: " << glfwGetTime() - startTime << " seconds." << std::endl;
+        world.GenerateChunk(0, 0, 0);
+        world.AddChunkToRenderQueue(0, 0, 0);
+        world.AddShaderToChunk(0, 0, 0, basic);
+        std::cout << "Chunk generated in: " << glfwGetTime() - startTime << " seconds." << std::endl;
     }
 
     // Square for testing
