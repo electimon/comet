@@ -15,15 +15,18 @@ int main(void)
     char fragshader[] = "../source/render/shaders/basic.frag";
     Shader basic(vertexshader, fragshader);
 
-    World world;
-    for (int x = -4; x < 4; x++)
     {
-        for (int z = -4; z < 4; z++)
-        { // Generating a chunk
-            Timer timer("chunk generation");
-            world.GenerateChunk(x, 0, z);
-            world.AddChunkToRenderQueue(x, 0, z);
-            world.AddShaderToChunk(x, 0, z, basic);
+        Timer timer("chunk generation");
+
+        World world;
+        for (int x = -8; x < 8; x++)
+        {
+            for (int z = -8; z < 8; z++)
+            { // Generating a chunk
+                world.GenerateChunk(x, 0, z);
+                world.AddChunkToRenderQueue(x, 0, z);
+                world.AddShaderToChunk(x, 0, z, basic);
+            }
         }
     }
 
