@@ -71,7 +71,7 @@ public:
 
     ~Shader()
     {
-        std::cout << "Shader::~Shader" << std::endl;
+        std::cout << "Shader::~Shader()" << std::endl;
 
         std::cout << "Deleting shader (id: " << m_ID << ")" << std::endl;
         glDeleteProgram(m_ID);

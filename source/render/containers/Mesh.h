@@ -18,7 +18,6 @@ public:
     void Bind();
     void AddGemoetry(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 
-
 private:
     std::vector<Vertex> m_Vertices;
     std::vector<unsigned int> m_Indices;

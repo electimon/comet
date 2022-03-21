@@ -26,7 +26,7 @@ void Mesh::Bind()
 {
     glUseProgram(m_Shader);
     glBindVertexArray(m_VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 }
 
 void Mesh::AddGemoetry(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
