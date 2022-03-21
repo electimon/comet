@@ -30,18 +30,25 @@ link_directories(
     libraries/glfw/lib
 )
 
-file(GLOB_RECURSE CPP_FILES source/*.cpp)
-file(GLOB_RECURSE C_FILES source/*.c)
-file(GLOB_RECURSE HPP_FILES source/*.hpp)
-file(GLOB_RECURSE H_FILES source/*.h)
+file(GLOB_RECURSE GAME_CPP_FILES game/*.cpp)
+file(GLOB_RECURSE GAME_H_FILES game/*.cpp)
+
+file(GLOB_RECURSE ENGINE_CPP_FILES source/*.cpp)
+file(GLOB_RECURSE ENGINE_C_FILES source/*.c)
+file(GLOB_RECURSE ENGINE_HPP_FILES source/*.hpp)
+file(GLOB_RECURSE ENGINE_H_FILES source/*.h)
 file(GLOB_RECURSE IMGUI_CPP_FILES libraries/imgui/source/*.cpp)
 
 add_executable(
     ${PROJECT_NAME}
-    ${CPP_FILES}
-    ${C_FILES}
-    ${HPP_FILES}
-    ${H_FILES}
+
+    ${GAME_CPP_FILES}
+    ${GAME_H_FILES}
+
+    ${ENGINE_CPP_FILES}
+    ${ENGINE_C_FILES}
+    ${ENGINE_HPP_FILES}
+    ${ENGINE_H_FILES}
     libraries/glad/source/gl.c
     ${IMGUI_CPP_FILES}
     libraries/stb_image/source/stb_image.cpp
