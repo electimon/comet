@@ -18,7 +18,7 @@ void Camera::InitializeFunc()
     m_Pitch = glm::radians(0.0f);
     m_Roll = glm::radians(0.0f);
 
-    m_MovementSensitivity = 2.0f;
+    m_MovementSensitivity = 10.0f;
     m_RotationSensitivity = 1.5f;
 
     CalcViewMatrixFunc();
