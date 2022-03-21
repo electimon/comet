@@ -13,15 +13,13 @@ Mesh::~Mesh()
 {
     std::cout << "Mesh::~Mesh()" << std::endl;
 
-    // TODO learn how to handle this correctly.
+    std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
+    std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
+    std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
 
-    // std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
-    // std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
-    // std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
-
-    // glDeleteVertexArrays(1, &m_VAO);
-    // glDeleteBuffers(1, &m_VBO);
-    // glDeleteBuffers(1, &m_IBO);
+    glDeleteVertexArrays(1, &m_VAO);
+    glDeleteBuffers(1, &m_VBO);
+    glDeleteBuffers(1, &m_IBO);
 }
 
 void Mesh::Bind()
@@ -52,8 +50,8 @@ void Mesh::AddGemoetry(std::vector<Vertex> vertices, std::vector<unsigned int> i
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
-    // glEnableVertexAttribArray(1);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 
     glBindVertexArray(0);
 

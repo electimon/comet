@@ -73,10 +73,8 @@ public:
     {
         std::cout << "Shader::~Shader" << std::endl;
 
-        // TODO learn how to handle this correctly.
-
-        // std::cout << "Deleting shader (id: " << m_ID << ")" << std::endl;
-        // glDeleteProgram(m_ID);
+        std::cout << "Deleting shader (id: " << m_ID << ")" << std::endl;
+        glDeleteProgram(m_ID);
     }
 
     void Bind()
