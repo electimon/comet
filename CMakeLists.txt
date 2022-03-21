@@ -24,6 +24,7 @@ include_directories(
 
 # Added so that glad would shut the fuck up
 add_definitions(-DGLFW_INCLUDE_NONE)
+add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
 
 link_directories(
     libraries/glfw/lib
