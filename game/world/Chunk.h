@@ -19,7 +19,7 @@ struct Chunk
     Chunk(glm::ivec3 id)
         : m_Chunk(id),
           m_ChunkSize(16),
-          m_ChunkHeight(16)
+          m_ChunkHeight(1)
     {
         std::cout << "Chunk::Chunk()" << std::endl;
         m_Blocks.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight);
@@ -61,23 +61,23 @@ struct Chunk
 
         unsigned int offset = 0;
 
+        float red = glm::linearRand(0.0f, 1.0f);
+        float green = glm::linearRand(0.0f, 1.0f);
+        float blue = glm::linearRand(0.0f, 1.0f);
+
+        float xOffset = float(m_Chunk.x * m_ChunkSize);
+        float zOffset = float(m_Chunk.z * m_ChunkSize);
+        // float yOffset = m_Chunk.y;
+
         for (int xRelPos = 0; xRelPos < m_ChunkSize; xRelPos++)
         {
             for (int yRelPos = 0; yRelPos < m_ChunkHeight; yRelPos++)
             {
                 for (int zRelPos = 0; zRelPos < m_ChunkSize; zRelPos++)
                 {
-                    float xOffset = m_Chunk.x;
-                    // float yOffset = m_Chunk.y;
-                    float zOffset = m_Chunk.z;
-
                     float xPos = static_cast<float>(xRelPos) + xOffset;
                     float yPos = static_cast<float>(yRelPos);
                     float zPos = static_cast<float>(zRelPos) + zOffset;
-
-                    float red = glm::linearRand(0.0f, 1.0f);
-                    float green = glm::linearRand(0.0f, 1.0f);
-                    float blue = glm::linearRand(0.0f, 1.0f);
 
                     m_Vertices.insert(m_Vertices.end(), {Vertex(xPos - 0.5f, yPos - 0.5f, zPos + 0.5f, red, green, blue),
                                                          Vertex(xPos + 0.5f, yPos - 0.5f, zPos + 0.5f, red, green, blue),
@@ -101,13 +101,17 @@ struct Chunk
         m_Mesh.AddGemoetry(m_Vertices, m_Indices);
     }
 
+    void OptimizeMesh()
+    {
+    }
+
     Mesh *GetMesh() { return &m_Mesh; }
 
 private:
     std::unordered_map<glm::ivec3, Block> m_Blocks;
     glm::ivec3 m_Chunk;
-    unsigned int m_ChunkSize;
-    unsigned int m_ChunkHeight;
+    int m_ChunkSize;
+    int m_ChunkHeight;
 
     Mesh m_Mesh;
 };
