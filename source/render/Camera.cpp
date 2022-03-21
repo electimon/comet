@@ -18,8 +18,8 @@ void Camera::InitializeFunc()
     m_Pitch = glm::radians(0.0f);
     m_Roll = glm::radians(0.0f);
 
-    m_MovementSensitivity = 2000.0f;
-    m_RotationSensitivity = 1500.0f;
+    m_MovementSensitivity = 2.0f;
+    m_RotationSensitivity = 1.5f;
 
     CalcViewMatrixFunc();
     CalcProjMatrixFunc();
@@ -90,8 +90,12 @@ void Camera::Move()
 
 void Camera::Rotate()
 {
-    m_Yaw += float(MouseHandler::GetDeltaX()) * float(Engine::GetTimeDelta()) * m_RotationSensitivity;
-    m_Pitch += float(MouseHandler::GetDeltaY()) * float(Engine::GetTimeDelta()) * m_RotationSensitivity;
+    double deltax = MouseHandler::GetDeltaX();
+    double deltay = MouseHandler::GetDeltaY();
+    // double dt = Engine::GetTimeDelta();
+
+    m_Yaw += (deltax * m_RotationSensitivity) / 300.0; // * dt ;
+    m_Pitch += (deltay * m_RotationSensitivity) / 300.0; // * dt ;
 
     // Keep yaw angle from getting to imprecise
     if (m_Yaw > glm::radians(360.0f))
