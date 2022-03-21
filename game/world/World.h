@@ -38,11 +38,11 @@ public:
     }
     void AddChunkToRenderQueue(int x, int y, int z) { AddChunkToRenderQueue(glm::ivec3(x, y, z)); }
 
-    void AddShaderToChunk(glm::ivec3 index, Shader shader)
+    void AddShaderToChunk(glm::ivec3 index, unsigned int shader)
     {
-        m_Chunks.at(index)->GetMesh()->SetShaderID(shader.GetID());
+        m_Chunks.at(index)->GetMesh()->SetShaderID(shader);
     }
-    void AddShaderToChunk(int x, int y, int z, Shader &shader) { AddShaderToChunk(glm::ivec3(x, y, z), shader); }
+    void AddShaderToChunk(int x, int y, int z, unsigned int shader) { AddShaderToChunk(glm::ivec3(x, y, z), shader); }
 
     // void RedrawChunk(glm::ivec3 index)
     // {
