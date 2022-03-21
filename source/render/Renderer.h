@@ -12,6 +12,7 @@ public:
         return s_Instance;
     }
 
+    static void Initialize();
     static void NewFrame();
     static void SwapBuffers();
     static void DrawMeshQueue() { GetInstance().DrawMeshQueueFunction(); }

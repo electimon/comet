@@ -6,15 +6,20 @@
 #include "render/containers/Shader.h"
 #include "render/Camera.h"
 
-void Renderer::NewFrame()
+void Renderer::Initialize()
 {
-    // Clearing the color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClear(GL_DEPTH_BUFFER_BIT);
-
     // Enables culling of the back faces
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+
+    // Enables depth testing
+    glEnable(GL_DEPTH_TEST);
+}
+
+void Renderer::NewFrame()
+{
+    // Clearing the color and depth buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Setting the new frame color to be black
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
