@@ -16,6 +16,11 @@ public:
         // std::cout << "Block::~Block()" << std::endl;
     }
 
+    int GetID()
+    {
+        return m_ID;
+    }
+
 private:
     unsigned int m_ID;
 };
