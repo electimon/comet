@@ -3,6 +3,8 @@
 #include <memory>
 #include <iostream>
 
+#include "Timer.h"
+
 class Engine
 {
 public:
@@ -12,19 +14,19 @@ public:
         return s_Instance;
     }
 
-    static void Start() { GetInstance().StartFunc(); }
+    static void Initialize() { GetInstance().InitializeFunction(); }
     static void Terminate();
-    static double GetTimeDelta() { return GetInstance().GetTimeDeltaFunc(); }
-    static void MainLoop() { GetInstance().MainLoopFunc(); }
+    static double GetTimeDelta() { return GetInstance().GetTimeDeltaFunction(); }
+    static void MainLoop() { GetInstance().MainLoopFunction(); }
 
 private:
     Engine() {}
     Engine(Engine const &);
     void operator=(Engine const &);
 
-    void StartFunc();
-    void MainLoopFunc();
-    double GetTimeDeltaFunc() { return m_TimeDelta / 1000.0; }
+    void InitializeFunction();
+    void MainLoopFunction();
+    double GetTimeDeltaFunction() { return m_TimeDelta; }
 
     double m_TimeDelta = 0.0; // ms
     double m_TimeLast = 0.0;  // ms

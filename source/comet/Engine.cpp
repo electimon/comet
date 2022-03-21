@@ -8,7 +8,7 @@
 #include "render/Renderer.h"
 #include "render/Camera.h"
 
-void Engine::StartFunc()
+void Engine::InitializeFunction()
 {
     m_TimeDelta = 0.0;
 
@@ -20,9 +20,10 @@ void Engine::StartFunc()
     MouseHandler::GetInstance();
     ErrorHandler::GetInstance();
     Renderer::GetInstance();
-
     Camera::GetInstance();
+
     Camera::Initialize();
+    Renderer::Initialize();
 
     WindowHandler::SetupCallbacks();
     KeyboardHandler::SetupCallbacks();
@@ -35,7 +36,7 @@ void Engine::Terminate()
     glfwTerminate();
 }
 
-void Engine::MainLoopFunc()
+void Engine::MainLoopFunction()
 {
     while (!glfwWindowShouldClose(glfwGetCurrentContext()))
     {
