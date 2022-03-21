@@ -25,7 +25,7 @@ int main(void)
             { // Generating a chunk
                 world.GenerateChunk(x, 0, z);
                 world.AddChunkToRenderQueue(x, 0, z);
-                world.AddShaderToChunk(x, 0, z, basic);
+                world.AddShaderToChunk(x, 0, z, basic.GetID());
             }
         }
     }
