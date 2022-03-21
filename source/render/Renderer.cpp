@@ -14,6 +14,8 @@ void Renderer::Initialize()
 
     // Enables depth testing
     glEnable(GL_DEPTH_TEST);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Renderer::NewFrame()
@@ -22,7 +24,7 @@ void Renderer::NewFrame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Setting the new frame color to be black
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.15f, 0.15f, 0.15f, 0.0f);
 }
 
 void Renderer::SwapBuffers()
@@ -30,17 +32,27 @@ void Renderer::SwapBuffers()
     glfwSwapBuffers(WindowHandler::GetInstance().GetGLFWWindow());
 }
 
-void Renderer::DrawMeshQueueFunction()
+void Renderer::DrawMeshesFunction()
 {
-    for (unsigned int i = 0; i < m_MeshQueue.size(); i++)
+    // for (unsigned int i = 0; i < m_MeshQueue.size(); i++)
+    // {
+    //     m_MeshQueue[i]->Bind();
+
+    //     glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
+    //     glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
+
+    //     unsigned int count = m_MeshQueue[i]->GetCount();
+
+    //     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void *)0);
+    // }
+
+    for (auto mesh : m_MeshMap)
     {
-        m_MeshQueue[i]->Bind();
+        mesh.second->Bind();
 
-        glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(m_MeshQueue[i]->GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(mesh.second->GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(mesh.second->GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
 
-        unsigned int count = m_MeshQueue[i]->GetCount();
-
-        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void *)0);
+        glDrawElements(GL_TRIANGLES, mesh.second->GetCount(), GL_UNSIGNED_INT, (void *)0);
     }
 }

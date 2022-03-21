@@ -51,14 +51,13 @@ void Engine::MainLoopFunction()
 
 
         // Drawing the mesh render queue
-        Renderer::DrawMeshQueue();
+        Renderer::DrawMeshes();
 
 
         // Swaps buffers to display new drawn frame
         Renderer::SwapBuffers();
         // Poll events for next frame
         EventHandler::PollEvents();
-
 
 
         m_TimeDelta = glfwGetTime() - m_TimeLast;
