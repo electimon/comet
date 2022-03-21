@@ -4,6 +4,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtx/hash.hpp"
+#include "glm/gtc/random.hpp"
 
 #include "Engine.h"
 
@@ -17,8 +18,8 @@ struct Chunk
 {
     Chunk(glm::ivec3 id)
         : m_Chunk(id),
-          m_ChunkSize(8),
-          m_ChunkHeight(8)
+          m_ChunkSize(16),
+          m_ChunkHeight(16)
     {
         std::cout << "Chunk::Chunk()" << std::endl;
         m_Blocks.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight);
@@ -74,22 +75,26 @@ struct Chunk
                     float yPos = static_cast<float>(yRelPos);
                     float zPos = static_cast<float>(zRelPos) + zOffset;
 
-                    m_Vertices.insert(m_Vertices.end(), {Vertex(xPos - 0.5f, yPos - 0.5f, zPos + 0.5f),
-                                                         Vertex(xPos + 0.5f, yPos - 0.5f, zPos + 0.5f),
-                                                         Vertex(xPos + 0.5f, yPos + 0.5f, zPos + 0.5f),
-                                                         Vertex(xPos - 0.5f, yPos + 0.5f, zPos + 0.5f),
-                                                         Vertex(xPos - 0.5f, yPos - 0.5f, zPos - 0.5f),
-                                                         Vertex(xPos + 0.5f, yPos - 0.5f, zPos - 0.5f),
-                                                         Vertex(xPos + 0.5f, yPos + 0.5f, zPos - 0.5f),
-                                                         Vertex(xPos - 0.5f, yPos + 0.5f, zPos - 0.5f)});
+                    float red = glm::linearRand(0.0f, 1.0f);
+                    float green = glm::linearRand(0.0f, 1.0f);
+                    float blue = glm::linearRand(0.0f, 1.0f);
 
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset,
-                                                       1 + offset, 5 + offset, 6 + offset, 6 + offset, 7 + offset, 1 + offset,
-                                                       5 + offset, 4 + offset, 7 + offset, 7 + offset, 6 + offset, 5 + offset,
-                                                       4 + offset, 0 + offset, 3 + offset, 3 + offset, 7 + offset, 4 + offset,
-                                                       0 + offset, 4 + offset, 5 + offset, 5 + offset, 1 + offset, 0 + offset,
-                                                       3 + offset, 2 + offset, 6 + offset, 6 + offset, 7 + offset, 3 + offset});
-                    offset += 36;
+                    m_Vertices.insert(m_Vertices.end(), {Vertex(xPos - 0.5f, yPos - 0.5f, zPos + 0.5f, red, green, blue),
+                                                         Vertex(xPos + 0.5f, yPos - 0.5f, zPos + 0.5f, red, green, blue),
+                                                         Vertex(xPos + 0.5f, yPos + 0.5f, zPos + 0.5f, red, green, blue),
+                                                         Vertex(xPos - 0.5f, yPos + 0.5f, zPos + 0.5f, red, green, blue),
+                                                         Vertex(xPos - 0.5f, yPos - 0.5f, zPos - 0.5f, red, green, blue),
+                                                         Vertex(xPos + 0.5f, yPos - 0.5f, zPos - 0.5f, red, green, blue),
+                                                         Vertex(xPos + 0.5f, yPos + 0.5f, zPos - 0.5f, red, green, blue),
+                                                         Vertex(xPos - 0.5f, yPos + 0.5f, zPos - 0.5f, red, green, blue)});
+
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset,   // front
+                                                       1 + offset, 5 + offset, 6 + offset, 6 + offset, 2 + offset, 1 + offset,   // right
+                                                       5 + offset, 4 + offset, 7 + offset, 7 + offset, 6 + offset, 5 + offset,   // back
+                                                       4 + offset, 0 + offset, 3 + offset, 3 + offset, 7 + offset, 4 + offset,   // left
+                                                       0 + offset, 4 + offset, 5 + offset, 5 + offset, 1 + offset, 0 + offset,   // bottom
+                                                       3 + offset, 2 + offset, 6 + offset, 6 + offset, 7 + offset, 3 + offset}); // top
+                    offset += 8;
                 }
             }
         }
