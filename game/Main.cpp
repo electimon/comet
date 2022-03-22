@@ -19,8 +19,9 @@ int main(void)
 
 
     World world;
-    Player player;
+    Player player(glm::vec3(0.0f, 50.0f, 0.0f));
     player.SetWorld(&world);
+
 
     Engine::MainLoop();
 
