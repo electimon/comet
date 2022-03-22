@@ -30,6 +30,7 @@ public:
     static void SetYaw(float yaw) { GetInstance().m_Yaw = yaw; }
     static void SetPitch(float pitch) { GetInstance().m_Pitch = pitch; }
     static void SetRoll(float roll) { GetInstance().m_Roll = roll; }
+    static glm::vec3 GetPosition() {return GetInstance().m_CameraPosition;}
 
 private:
     Camera() {}
