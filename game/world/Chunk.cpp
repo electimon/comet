@@ -34,7 +34,8 @@ void Chunk::FillChunk()
 {
     FastNoise noise;
     noise.SetNoiseType(FastNoise::NoiseType::Simplex);
-    noise.SetSeed(1337);
+    FastNoise noise2;
+    noise2.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
 
     for (int x = 0; x < m_ChunkSize; x++)
     {
@@ -45,32 +46,22 @@ void Chunk::FillChunk()
 
             height *= float(World::GetChunkHeight()); // scale
 
+            float noisevalue2 = noise2.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
+            if (noisevalue2 > 0.995f)
+            {
+                SetBlock(glm::ivec3(x, height, z), Block(1));
+                SetBlock(glm::ivec3(x, height + 1, z), Block(1));
+                SetBlock(glm::ivec3(x, height + 2, z), Block(1));
+                SetBlock(glm::ivec3(x, height + 3, z), Block(1));
+                SetBlock(glm::ivec3(x, height + 4, z), Block(1));
+            }
+
             for (int y = 0; y < int(height); y++)
             {
                 SetBlock(glm::ivec3(x, y, z), Block(1));
             }
         }
     }
-
-    // for (int x = 0; x < m_ChunkSize; x++)
-    // {
-    //     for (int y = 0; y < m_ChunkHeight; y++)
-    //     {
-    //         for (int z = 0; z < m_ChunkSize; z++)
-    //         {
-    //             // int blockID = 1;
-    //             int blockID = noise.GetCellular(x, y, z);
-    //             // int blockID = glm::linearRand(0, 1);
-
-    //             if (blockID == 0)
-    //             {
-    //                 continue;
-    //             }
-
-    //             SetBlock(glm::ivec3(x, y, z), Block(blockID));
-    //         }
-    //     }
-    // }
 }
 
 void Chunk::GenerateMesh()
@@ -129,12 +120,12 @@ void Chunk::GenerateMesh()
                     m_Indices.insert(m_Indices.end(), {3 + offset, 2 + offset, 6 + offset, 6 + offset, 7 + offset, 3 + offset}); // top
                 }
 
-                m_Vertices.insert(m_Vertices.end(), {Vertex(xPos - 0.5f, yPos - 0.5f, zPos + 0.5f, red, green, blue),
-                                                     Vertex(xPos + 0.5f, yPos - 0.5f, zPos + 0.5f, red, green, blue),
+                m_Vertices.insert(m_Vertices.end(), {Vertex(xPos - 0.5f, yPos - 0.5f, zPos + 0.5f, 0.7f * red, 0.7f * green, 0.7f * blue),
+                                                     Vertex(xPos + 0.5f, yPos - 0.5f, zPos + 0.5f, 0.7f * red, 0.7f * green, 0.7f * blue),
                                                      Vertex(xPos + 0.5f, yPos + 0.5f, zPos + 0.5f, red, green, blue),
                                                      Vertex(xPos - 0.5f, yPos + 0.5f, zPos + 0.5f, red, green, blue),
-                                                     Vertex(xPos - 0.5f, yPos - 0.5f, zPos - 0.5f, red, green, blue),
-                                                     Vertex(xPos + 0.5f, yPos - 0.5f, zPos - 0.5f, red, green, blue),
+                                                     Vertex(xPos - 0.5f, yPos - 0.5f, zPos - 0.5f, 0.7f * red, 0.7f * green, 0.7f * blue),
+                                                     Vertex(xPos + 0.5f, yPos - 0.5f, zPos - 0.5f, 0.7f * red, 0.7f * green, 0.7f * blue),
                                                      Vertex(xPos + 0.5f, yPos + 0.5f, zPos - 0.5f, red, green, blue),
                                                      Vertex(xPos - 0.5f, yPos + 0.5f, zPos - 0.5f, red, green, blue)});
 
