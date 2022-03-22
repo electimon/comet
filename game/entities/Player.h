@@ -15,6 +15,7 @@ class Player : public Entity
 {
 public:
     Player();
+    Player(glm::vec3 position);
     ~Player();
 
     void Update();
