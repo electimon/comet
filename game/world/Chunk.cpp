@@ -60,6 +60,14 @@ void Chunk::FillChunk()
             {
                 SetBlock(glm::ivec3(x, y, z), Block(1));
             }
+
+            if (height < World::GetWaterHeight())
+            {
+                for (int y = height; y < World::GetWaterHeight(); y++)
+                {
+                    SetBlock(glm::ivec3(x, y, z), Block(2));
+                }
+            }
         }
     }
 }
@@ -73,9 +81,9 @@ void Chunk::GenerateMesh()
 
     unsigned int offset = 0;
 
-    float red = glm::linearRand(0.0f, 1.0f);
-    float green = glm::linearRand(0.0f, 1.0f);
-    float blue = glm::linearRand(0.0f, 1.0f);
+    float red;
+    float green;
+    float blue;
 
     int xOffset = m_Chunk.x * m_ChunkSize;
     int zOffset = m_Chunk.z * m_ChunkSize;
@@ -90,10 +98,25 @@ void Chunk::GenerateMesh()
                 int yPos = yRelPos;
                 int zPos = zRelPos + zOffset;
 
+
                 if (m_Blocks.find(glm::ivec3(xRelPos, yRelPos, zRelPos)) == m_Blocks.end())
                 {
                     continue;
                 }
+
+                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 1)
+                {
+                    red = 0.1f;
+                    green = 0.6f;
+                    blue = 0.2f;
+                }
+                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 2)
+                {
+                    red = 0.0f;
+                    green = 0.6f;
+                    blue = 0.95f;
+                }
+
 
                 if (m_Blocks.find(glm::ivec3(xRelPos, yRelPos, zRelPos + 1)) == m_Blocks.end())
                 {
