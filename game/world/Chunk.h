@@ -18,6 +18,7 @@ struct Chunk
     void FillChunk();
     void GenerateMesh();
     void Redraw();
+    void PlaceTree(int x, int y, int z) ;
 
     Mesh *GetMesh() { return &m_Mesh; }
 
