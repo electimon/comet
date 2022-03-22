@@ -41,11 +41,14 @@ void Chunk::FillChunk()
         for (int z = 0; z < m_ChunkSize; z++)
         {
             float noisevalue = noise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
-            float y = (noisevalue + 1.0f) / 2.0f;
+            float height = (noisevalue + 1.0f) / 2.0f;
 
-            y *= float(World::GetChunkHeight()); // scale
+            height *= float(World::GetChunkHeight()); // scale
 
-            SetBlock(glm::ivec3(x, int(y), z), Block(1));
+            for (int y = 0; y < int(height); y++)
+            {
+                SetBlock(glm::ivec3(x, y, z), Block(1));
+            }
         }
     }
 
