@@ -1,11 +1,13 @@
 #include "comet/Engine.h"
-#include "render/Renderer.h"
+#include "Renderer.h"
 
-#include "render/containers/Shader.h"
+#include "containers/Shader.h"
 
 #include "world/World.h"
 #include "world/Chunk.h"
 #include "world/Block.h"
+
+#include "entities/Player.h"
 
 int main(void)
 {
@@ -19,9 +21,9 @@ int main(void)
         Timer timer("chunk generation");
 
         World world;
-        for (int x = -8; x < 8; x++)
+        for (int x = -4; x < 4; x++)
         {
-            for (int z = -8; z < 8; z++)
+            for (int z = -4; z < 4; z++)
             { // Generating a chunk
                 world.GenerateChunk(x, 0, z);
                 world.AddChunkToRenderQueue(x, 0, z);
@@ -29,6 +31,8 @@ int main(void)
             }
         }
     }
+
+    Player player;
 
     Engine::MainLoop();
 
