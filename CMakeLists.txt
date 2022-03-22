@@ -12,11 +12,12 @@ set(CMAKE_DEBUG_POSTFIX -debug)
 include_directories(
     source
     source/comet
+    source/render
 
     libraries/glad/include
     libraries/glfw/include
     libraries/glm/include
-    libraries/imgui/include
+    # libraries/imgui/include
     libraries/stb_image/include
 
     game
@@ -31,13 +32,13 @@ link_directories(
 )
 
 file(GLOB_RECURSE GAME_CPP_FILES game/*.cpp)
-file(GLOB_RECURSE GAME_H_FILES game/*.cpp)
+file(GLOB_RECURSE GAME_H_FILES game/*.h)
 
 file(GLOB_RECURSE ENGINE_CPP_FILES source/*.cpp)
 file(GLOB_RECURSE ENGINE_C_FILES source/*.c)
 file(GLOB_RECURSE ENGINE_HPP_FILES source/*.hpp)
 file(GLOB_RECURSE ENGINE_H_FILES source/*.h)
-file(GLOB_RECURSE IMGUI_CPP_FILES libraries/imgui/source/*.cpp)
+# file(GLOB_RECURSE IMGUI_CPP_FILES libraries/imgui/source/*.cpp)
 
 add_executable(
     ${PROJECT_NAME}
@@ -49,11 +50,10 @@ add_executable(
     ${ENGINE_C_FILES}
     ${ENGINE_HPP_FILES}
     ${ENGINE_H_FILES}
-    libraries/glad/source/gl.c
-    ${IMGUI_CPP_FILES}
-    libraries/stb_image/source/stb_image.cpp
 
-    game/Main.cpp
+    libraries/glad/source/gl.c
+    libraries/stb_image/source/stb_image.cpp
+    # ${IMGUI_CPP_FILES}
 )
 
 target_link_libraries(
