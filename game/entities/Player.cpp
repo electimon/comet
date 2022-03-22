@@ -6,7 +6,7 @@ Player::Player()
 {
     EntityHandler::AddEntityToQueue(this);
 
-    m_RenderDistance = 2;
+    m_RenderDistance = 1;
     m_ChunkSize = World::GetChunkSize();
 }
 
@@ -16,7 +16,7 @@ Player::Player(glm::vec3 position)
     Camera::SetPosition(position);
     EntityHandler::AddEntityToQueue(this);
 
-    m_RenderDistance = 2;
+    m_RenderDistance = 1;
     m_ChunkSize = World::GetChunkSize();
 }
 
