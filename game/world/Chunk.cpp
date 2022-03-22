@@ -12,12 +12,22 @@
 Chunk::Chunk(glm::ivec3 id)
     : m_Chunk(id),
       m_ChunkSize(World::GetChunkSize()),
-      m_ChunkHeight(World::GetChunkHeight())
+      m_ChunkHeight(World::GetChunkHeight()),
+      m_Offset(0)
 {
     std::cout << "Chunk::Chunk()" << std::endl;
     m_Blocks.reserve(m_ChunkSize * m_ChunkSize);
-    FillChunk();
-    GenerateMesh();
+    m_Vertices.reserve(8 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+    m_Indices.reserve(36 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+
+    GenerateSurface();
+    GenerateSurfaceMesh();
+
+    GenerateWater();
+
+    m_SolidMesh.AddGemoetry(m_Vertices, m_Indices);
+
+    // GenerateMesh();
 }
 
 Chunk::~Chunk()
@@ -30,62 +40,16 @@ void Chunk::SetBlock(glm::ivec3 coordinate, Block &block)
     m_Blocks.insert_or_assign(coordinate, block);
 }
 
-void Chunk::FillChunk()
+void Chunk::SetBlock(int x, int y, int z, Block &block)
 {
-    FastNoise noise;
-    // noise.SetFrequency(0.02);
-    noise.SetNoiseType(FastNoise::NoiseType::Simplex);
-    FastNoise noise2;
-    noise2.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
-
-    for (int x = 0; x < m_ChunkSize; x++)
-    {
-        for (int z = 0; z < m_ChunkSize; z++)
-        {
-            float noisevalue = noise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
-            float height = (noisevalue + 1.0f) / 2.0f;
-
-            height *= float(World::GetChunkHeight() / 2); // scale
-            height = int(height);
-
-            for (int y = 0; y < height - 3; y++)
-            {
-                SetBlock(glm::ivec3(x, y, z), Block(1)); // stone
-            }
-            {
-                SetBlock(glm::ivec3(x, height - 3, z), Block(3)); // dirt
-                SetBlock(glm::ivec3(x, height - 2, z), Block(3)); // dirt
-                SetBlock(glm::ivec3(x, height - 1, z), Block(3)); // dirt
-
-                SetBlock(glm::ivec3(x, height, z), Block(2)); // grass
-            }
-
-            if (height < World::GetWaterHeight())
-            {
-                // fill in with water surface level is below the world water height
-                for (int y = height; y < World::GetWaterHeight(); y++)
-                {
-                    SetBlock(glm::ivec3(x, y, z), Block(4)); // water
-                }
-            }
-            else
-            {
-                // Roll to place a tree
-                float noisevalue2 = noise2.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
-                if (noisevalue2 > 0.995f)
-                {
-                    Chunk::PlaceTree(x, height, z);
-                }
-            }
-        }
-    }
+    m_Blocks.insert_or_assign(glm::ivec3(x, y, z), block);
 }
 
 void Chunk::PlaceTree(int x, int y, int z)
 {
-    SetBlock(glm::ivec3(x, y, z), Block(0));     // test block
-    SetBlock(glm::ivec3(x, y + 1, z), Block(0)); // test block
-    SetBlock(glm::ivec3(x, y + 2, z), Block(0)); // test block
+    SetBlock(glm::ivec3(x, y, z), Block(5));     // test block
+    SetBlock(glm::ivec3(x, y + 1, z), Block(5)); // test block
+    SetBlock(glm::ivec3(x, y + 2, z), Block(5)); // test block
 
     for (int i = x - 2; i < x + 3; i++)
     {
@@ -94,8 +58,8 @@ void Chunk::PlaceTree(int x, int y, int z)
             if ((i == x - 2 && j == z - 2) || (i == x + 2 && j == z + 2) || (i == x - 2 && j == z + 2) || (i == x + 2 && j == z + 2))
                 continue;
 
-            SetBlock(glm::ivec3(i, y + 3, j), Block(0)); // test block
-            SetBlock(glm::ivec3(i, y + 4, j), Block(0)); // test block
+            SetBlock(glm::ivec3(i, y + 3, j), Block(6)); // test block
+            SetBlock(glm::ivec3(i, y + 4, j), Block(6)); // test block
         }
     }
 
@@ -103,7 +67,7 @@ void Chunk::PlaceTree(int x, int y, int z)
     {
         for (int j = z - 1; j < z + 2; j++)
         {
-            SetBlock(glm::ivec3(i, y + 5, j), Block(0)); // test block
+            SetBlock(glm::ivec3(i, y + 5, j), Block(6)); // test block
         }
     }
 
@@ -114,25 +78,63 @@ void Chunk::PlaceTree(int x, int y, int z)
             if ((i == x - 1 && j == z - 1) || (i == x + 1 && j == z + 1) || (i == x - 1 && j == z + 1) || (i == x + 1 && j == z - 1))
                 continue;
 
-            SetBlock(glm::ivec3(i, y + 6, j), Block(0)); // test block
+            SetBlock(glm::ivec3(i, y + 6, j), Block(6)); // test block
         }
     }
 }
 
-void Chunk::GenerateMesh()
+void Chunk::GenerateSurface()
 {
-    std::vector<Vertex> m_Vertices;
-    m_Vertices.reserve(8 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
-    std::vector<unsigned int> m_Indices;
-    m_Indices.reserve(36 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+    // can possibly use this for biomes
+    FastNoise cNoise;
+    cNoise.SetFrequency(0.01);
+    cNoise.SetNoiseType(FastNoise::NoiseType::Cellular);
+    cNoise.SetCellularDistanceFunction(FastNoise::CellularDistanceFunction::Euclidean);
+    cNoise.SetCellularReturnType(FastNoise::CellularReturnType::Distance2Sub);
+    float cNoiseValue;
 
-    unsigned int offset = 0;
+    // mostly going to be used for terrain
+    FastNoise sNoise;
+    sNoise.SetFrequency(0.01);
+    sNoise.SetNoiseType(FastNoise::NoiseType::Simplex);
+    float sNoiseValue;
 
-    float r;
-    float g;
-    float b;
-    float a;
+    // can possibly be used for decorations
+    FastNoise wNoise;
+    wNoise.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
+    float wNoiseValue;
 
+    for (int x = 0; x < m_ChunkSize; x++)
+    {
+        for (int z = 0; z < m_ChunkSize; z++)
+        {
+            // 0 to 1 noise values
+            cNoiseValue = (cNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
+            sNoiseValue = (sNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
+            wNoiseValue = (wNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
+
+            // Calculating a surface height with the noise
+            float height = cNoiseValue * sNoiseValue;
+
+            height *= float(World::GetChunkHeight() / 2); // scale
+            m_SurfaceHeights.insert_or_assign(glm::ivec2(x, z), (int)height);
+
+            for (int y = 0; y < height - 3; y++)
+            {
+                SetBlock(glm::ivec3(x, y, z), Block(1)); // stone
+            }
+
+            SetBlock(glm::ivec3(x, height - 3, z), Block(3)); // dirt
+            SetBlock(glm::ivec3(x, height - 2, z), Block(3)); // dirt
+            SetBlock(glm::ivec3(x, height - 1, z), Block(3)); // dirt
+            SetBlock(glm::ivec3(x, height, z), Block(2));     // grass
+        }
+    }
+}
+
+void Chunk::GenerateSurfaceMesh()
+{
+    glm::vec4 rgba;
     int xOffset = m_Chunk.x * m_ChunkSize;
     int zOffset = m_Chunk.z * m_ChunkSize;
 
@@ -153,113 +155,107 @@ void Chunk::GenerateMesh()
 
                 // White block
                 if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 0)
-                {
-                    r = 1.0f;
-                    g = 1.0f;
-                    b = 1.0f;
-                    a = 1.0f;
-                }
-
+                    rgba = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
                 // Stone
                 if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 1)
-                {
-                    r = 94.0f / 255.0f;
-                    g = 94.0f / 255.0f;
-                    b = 94.0f / 255.0f;
-                    a = 1.0f;
-                }
-
+                    rgba = glm::vec4(94.0f / 255.0f, 94.0f / 255.0f, 94.0f / 255.0f, 1.0f);
                 // Grass
                 if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 2)
-                {
-                    r = 26.0f / 255.0f;
-                    g = 166.0f / 255.0f;
-                    b = 18.0f / 255.0f;
-                    a = 1.0f;
-                }
-
+                    rgba = glm::vec4(26.0f / 255.0f, 166.0f / 255.0f, 18.0f / 255.0f, 1.0f);
                 // Dirt
                 if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 3)
-                {
-                    r = 92.0f / 255.0f;
-                    g = 68.0f / 255.0f;
-                    b = 46.0f / 255.0f;
-                    a = 1.0f;
-                }
-
+                    rgba = glm::vec4(92.0f / 255.0f, 68.0f / 255.0f, 46.0f / 255.0f, 1.0f);
                 // Water
                 if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 4)
+                    rgba = glm::vec4(66.0f / 255.0f, 173.0f / 255.0f, 245.0f / 255.0f, 0.5f);
+                // Log
+                if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 5)
+                    rgba = glm::vec4(110.0f / 255.0f, 78.0f / 255.0f, 48.0f / 255.0f, 1.0f);
+
+                // Leaves
+                if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 6)
+                    rgba = glm::vec4(42.0f / 255.0f, 117.0f / 255.0f, 9.0f / 255.0f, 1.0f);
+
+                // If no block is found next to the block, then render that side.
+                if (m_Blocks.find(glm::ivec3(xRel, yRel, zRel + 1)) == m_Blocks.end())
                 {
-                    r = 66.0f / 255.0f;
-                    g = 173.0f / 255.0f;
-                    b = 245.0f / 255.0f;
-                    a = 0.5f;
+                    m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset}); // front
+                }
+                if (m_Blocks.find(glm::ivec3(xRel + 1, yRel, zRel)) == m_Blocks.end())
+                {
+                    m_Indices.insert(m_Indices.end(), {1 + m_Offset, 5 + m_Offset, 6 + m_Offset, 6 + m_Offset, 2 + m_Offset, 1 + m_Offset}); // right
+                }
+                if (m_Blocks.find(glm::ivec3(xRel, yRel, zRel - 1)) == m_Blocks.end())
+                {
+                    m_Indices.insert(m_Indices.end(), {5 + m_Offset, 4 + m_Offset, 7 + m_Offset, 7 + m_Offset, 6 + m_Offset, 5 + m_Offset}); // back
+                }
+                if (m_Blocks.find(glm::ivec3(xRel - 1, yRel, zRel)) == m_Blocks.end())
+                {
+                    m_Indices.insert(m_Indices.end(), {4 + m_Offset, 0 + m_Offset, 3 + m_Offset, 3 + m_Offset, 7 + m_Offset, 4 + m_Offset}); // left
+                }
+                if (m_Blocks.find(glm::ivec3(xRel, yRel - 1, zRel)) == m_Blocks.end())
+                {
+                    m_Indices.insert(m_Indices.end(), {0 + m_Offset, 4 + m_Offset, 5 + m_Offset, 5 + m_Offset, 1 + m_Offset, 0 + m_Offset}); // bottom
+                }
+                if (m_Blocks.find(glm::ivec3(xRel, yRel + 1, zRel)) == m_Blocks.end())
+                {
+                    m_Indices.insert(m_Indices.end(), {3 + m_Offset, 2 + m_Offset, 6 + m_Offset, 6 + m_Offset, 7 + m_Offset, 3 + m_Offset}); // top
                 }
 
-                int blockPosX = 0;
-                int blockNegX = 0;
-                int blockPosY = 0;
-                int blockNegY = 0;
-                int blockPosZ = 0;
-                int blockNegZ = 0;
+                m_Vertices.insert(m_Vertices.end(), {Vertex(x - 0.5f, y - 0.5f, z + 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
+                                                     Vertex(x + 0.5f, y - 0.5f, z + 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
+                                                     Vertex(x + 0.5f, y + 0.5f, z + 0.5f, rgba),
+                                                     Vertex(x - 0.5f, y + 0.5f, z + 0.5f, rgba),
+                                                     Vertex(x - 0.5f, y - 0.5f, z - 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
+                                                     Vertex(x + 0.5f, y - 0.5f, z - 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
+                                                     Vertex(x + 0.5f, y + 0.5f, z - 0.5f, rgba),
+                                                     Vertex(x - 0.5f, y + 0.5f, z - 0.5f, rgba)});
 
-                if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() != 4)
-                {
-                    if (m_Blocks.find(glm::ivec3(xRel + 1, yRel, zRel)) != m_Blocks.end())
-                        blockPosX = m_Blocks.at(glm::ivec3(xRel + 1, yRel, zRel)).GetID();
-                    if (m_Blocks.find(glm::ivec3(xRel - 1, yRel, zRel)) != m_Blocks.end())
-                        blockNegX = m_Blocks.at(glm::ivec3(xRel - 1, yRel, zRel)).GetID();
-                    if (m_Blocks.find(glm::ivec3(xRel, yRel + 1, zRel)) != m_Blocks.end())
-                        blockPosY = m_Blocks.at(glm::ivec3(xRel, yRel + 1, zRel)).GetID();
-                    if (m_Blocks.find(glm::ivec3(xRel, yRel - 1, zRel)) != m_Blocks.end())
-                        blockNegY = m_Blocks.at(glm::ivec3(xRel, yRel - 1, zRel)).GetID();
-                    if (m_Blocks.find(glm::ivec3(xRel, yRel, zRel + 1)) != m_Blocks.end())
-                        blockPosZ = m_Blocks.at(glm::ivec3(xRel, yRel, zRel + 1)).GetID();
-                    if (m_Blocks.find(glm::ivec3(xRel, yRel, zRel - 1)) != m_Blocks.end())
-                        blockNegZ = m_Blocks.at(glm::ivec3(xRel, yRel, zRel - 1)).GetID();
-                }
-
-                if (m_Blocks.find(glm::ivec3(xRel, yRel, zRel + 1)) == m_Blocks.end() || blockPosZ == 4)
-                {
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset}); // front
-                }
-                if (m_Blocks.find(glm::ivec3(xRel + 1, yRel, zRel)) == m_Blocks.end() || blockPosX == 4)
-                {
-                    m_Indices.insert(m_Indices.end(), {1 + offset, 5 + offset, 6 + offset, 6 + offset, 2 + offset, 1 + offset}); // right
-                }
-                if (m_Blocks.find(glm::ivec3(xRel, yRel, zRel - 1)) == m_Blocks.end() || blockNegZ == 4)
-                {
-                    m_Indices.insert(m_Indices.end(), {5 + offset, 4 + offset, 7 + offset, 7 + offset, 6 + offset, 5 + offset}); // back
-                }
-                if (m_Blocks.find(glm::ivec3(xRel - 1, yRel, zRel)) == m_Blocks.end() || blockNegX == 4)
-                {
-                    m_Indices.insert(m_Indices.end(), {4 + offset, 0 + offset, 3 + offset, 3 + offset, 7 + offset, 4 + offset}); // left
-                }
-                if (m_Blocks.find(glm::ivec3(xRel, yRel - 1, zRel)) == m_Blocks.end() || blockNegY == 4)
-                {
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 4 + offset, 5 + offset, 5 + offset, 1 + offset, 0 + offset}); // bottom
-                }
-                if (m_Blocks.find(glm::ivec3(xRel, yRel + 1, zRel)) == m_Blocks.end() || blockPosY == 4)
-                {
-                    m_Indices.insert(m_Indices.end(), {3 + offset, 2 + offset, 6 + offset, 6 + offset, 7 + offset, 3 + offset}); // top
-                }
-
-                m_Vertices.insert(m_Vertices.end(), {Vertex(x - 0.5f, y - 0.5f, z + 0.5f, 0.7f * r, 0.7f * g, 0.7f * b, a),
-                                                     Vertex(x + 0.5f, y - 0.5f, z + 0.5f, 0.7f * r, 0.7f * g, 0.7f * b, a),
-                                                     Vertex(x + 0.5f, y + 0.5f, z + 0.5f, r, g, b, a),
-                                                     Vertex(x - 0.5f, y + 0.5f, z + 0.5f, r, g, b, a),
-                                                     Vertex(x - 0.5f, y - 0.5f, z - 0.5f, 0.7f * r, 0.7f * g, 0.7f * b, a),
-                                                     Vertex(x + 0.5f, y - 0.5f, z - 0.5f, 0.7f * r, 0.7f * g, 0.7f * b, a),
-                                                     Vertex(x + 0.5f, y + 0.5f, z - 0.5f, r, g, b, a),
-                                                     Vertex(x - 0.5f, y + 0.5f, z - 0.5f, r, g, b, a)});
-
-                offset += 8;
+                m_Offset += 8;
             }
         }
     }
-    m_Mesh.AddGemoetry(m_Vertices, m_Indices);
 }
 
-void Chunk::Redraw()
+void Chunk::GenerateWater()
 {
+    glm::vec4 rgba = glm::vec4(66.0f / 255.0f, 173.0f / 255.0f, 245.0f / 255.0f, 0.5f);
+    int xOffset = m_Chunk.x * m_ChunkSize;
+    int zOffset = m_Chunk.z * m_ChunkSize;
+
+    for (int xRel = 0; xRel < m_ChunkSize; xRel++)
+    {
+        for (int zRel = 0; zRel < m_ChunkSize; zRel++)
+        {
+            if (m_SurfaceHeights.at(glm::ivec2(xRel, zRel)) < World::GetWaterHeight())
+            {
+                int x = xRel + xOffset;
+                int y;
+                int z = zRel + zOffset;
+
+                // fill in with water surface level is below the world water height
+                for (int yRel = m_SurfaceHeights.at(glm::ivec2(xRel, zRel)); yRel < World::GetWaterHeight(); yRel++)
+                {
+                    SetBlock(glm::ivec3(xRel, yRel, zRel), Block(4)); // water
+                    y = yRel;
+                }
+
+                // Drawing water here since its the easiest place to
+                // The coordinates are already set here in the for loop variables
+                m_Indices.insert(m_Indices.end(), {3 + m_Offset, 2 + m_Offset, 6 + m_Offset, 6 + m_Offset, 7 + m_Offset, 3 + m_Offset}); // top
+
+                m_Vertices.insert(m_Vertices.end(), {Vertex(x - 0.5f, y - 0.5f, z + 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
+                                                     Vertex(x + 0.5f, y - 0.5f, z + 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
+                                                     Vertex(x + 0.5f, y + 0.5f, z + 0.5f, rgba),
+                                                     Vertex(x - 0.5f, y + 0.5f, z + 0.5f, rgba),
+                                                     Vertex(x - 0.5f, y - 0.5f, z - 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
+                                                     Vertex(x + 0.5f, y - 0.5f, z - 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
+                                                     Vertex(x + 0.5f, y + 0.5f, z - 0.5f, rgba),
+                                                     Vertex(x - 0.5f, y + 0.5f, z - 0.5f, rgba)});
+
+                // Offset should be correct after drawing regular terrain.
+                m_Offset += 8;
+            }
+        }
+    }
 }
