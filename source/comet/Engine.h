@@ -14,19 +14,16 @@ public:
         return s_Instance;
     }
 
-    static void Initialize() { GetInstance().InitializeFunction(); }
+    static void Initialize();
     static void Terminate();
-    static double GetTimeDelta() { return GetInstance().GetTimeDeltaFunction(); }
-    static void MainLoop() { GetInstance().MainLoopFunction(); }
+    static void MainLoop();
+
+    static double GetTimeDelta() { return GetInstance().m_TimeDelta; }
 
 private:
     Engine() {}
     Engine(Engine const &);
     void operator=(Engine const &);
-
-    void InitializeFunction();
-    void MainLoopFunction();
-    double GetTimeDeltaFunction() { return m_TimeDelta; }
 
     double m_TimeDelta = 0.0; // ms
     double m_TimeLast = 0.0;  // ms

@@ -4,13 +4,14 @@
 #include "handlers/KeyboardHandler.h"
 #include "handlers/EventHandler.h"
 #include "handlers/ErrorHandler.h"
+#include "handlers/EntityHandler.h"
 
-#include "render/Renderer.h"
-#include "render/Camera.h"
+#include "Renderer.h"
+#include "Camera.h"
 
-void Engine::InitializeFunction()
+void Engine::Initialize()
 {
-    m_TimeDelta = 0.0;
+    GetInstance().m_TimeDelta = 0.0;
 
     WindowHandler::GetInstance();
     WindowHandler::GetInstance().CreateWindow();
@@ -19,6 +20,8 @@ void Engine::InitializeFunction()
     KeyboardHandler::GetInstance();
     MouseHandler::GetInstance();
     ErrorHandler::GetInstance();
+    EntityHandler::GetInstance();
+
     Renderer::GetInstance();
     Camera::GetInstance();
 
@@ -36,7 +39,7 @@ void Engine::Terminate()
     glfwTerminate();
 }
 
-void Engine::MainLoopFunction()
+void Engine::MainLoop()
 {
     while (!glfwWindowShouldClose(glfwGetCurrentContext()))
     {
@@ -49,6 +52,9 @@ void Engine::MainLoopFunction()
         // Reset accumulated movement
         MouseHandler::ResetMovement();
 
+        // Updates entities with an update function
+        EntityHandler::UpdateEntities();
+
 
         // Drawing the mesh render queue
         Renderer::DrawMeshes();
@@ -60,8 +66,8 @@ void Engine::MainLoopFunction()
         EventHandler::PollEvents();
 
 
-        m_TimeDelta = glfwGetTime() - m_TimeLast;
-        m_TimeLast = glfwGetTime();
+        GetInstance().m_TimeDelta = glfwGetTime() - GetInstance().m_TimeLast;
+        GetInstance().m_TimeLast = glfwGetTime();
     }
 
     Terminate();
