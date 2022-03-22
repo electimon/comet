@@ -1,15 +1,21 @@
 #include "Chunk.h"
 
+#include "glm/gtc/random.hpp"
+
+#include "Renderer.h"
+#include "containers/Vertex.h"
+
+#include "World.h"
+
 Chunk::Chunk(glm::ivec3 id)
     : m_Chunk(id),
-      m_ChunkSize(16),
-      m_ChunkHeight(1)
+    m_ChunkSize(World::GetChunkSize()),
+    m_ChunkHeight(World::GetChunkHeight())
 {
     std::cout << "Chunk::Chunk()" << std::endl;
     m_Blocks.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight);
     FillChunk();
     GenerateMesh();
-    // p_World->p_Engine->GetRenderer()->AddToMeshQueue(&m_Mesh);
 }
 
 Chunk::~Chunk()
@@ -30,8 +36,8 @@ void Chunk::FillChunk()
         {
             for (int k = 0; k < m_ChunkSize; k++)
             {
-                int blockID = 1;
-                // int blockID = glm::linearRand(0, 1);
+                // int blockID = 1;
+                int blockID = glm::linearRand(0, 1);
                 if (blockID == 0)
                 {
                     continue;

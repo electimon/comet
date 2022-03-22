@@ -4,13 +4,8 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtx/hash.hpp"
-#include "glm/gtc/random.hpp"
 
-#include "Engine.h"
-
-#include "render/Renderer.h"
-#include "render/containers/Vertex.h"
-#include "render/containers/Mesh.h"
+#include "containers/Mesh.h"
 
 #include "Block.h"
 
@@ -29,6 +24,7 @@ struct Chunk
 private:
     std::unordered_map<glm::ivec3, Block> m_Blocks;
     glm::ivec3 m_Chunk;
+
     int m_ChunkSize;
     int m_ChunkHeight;
 
