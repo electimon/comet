@@ -21,10 +21,10 @@ Chunk::Chunk(glm::ivec3 id)
     m_Indices.reserve(36 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
 
     GenerateSurface();
-    GenerateSurfaceMesh();
-
     GenerateWater();
+    GenerateTrees();
 
+    GenerateSurfaceMesh();
     m_SolidMesh.AddGemoetry(m_Vertices, m_Indices);
 
     // GenerateMesh();
@@ -55,7 +55,7 @@ void Chunk::PlaceTree(int x, int y, int z)
     {
         for (int j = z - 2; j < z + 3; j++)
         {
-            if ((i == x - 2 && j == z - 2) || (i == x + 2 && j == z + 2) || (i == x - 2 && j == z + 2) || (i == x + 2 && j == z + 2))
+            if ((i == x - 2 && j == z - 2) || (i == x + 2 && j == z + 2) || (i == x - 2 && j == z + 2) || (i == x + 2 && j == z - 2))
                 continue;
 
             SetBlock(glm::ivec3(i, y + 3, j), Block(6)); // test block
@@ -255,6 +255,27 @@ void Chunk::GenerateWater()
 
                 // Offset should be correct after drawing regular terrain.
                 m_Offset += 8;
+            }
+        }
+    }
+}
+
+void Chunk::GenerateTrees()
+{
+    FastNoise wNoise;
+    wNoise.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
+    float wNoiseValue;
+
+    for (int x = 2; x < m_ChunkSize - 2; x++)
+    {
+        for (int z = 2; z < m_ChunkSize - 2; z++)
+        {
+            // 0 to 1 noise values
+            wNoiseValue = (wNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
+
+            if (wNoiseValue > 0.995f && m_SurfaceHeights.at(glm::ivec2(x, z)) > World::GetWaterHeight())
+            {
+                PlaceTree(x, m_SurfaceHeights.at(glm::ivec2(x, z)), z);
             }
         }
     }
