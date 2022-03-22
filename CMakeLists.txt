@@ -32,12 +32,12 @@ link_directories(
 )
 
 file(GLOB_RECURSE GAME_CPP_FILES game/*.cpp)
-file(GLOB_RECURSE GAME_H_FILES game/*.h)
+# file(GLOB_RECURSE GAME_H_FILES game/*.h)
 
 file(GLOB_RECURSE ENGINE_CPP_FILES source/*.cpp)
 file(GLOB_RECURSE ENGINE_C_FILES source/*.c)
-file(GLOB_RECURSE ENGINE_HPP_FILES source/*.hpp)
-file(GLOB_RECURSE ENGINE_H_FILES source/*.h)
+# file(GLOB_RECURSE ENGINE_HPP_FILES source/*.hpp)
+# file(GLOB_RECURSE ENGINE_H_FILES source/*.h)
 # file(GLOB_RECURSE IMGUI_CPP_FILES libraries/imgui/source/*.cpp)
 
 add_executable(
