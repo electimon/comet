@@ -15,6 +15,10 @@ void Renderer::Initialize()
     // Enables depth testing
     glEnable(GL_DEPTH_TEST);
 
+    // Transparency
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
