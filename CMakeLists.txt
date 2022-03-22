@@ -19,6 +19,7 @@ include_directories(
     libraries/glm/include
     # libraries/imgui/include
     libraries/stb_image/include
+    libraries/fastnoise
 
     game
 )
@@ -44,13 +45,14 @@ add_executable(
     ${PROJECT_NAME}
 
     ${GAME_CPP_FILES}
-    ${GAME_H_FILES}
+    # ${GAME_H_FILES}
 
     ${ENGINE_CPP_FILES}
     ${ENGINE_C_FILES}
-    ${ENGINE_HPP_FILES}
-    ${ENGINE_H_FILES}
+    # ${ENGINE_HPP_FILES}
+    # ${ENGINE_H_FILES}
 
+    libraries/fastnoise/FastNoise.cpp
     libraries/glad/source/gl.c
     libraries/stb_image/source/stb_image.cpp
     # ${IMGUI_CPP_FILES}
