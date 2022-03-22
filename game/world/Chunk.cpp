@@ -2,6 +2,8 @@
 
 #include "glm/gtc/random.hpp"
 
+#include "FastNoise.h"
+
 #include "Renderer.h"
 #include "containers/Vertex.h"
 
@@ -9,11 +11,11 @@
 
 Chunk::Chunk(glm::ivec3 id)
     : m_Chunk(id),
-    m_ChunkSize(World::GetChunkSize()),
-    m_ChunkHeight(World::GetChunkHeight())
+      m_ChunkSize(World::GetChunkSize()),
+      m_ChunkHeight(World::GetChunkHeight())
 {
     std::cout << "Chunk::Chunk()" << std::endl;
-    m_Blocks.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+    m_Blocks.reserve(m_ChunkSize * m_ChunkSize);
     FillChunk();
     GenerateMesh();
 }
@@ -30,22 +32,42 @@ void Chunk::SetBlock(glm::ivec3 coordinate, Block &block)
 
 void Chunk::FillChunk()
 {
-    for (int i = 0; i < m_ChunkSize; i++)
+    FastNoise noise;
+    noise.SetNoiseType(FastNoise::NoiseType::Simplex);
+    noise.SetSeed(1337);
+
+    for (int x = 0; x < m_ChunkSize; x++)
     {
-        for (int j = 0; j < m_ChunkHeight; j++)
+        for (int z = 0; z < m_ChunkSize; z++)
         {
-            for (int k = 0; k < m_ChunkSize; k++)
-            {
-                // int blockID = 1;
-                int blockID = glm::linearRand(0, 1);
-                if (blockID == 0)
-                {
-                    continue;
-                }
-                SetBlock(glm::ivec3(i, j, k), Block(blockID));
-            }
+            float noisevalue = noise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
+            float y = (noisevalue + 1.0f) / 2.0f;
+
+            y *= float(World::GetChunkHeight()); // scale
+
+            SetBlock(glm::ivec3(x, int(y), z), Block(1));
         }
     }
+
+    // for (int x = 0; x < m_ChunkSize; x++)
+    // {
+    //     for (int y = 0; y < m_ChunkHeight; y++)
+    //     {
+    //         for (int z = 0; z < m_ChunkSize; z++)
+    //         {
+    //             // int blockID = 1;
+    //             int blockID = noise.GetCellular(x, y, z);
+    //             // int blockID = glm::linearRand(0, 1);
+
+    //             if (blockID == 0)
+    //             {
+    //                 continue;
+    //             }
+
+    //             SetBlock(glm::ivec3(x, y, z), Block(blockID));
+    //         }
+    //     }
+    // }
 }
 
 void Chunk::GenerateMesh()
