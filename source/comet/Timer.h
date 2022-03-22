@@ -7,22 +7,9 @@
 
 struct Timer
 {
-    Timer()
-        : m_StartTime(glfwGetTime()),
-          m_ScopeName("")
-    {
-    }
-    Timer(std::string scope)
-        : m_StartTime(glfwGetTime()),
-          m_ScopeName(scope)
-    {
-        // weird formatting workaround
-        m_ScopeName.append(" ");
-    }
-    ~Timer()
-    {
-        std::cout << "Scope " << m_ScopeName << "took " << glfwGetTime() - m_StartTime << " seconds." << std::endl;
-    }
+    Timer();
+    Timer(std::string scope);
+    ~Timer();
 
 private:
     double m_StartTime;
