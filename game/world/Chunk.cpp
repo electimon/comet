@@ -33,6 +33,7 @@ void Chunk::SetBlock(glm::ivec3 coordinate, Block &block)
 void Chunk::FillChunk()
 {
     FastNoise noise;
+    // noise.SetFrequency(0.02);
     noise.SetNoiseType(FastNoise::NoiseType::Simplex);
     FastNoise noise2;
     noise2.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
@@ -44,28 +45,38 @@ void Chunk::FillChunk()
             float noisevalue = noise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
             float height = (noisevalue + 1.0f) / 2.0f;
 
-            height *= float(World::GetChunkHeight()); // scale
+            height *= float(World::GetChunkHeight() / 2); // scale
+            height = int(height);
 
-            float noisevalue2 = noise2.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
-            if (noisevalue2 > 0.995f)
+            for (int y = 0; y < height - 3; y++)
             {
-                SetBlock(glm::ivec3(x, height, z), Block(1));
-                SetBlock(glm::ivec3(x, height + 1, z), Block(1));
-                SetBlock(glm::ivec3(x, height + 2, z), Block(1));
-                SetBlock(glm::ivec3(x, height + 3, z), Block(1));
-                SetBlock(glm::ivec3(x, height + 4, z), Block(1));
+                SetBlock(glm::ivec3(x, y, z), Block(1)); // stone
             }
-
-            for (int y = 0; y < int(height); y++)
             {
-                SetBlock(glm::ivec3(x, y, z), Block(1));
+                SetBlock(glm::ivec3(x, height - 3, z), Block(3)); // dirt
+                SetBlock(glm::ivec3(x, height - 2, z), Block(3)); // dirt
+                SetBlock(glm::ivec3(x, height - 1, z), Block(3)); // dirt
+
+                SetBlock(glm::ivec3(x, height, z), Block(2)); // grass
             }
 
             if (height < World::GetWaterHeight())
             {
                 for (int y = height; y < World::GetWaterHeight(); y++)
                 {
-                    SetBlock(glm::ivec3(x, y, z), Block(2));
+                    SetBlock(glm::ivec3(x, y, z), Block(4)); // water
+                }
+            }
+            else
+            {
+                float noisevalue2 = noise2.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
+                if (noisevalue2 > 0.995f)
+                {
+                    SetBlock(glm::ivec3(x, height, z), Block(0)); // test block
+                    SetBlock(glm::ivec3(x, height + 1, z), Block(0)); // test block
+                    SetBlock(glm::ivec3(x, height + 2, z), Block(0)); // test block
+                    SetBlock(glm::ivec3(x, height + 3, z), Block(0)); // test block
+                    SetBlock(glm::ivec3(x, height + 4, z), Block(0)); // test block
                 }
             }
         }
@@ -98,25 +109,50 @@ void Chunk::GenerateMesh()
                 int yPos = yRelPos;
                 int zPos = zRelPos + zOffset;
 
-
                 if (m_Blocks.find(glm::ivec3(xRelPos, yRelPos, zRelPos)) == m_Blocks.end())
                 {
                     continue;
                 }
 
-                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 1)
+                // White block
+                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 0)
                 {
-                    red = 0.1f;
-                    green = 0.6f;
-                    blue = 0.2f;
-                }
-                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 2)
-                {
-                    red = 0.0f;
-                    green = 0.6f;
-                    blue = 0.95f;
+                    red = 1.0f;
+                    green = 1.0f;
+                    blue = 1.0f;
                 }
 
+                // Stone
+                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 1)
+                {
+                    red = 94.0f / 255.0f;
+                    green = 94.0f / 255.0f;
+                    blue = 94.0f / 255.0f;
+                }
+
+                // Grass
+                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 2)
+                {
+                    red = 26.0f / 255.0f;
+                    green = 166.0f / 255.0f;
+                    blue = 18.0f / 255.0f;
+                }
+
+                // Dirt
+                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 3)
+                {
+                    red = 92.0f / 255.0f;
+                    green = 68.0f / 255.0f;
+                    blue = 46.0f / 255.0f;
+                }
+
+                // Water
+                if (m_Blocks.at(glm::ivec3(xRelPos, yRelPos, zRelPos)).GetID() == 4)
+                {
+                    red = 48.0f / 255.0f;
+                    green = 155.0f / 255.0f;
+                    blue = 255.0f / 255.0f;
+                }
 
                 if (m_Blocks.find(glm::ivec3(xRelPos, yRelPos, zRelPos + 1)) == m_Blocks.end())
                 {

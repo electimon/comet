@@ -18,7 +18,7 @@ public:
     ~World();
 
     static int GetChunkSize() { return 32; }
-    static int GetChunkHeight() { return 16; }
+    static int GetChunkHeight() { return 64; }
     static int GetWaterHeight() { return 8; }
 
     void GenerateChunk(glm::ivec3 index);
