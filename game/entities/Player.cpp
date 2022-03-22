@@ -6,7 +6,7 @@ Player::Player()
 {
     EntityHandler::AddEntityToQueue(this);
 
-    m_RenderDistance = 4;
+    m_RenderDistance = 1;
     m_ChunkSize = World::GetChunkSize();
 }
 
