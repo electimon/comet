@@ -57,11 +57,10 @@ void World::ProcessRequestedChunks(std::unordered_set<glm::ivec3> requestedChunk
 
     // Loops through the set of chunksToRemove set and removes them from the
     // currently loaded chunks in the world
-    for (const auto & chunk : chunksToRemove)
+    for (const auto &chunk : chunksToRemove)
     {
         m_ChunkMap.erase(chunk);
     }
-
 
     for (const auto &newChunkIndex : requestedChunkIndices)
     {
