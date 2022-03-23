@@ -17,18 +17,13 @@ public:
     World();
     ~World();
 
-    static int GetChunkSize() { return 48; }
+    static int GetChunkSize() { return 32; }
     static int GetChunkHeight() { return 64; }
-    static int GetWaterHeight() { return 8; }
+    static int GetWaterHeight() { return 16; }
 
     void GenerateChunk(const glm::ivec3 &index);
-    void GenerateChunk(int x, int y, int z);
-
     void AddChunkToRenderQueue(const glm::ivec3 &index);
-    void AddChunkToRenderQueue(int x, int y, int z);
-
     void AddShaderToChunk(const glm::ivec3 &index, unsigned int shader);
-    void AddShaderToChunk(int x, int y, int z, unsigned int shader);
 
     void ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &chunks);
 

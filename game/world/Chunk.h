@@ -15,10 +15,8 @@ struct Chunk
     ~Chunk();
 
     void SetBlock(const glm::ivec3 &coordinate, const Block &block);
-    void SetBlock(int x, int y, int z, const Block &block);
 
     void RemoveBlock(const glm::ivec3 &coordinate);
-    void RemoveBlock(int x, int y, int z);
 
     // void Redraw();
 
@@ -29,7 +27,7 @@ struct Chunk
     void GenerateWater();
     void GenerateTrees();
 
-    void PlaceTree(int x, int y, int z);
+    void PlaceTree(const glm::ivec3 &coordinate);
 
     Mesh *GetMesh() { return &m_Mesh; }
     Mesh *GetTransparentMesh() { return &m_TransparentMesh; }

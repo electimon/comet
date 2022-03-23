@@ -17,27 +17,15 @@ void World::GenerateChunk(const glm::ivec3 &index)
     Chunk *chunk = new Chunk(index);
     m_ChunkMap.insert_or_assign(index, chunk);
 }
-void World::GenerateChunk(int x, int y, int z)
-{
-    GenerateChunk(glm::ivec3(x, y, z));
-}
 
 void World::AddChunkToRenderQueue(const glm::ivec3 &index)
 {
     Renderer::AddMesh(index, m_ChunkMap.at(index)->GetMesh());
 }
-void World::AddChunkToRenderQueue(int x, int y, int z)
-{
-    AddChunkToRenderQueue(glm::ivec3(x, y, z));
-}
 
 void World::AddShaderToChunk(const glm::ivec3 &index, unsigned int shader)
 {
     m_ChunkMap.at(index)->GetMesh()->SetShaderID(shader);
-}
-void World::AddShaderToChunk(int x, int y, int z, unsigned int shader)
-{
-    AddShaderToChunk(glm::ivec3(x, y, z), shader);
 }
 
 void World::ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &requestedChunkIndices)
@@ -67,11 +55,17 @@ void World::ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &request
         m_ChunkMap.erase(chunk);
     }
 
+    std::vector<std::thread> threads;
+
     for (const auto &newChunkIndex : requestedChunkIndices)
     {
         if (m_ChunkMap.find(newChunkIndex) == m_ChunkMap.end())
         {
             // new chunk not found in old chunks, add to render queue
+
+            // std::thread thread(&World::GenerateChunk, this, newChunkIndex);
+            // thread.join();
+
             GenerateChunk(newChunkIndex);
             AddChunkToRenderQueue(newChunkIndex);
             AddShaderToChunk(newChunkIndex, 1); // TODO: add shader properly

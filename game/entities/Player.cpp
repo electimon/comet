@@ -2,21 +2,13 @@
 
 #include <thread>
 
-Player::Player()
-{
-    EntityHandler::AddEntityToQueue(this);
-
-    m_RenderDistance = 1;
-    m_ChunkSize = World::GetChunkSize();
-}
-
-Player::Player(glm::vec3 position)
+Player::Player(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f))
     : m_Position(position)
 {
     Camera::SetPosition(position);
     EntityHandler::AddEntityToQueue(this);
 
-    m_RenderDistance = 1;
+    m_RenderDistance = 2;
     m_ChunkSize = World::GetChunkSize();
 }
 
@@ -73,5 +65,8 @@ void Player::UpdateRequestedChunks()
     }
 
     // Pass set of new chunks to the world to deal with
+
+    // std::thread thread(&p_World->ProcessRequestedChunks, m_RequestedChunks);
+
     p_World->ProcessRequestedChunks(m_RequestedChunks);
 }
