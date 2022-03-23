@@ -3,7 +3,10 @@
 World::World()
 {
     std::cout << "World::World()" << std::endl;
+    int num_threads = std::thread::hardware_concurrency();
+    m_ThreadPool.resize(num_threads / 2);
 }
+
 World::~World()
 {
     std::cout << "World::~World()" << std::endl;
@@ -59,6 +62,8 @@ void World::ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &request
     // currently loaded chunks in the world
     for (const auto &chunk : chunksToRemove)
     {
+        // Necessary to delete chunk from heap and map, otherwise memory leak occurs
+        delete m_ChunkMap.at(chunk);
         m_ChunkMap.erase(chunk);
     }
 
