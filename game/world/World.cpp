@@ -1,10 +1,10 @@
 #include "World.h"
 
+#include <thread>
+
 World::World()
 {
     std::cout << "World::World()" << std::endl;
-    int num_threads = std::thread::hardware_concurrency();
-    m_ThreadPool.resize(num_threads / 2);
 }
 
 World::~World()
@@ -15,60 +15,70 @@ World::~World()
 void World::GenerateChunk(const glm::ivec3 &index)
 {
     Chunk *chunk = new Chunk(index);
-    m_ChunkMap.insert_or_assign(index, chunk);
+    m_ChunkDataMap.insert_or_assign(index, chunk);
 }
 
 void World::AddChunkToRenderQueue(const glm::ivec3 &index)
 {
-    Renderer::AddMesh(index, m_ChunkMap.at(index)->GetMesh());
+    Mesh *mesh = new Mesh(m_ChunkDataMap.at(index)->GetVertices(), m_ChunkDataMap.at(index)->GetIndices(), m_Shader);
+    Renderer::AddMesh(index, mesh);
 }
 
-void World::AddShaderToChunk(const glm::ivec3 &index, unsigned int shader)
+void World::ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &requestedChunks)
 {
-    m_ChunkMap.at(index)->GetMesh()->SetShaderID(shader);
-}
-
-void World::ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &requestedChunkIndices)
-{
-    std::unordered_set<glm::ivec3> chunksToRemove;
+    // std::unordered_set<glm::ivec3> chunksToCreate;
+    std::unordered_set<glm::ivec3> chunksToDelete;
 
     // Loops through the currently loaded chunks and checks if they are
-    // present in the requested chunks. If not, added to the chunksToRemove set.
+    // present in the requested chunks. If not, added to the chunksToDelete set.
     // Removes from the rendering mesh queue as well. Removing from the map
     // while looping over it is bad.
-    for (const auto &oldChunk : m_ChunkMap)
+    for (const std::pair<const glm::ivec3, Chunk *> &oldChunk : m_ChunkDataMap)
     {
-        if (requestedChunkIndices.find(oldChunk.first) == requestedChunkIndices.end())
+        if (requestedChunks.find(oldChunk.first) == requestedChunks.end())
         {
             // old chunk not found in requested chunks, remove remove queue and map
-            Renderer::RemoveMesh(oldChunk.first);
-            chunksToRemove.insert(oldChunk.first);
+            Renderer::RemoveMesh(oldChunk.first); // handles 'delete' on the mesh on heap
+            chunksToDelete.insert(oldChunk.first);
         }
     }
 
-    // Loops through the set of chunksToRemove set and removes them from the
+    // Loops through the set of chunksToDelete set and removes them from the
     // currently loaded chunks in the world
-    for (const auto &chunk : chunksToRemove)
+    for (const glm::ivec3 &chunk : chunksToDelete)
     {
         // Necessary to delete chunk from heap and map, otherwise memory leak occurs
-        delete m_ChunkMap.at(chunk);
-        m_ChunkMap.erase(chunk);
+        delete m_ChunkDataMap.at(chunk); // 'delete on the chunk on heap
+
+        m_ChunkDataMap.erase(chunk);
     }
 
+    std::unordered_set<glm::ivec3> chunksToCreate;
+
     std::vector<std::thread> threads;
+    threads.reserve(25);
 
-    for (const auto &newChunkIndex : requestedChunkIndices)
+    for (const glm::ivec3 &newChunk : requestedChunks)
     {
-        if (m_ChunkMap.find(newChunkIndex) == m_ChunkMap.end())
+        if (m_ChunkDataMap.find(newChunk) == m_ChunkDataMap.end())
         {
+            threads.push_back(std::thread(&World::GenerateChunk, this, newChunk));
             // new chunk not found in old chunks, add to render queue
-
-            // std::thread thread(&World::GenerateChunk, this, newChunkIndex);
-            // thread.join();
-
-            GenerateChunk(newChunkIndex);
-            AddChunkToRenderQueue(newChunkIndex);
-            AddShaderToChunk(newChunkIndex, 1); // TODO: add shader properly
+            // GenerateChunk(newChunk);
+            // threads.push_back(std::thread(&World::GenerateChunk, this, newChunk));
+            // AddChunkToRenderQueue(newChunk);
+            chunksToCreate.insert(newChunk);
         }
+    }
+
+    for (int i = 0; i < threads.size(); i++)
+    {
+        // if (threads[i].joinable())
+            threads[i].join();
+    }
+
+    for (const glm::ivec3 &chunkToCreate : chunksToCreate)
+    {
+        AddChunkToRenderQueue(chunkToCreate);
     }
 }

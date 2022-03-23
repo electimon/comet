@@ -39,7 +39,7 @@ void Engine::Terminate()
     glfwTerminate();
 }
 
-void Engine::MainLoop()
+void Engine::MainThread()
 {
     while (!glfwWindowShouldClose(glfwGetCurrentContext()))
     {

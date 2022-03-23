@@ -16,7 +16,7 @@ public:
 
     static void Initialize();
     static void Terminate();
-    static void MainLoop();
+    static void MainThread();
 
     static double GetTimeDelta() { return GetInstance().m_TimeDelta; }
 

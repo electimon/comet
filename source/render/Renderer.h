@@ -18,21 +18,22 @@ public:
     static void NewFrame();
     static void SwapBuffers();
     static void DrawMeshes() { GetInstance().DrawMeshesFunction(); }
-    static void AddMesh(glm::ivec3 index, Mesh* mesh)
+    static void AddMesh(glm::ivec3 index, Mesh *mesh)
     {
         GetInstance().m_MeshMap.insert_or_assign(index, mesh);
     }
-
-    static void RemoveMesh(int x, int y, int z)
+    static Mesh *GetMesh(glm::ivec3 index)
     {
-        RemoveMesh(glm::ivec3(x, y, z));
+        return GetInstance().m_MeshMap.at(index);
     }
 
     static void RemoveMesh(glm::ivec3 index)
     {
         if (GetInstance().m_MeshMap.find(index) != GetInstance().m_MeshMap.end())
         {
-            GetInstance().m_MeshMap.at(index)->~Mesh();
+            // GetInstance().m_MeshMap.at(index)->~Mesh();
+            delete GetInstance().m_MeshMap.at(index);
+
             GetInstance().m_MeshMap.erase(index);
         }
         else

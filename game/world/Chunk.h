@@ -15,10 +15,7 @@ struct Chunk
     ~Chunk();
 
     void SetBlock(const glm::ivec3 &coordinate, const Block &block);
-
     void RemoveBlock(const glm::ivec3 &coordinate);
-
-    // void Redraw();
 
     // Feature functions
     void GenerateSurface();
@@ -29,8 +26,8 @@ struct Chunk
 
     void PlaceTree(const glm::ivec3 &coordinate);
 
-    Mesh *GetMesh() { return &m_Mesh; }
-    Mesh *GetTransparentMesh() { return &m_TransparentMesh; }
+    std::vector<Vertex> GetVertices() { return m_Vertices; }
+    std::vector<unsigned int> GetIndices() { return m_Indices; }
 
 private:
     std::unordered_map<glm::ivec3, Block> m_Blocks;
@@ -44,7 +41,4 @@ private:
     std::vector<Vertex> m_Vertices;
     std::vector<unsigned int> m_Indices;
     unsigned int m_Offset;
-
-    Mesh m_Mesh;
-    Mesh m_TransparentMesh;
 };
