@@ -10,7 +10,7 @@
 class Shader
 {
 public:
-    Shader(char *vertFile, char *fragFile);
+    Shader(const char *vertFile, const char *fragFile);
     ~Shader();
 
     void Bind();

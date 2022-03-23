@@ -22,13 +22,13 @@ Vertex::Vertex(float xPos, float yPos, float zPos, float r, float g, float b, fl
 {
 }
 
-Vertex::Vertex(float xPos, float yPos, float zPos, glm::vec3 rgb)
+Vertex::Vertex(float xPos, float yPos, float zPos, const glm::vec3 &rgb)
     : position(xPos, yPos, zPos),
       color(rgb, 1.0f)
 {
 }
 
-Vertex::Vertex(float xPos, float yPos, float zPos, glm::vec4 rgba)
+Vertex::Vertex(float xPos, float yPos, float zPos, const glm::vec4 &rgba)
     : position(xPos, yPos, zPos),
       color(rgba)
 {

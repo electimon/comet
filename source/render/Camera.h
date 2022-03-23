@@ -31,7 +31,7 @@ public:
     static void SetPitch(float pitch) { GetInstance().m_Pitch = pitch; }
     static void SetRoll(float roll) { GetInstance().m_Roll = roll; }
     static glm::vec3 GetPosition() {return GetInstance().m_CameraPosition;}
-    static void SetPosition(glm::vec3 position) {GetInstance().m_CameraPosition = position;}
+    static void SetPosition(const glm::vec3 &position) {GetInstance().m_CameraPosition = position;}
 
 private:
     Camera() {}
