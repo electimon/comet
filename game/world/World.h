@@ -4,8 +4,8 @@
 #include <unordered_set>
 
 #include "glm/glm.hpp"
-
 #include "glm/gtx/hash.hpp"
+#include "ctpl_stl.h"
 
 #include "Renderer.h"
 
@@ -17,7 +17,7 @@ public:
     World();
     ~World();
 
-    static int GetChunkSize() { return 32; }
+    static int GetChunkSize() { return 48; }
     static int GetChunkHeight() { return 64; }
     static int GetWaterHeight() { return 8; }
 
@@ -36,4 +36,6 @@ private:
     // This will be a temporary cache of the loaded chunks.
     // Functionallity to check for saved data on disk will eventually be implemented.
     std::unordered_map<glm::ivec3, Chunk *> m_ChunkMap;
+    // std::unordered_map<glm::ivec3, Chunk *> m_ChunkMap;
+    ctpl::thread_pool m_ThreadPool;
 };
