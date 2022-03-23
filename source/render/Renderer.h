@@ -22,11 +22,6 @@ public:
     static void SwapBuffers();
     static void DrawMeshes() { GetInstance().DrawMeshesFunction(); }
 
-    static Mesh *GetMesh(glm::ivec3 index)
-    {
-        return GetInstance().m_MeshMap.at(index);
-    }
-
     static void AddMeshToQueue(const glm::ivec3 &index, Mesh *mesh)
     {
         GetInstance().m_MeshesToQueue.insert_or_assign(index, mesh);
@@ -47,8 +42,10 @@ private:
 
     void DrawMeshesFunction();
 
+    // The renderer owned map
     std::unordered_map<glm::ivec3, Mesh *> m_MeshMap;
 
+    // Queues pushes from other objects
     std::unordered_map<glm::ivec3, Mesh *> m_MeshesToQueue;
     std::unordered_set<glm::ivec3> m_MeshesToDelete;
 };
