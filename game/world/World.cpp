@@ -61,6 +61,7 @@ void World::WorldThread()
         // Delete old chunks
         for (const glm::ivec3 &chunk : m_ChunksToDelete)
         {
+            delete m_ChunkDataMap.at(chunk);
             m_ChunkDataMap.erase(chunk);
             Renderer::AddMeshToDelete(chunk);
         }
