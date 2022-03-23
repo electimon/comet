@@ -46,25 +46,21 @@ void Engine::MainLoop()
         // Clears color and depth buffers
         Renderer::NewFrame();
 
-
         // Update camera views for inputs
         Camera::Update();
         // Reset accumulated movement
         MouseHandler::ResetMovement();
-
         // Updates entities with an update function
         EntityHandler::UpdateEntities();
 
+        // ALL DRAWING SHOULD HAPPEN AFTER ANY ENTITY MOVEMENT
 
         // Drawing the mesh render queue
         Renderer::DrawMeshes();
-
-
         // Swaps buffers to display new drawn frame
         Renderer::SwapBuffers();
         // Poll events for next frame
         EventHandler::PollEvents();
-
 
         GetInstance().m_TimeDelta = glfwGetTime() - GetInstance().m_TimeLast;
         GetInstance().m_TimeLast = glfwGetTime();
