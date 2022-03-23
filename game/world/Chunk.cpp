@@ -24,8 +24,8 @@ Chunk::Chunk(glm::ivec3 id)
     GenerateWater();
     GenerateTrees();
 
-    GenerateSurfaceMesh();
-    m_SolidMesh.AddGemoetry(m_Vertices, m_Indices);
+    GenerateMesh();
+    m_Mesh.AddGemoetry(m_Vertices, m_Indices);
 
     // GenerateMesh();
 }
@@ -45,94 +45,17 @@ void Chunk::SetBlock(int x, int y, int z, const Block &block)
     m_Blocks.insert_or_assign(glm::ivec3(x, y, z), block);
 }
 
-void Chunk::PlaceTree(int x, int y, int z)
+void Chunk::RemoveBlock(int x, int y, int z)
 {
-    SetBlock(glm::ivec3(x, y + 1, z), Block(5));
-    SetBlock(glm::ivec3(x, y + 2, z), Block(5));
-    SetBlock(glm::ivec3(x, y + 3, z), Block(5));
-
-    for (int i = x - 2; i < x + 3; i++)
-    {
-        for (int j = z - 2; j < z + 3; j++)
-        {
-            if ((i == x - 2 && j == z - 2) || (i == x + 2 && j == z + 2) || (i == x - 2 && j == z + 2) || (i == x + 2 && j == z - 2))
-                continue;
-
-            SetBlock(glm::ivec3(i, y + 4, j), Block(6));
-            SetBlock(glm::ivec3(i, y + 5, j), Block(6));
-        }
-    }
-
-    for (int i = x - 1; i < x + 2; i++)
-    {
-        for (int j = z - 1; j < z + 2; j++)
-        {
-            SetBlock(glm::ivec3(i, y + 5, j), Block(6)); // test block
-        }
-    }
-
-    for (int i = x - 1; i < x + 2; i++)
-    {
-        for (int j = z - 1; j < z + 2; j++)
-        {
-            if ((i == x - 1 && j == z - 1) || (i == x + 1 && j == z + 1) || (i == x - 1 && j == z + 1) || (i == x + 1 && j == z - 1))
-                continue;
-
-            SetBlock(glm::ivec3(i, y + 6, j), Block(6)); // test block
-        }
-    }
+    m_Blocks.erase(glm::ivec3(x, y, z));
 }
 
-void Chunk::GenerateSurface()
+void Chunk::RemoveBlock(const glm::ivec3 &coordinate)
 {
-    // can possibly use this for biomes
-    FastNoise cNoise;
-    cNoise.SetFrequency(0.01);
-    cNoise.SetNoiseType(FastNoise::NoiseType::Cellular);
-    cNoise.SetCellularDistanceFunction(FastNoise::CellularDistanceFunction::Euclidean);
-    cNoise.SetCellularReturnType(FastNoise::CellularReturnType::Distance2Sub);
-    float cNoiseValue;
-
-    // mostly going to be used for terrain
-    FastNoise sNoise;
-    sNoise.SetFrequency(0.01);
-    sNoise.SetNoiseType(FastNoise::NoiseType::Simplex);
-    float sNoiseValue;
-
-    // can possibly be used for decorations
-    FastNoise wNoise;
-    wNoise.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
-    float wNoiseValue;
-
-    for (int x = 0; x < m_ChunkSize; x++)
-    {
-        for (int z = 0; z < m_ChunkSize; z++)
-        {
-            // 0 to 1 noise values
-            cNoiseValue = (cNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
-            sNoiseValue = (sNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
-            wNoiseValue = (wNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
-
-            // Calculating a surface height with the noise
-            float height = cNoiseValue * sNoiseValue;
-
-            height *= float(World::GetChunkHeight() / 2); // scale
-            m_SurfaceHeights.insert_or_assign(glm::ivec2(x, z), (int)height);
-
-            for (int y = 0; y < height - 3; y++)
-            {
-                SetBlock(glm::ivec3(x, y, z), Block(1)); // stone
-            }
-
-            SetBlock(glm::ivec3(x, height - 3, z), Block(3)); // dirt
-            SetBlock(glm::ivec3(x, height - 2, z), Block(3)); // dirt
-            SetBlock(glm::ivec3(x, height - 1, z), Block(3)); // dirt
-            SetBlock(glm::ivec3(x, height, z), Block(2));     // grass
-        }
-    }
+    m_Blocks.erase(coordinate);
 }
 
-void Chunk::GenerateSurfaceMesh()
+void Chunk::GenerateMesh()
 {
     glm::vec4 rgba;
     int xOffset = m_Chunk.x * m_ChunkSize;
@@ -171,7 +94,6 @@ void Chunk::GenerateSurfaceMesh()
                 // Log
                 if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 5)
                     rgba = glm::vec4(110.0f / 255.0f, 78.0f / 255.0f, 48.0f / 255.0f, 1.0f);
-
                 // Leaves
                 if (m_Blocks.at(glm::ivec3(xRel, yRel, zRel)).GetID() == 6)
                     rgba = glm::vec4(42.0f / 255.0f, 117.0f / 255.0f, 9.0f / 255.0f, 1.0f);
@@ -217,9 +139,62 @@ void Chunk::GenerateSurfaceMesh()
     }
 }
 
+void Chunk::GenerateSurface()
+{
+    // can possibly use this for biomes
+    FastNoise cNoise;
+    cNoise.SetFrequency(0.02);
+    cNoise.SetNoiseType(FastNoise::NoiseType::Cellular);
+    cNoise.SetCellularDistanceFunction(FastNoise::CellularDistanceFunction::Euclidean);
+    cNoise.SetCellularReturnType(FastNoise::CellularReturnType::Distance2Sub);
+    float cNoiseValue;
+
+    // mostly going to be used for terrain
+    FastNoise sNoise;
+    sNoise.SetFrequency(0.01);
+    sNoise.SetNoiseType(FastNoise::NoiseType::Simplex);
+    float sNoiseValue;
+
+    // can possibly be used for decorations
+    FastNoise wNoise;
+    wNoise.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
+    float wNoiseValue;
+
+    // Increasing the range of surface generation to go one beyond the chunk size
+    // makes it so that when generating the geometry for the chunk, it is able to
+    // check for surrounding blocks on the edges of chunks correctly and doesn't push
+    // indices between chunks to the GPU.
+    for (int x = -1; x < m_ChunkSize + 1; x++)
+    {
+        for (int z = -1; z < m_ChunkSize + 1; z++)
+        {
+            // 0 to 1 noise values
+            cNoiseValue = (cNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
+            sNoiseValue = (sNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
+            wNoiseValue = (wNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
+
+            // Calculating a surface height with the noise
+            float height = cNoiseValue * sNoiseValue;
+
+            height *= float(World::GetChunkHeight() - 16); // scale
+            m_SurfaceHeights.insert_or_assign(glm::ivec2(x, z), (int)height);
+
+            for (int y = 0; y < height - 3; y++)
+            {
+                SetBlock(glm::ivec3(x, y, z), Block(1)); // stone
+            }
+
+            SetBlock(x, height - 3, z, Block(3)); // dirt
+            SetBlock(x, height - 2, z, Block(3)); // dirt
+            SetBlock(x, height - 1, z, Block(3)); // dirt
+            SetBlock(x, height, z, Block(2));     // grass
+        }
+    }
+}
+
 void Chunk::GenerateWater()
 {
-    glm::vec4 rgba = glm::vec4(66.0f / 255.0f, 173.0f / 255.0f, 245.0f / 255.0f, 0.5f);
+    glm::vec4 rgba = glm::vec4(0.0f / 255.0f, 94.0f / 255.0f, 217.0f / 255.0f, 0.5f);
     int xOffset = m_Chunk.x * m_ChunkSize;
     int zOffset = m_Chunk.z * m_ChunkSize;
 
@@ -236,7 +211,7 @@ void Chunk::GenerateWater()
                 // fill in with water surface level is below the world water height
                 for (int yRel = m_SurfaceHeights.at(glm::ivec2(xRel, zRel)); yRel < World::GetWaterHeight(); yRel++)
                 {
-                    SetBlock(glm::ivec3(xRel, yRel, zRel), Block(4)); // water
+                    SetBlock(xRel, yRel, zRel, Block(4)); // water
                     y = yRel;
                 }
 
@@ -277,6 +252,44 @@ void Chunk::GenerateTrees()
             {
                 PlaceTree(x, m_SurfaceHeights.at(glm::ivec2(x, z)), z);
             }
+        }
+    }
+}
+
+void Chunk::PlaceTree(int x, int y, int z)
+{
+    SetBlock(glm::ivec3(x, y + 1, z), Block(5));
+    SetBlock(glm::ivec3(x, y + 2, z), Block(5));
+    SetBlock(glm::ivec3(x, y + 3, z), Block(5));
+
+    for (int i = x - 2; i < x + 3; i++)
+    {
+        for (int j = z - 2; j < z + 3; j++)
+        {
+            if ((i == x - 2 && j == z - 2) || (i == x + 2 && j == z + 2) || (i == x - 2 && j == z + 2) || (i == x + 2 && j == z - 2))
+                continue;
+
+            SetBlock(glm::ivec3(i, y + 4, j), Block(6));
+            SetBlock(glm::ivec3(i, y + 5, j), Block(6));
+        }
+    }
+
+    for (int i = x - 1; i < x + 2; i++)
+    {
+        for (int j = z - 1; j < z + 2; j++)
+        {
+            SetBlock(glm::ivec3(i, y + 6, j), Block(6)); // test block
+        }
+    }
+
+    for (int i = x - 1; i < x + 2; i++)
+    {
+        for (int j = z - 1; j < z + 2; j++)
+        {
+            if ((i == x - 1 && j == z - 1) || (i == x + 1 && j == z + 1) || (i == x - 1 && j == z + 1) || (i == x + 1 && j == z - 1))
+                continue;
+
+            SetBlock(glm::ivec3(i, y + 7, j), Block(6)); // test block
         }
     }
 }
