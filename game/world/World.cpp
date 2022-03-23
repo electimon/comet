@@ -40,6 +40,18 @@ void World::ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &request
             m_ChunksToCreate.insert(newChunk);
         }
     }
+
+    // Perform full loop through chunks if there is a desync with loaded chunks
+    if (m_ChunkDataMap.size() != requestedChunks.size())
+    {
+        for (auto &chunk : m_ChunkDataMap)
+        {
+            if (requestedChunks.find(chunk.first) == requestedChunks.end())
+            {
+                m_ChunksToDelete.insert(chunk.first);
+            }
+        }
+    }
 }
 
 void World::WorldThread()
@@ -57,7 +69,6 @@ void World::WorldThread()
         }
         m_ChunksToCreate.clear();
 
-
         // Delete old chunks
         for (const glm::ivec3 &chunk : m_ChunksToDelete)
         {
@@ -67,7 +78,6 @@ void World::WorldThread()
         }
         m_ChunksToDelete.clear();
 
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
