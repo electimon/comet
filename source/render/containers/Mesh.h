@@ -16,7 +16,10 @@ public:
     ~Mesh();
 
     void Bind();
-    void AddGemoetry(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, unsigned int shader);
+    // void AddGemoetry(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, unsigned int shader);
+
+    bool IsPushedToGPU() { return m_PushedToGPU; }
+    void PushToGPU();
 
 private:
     std::vector<Vertex> m_Vertices;
@@ -26,6 +29,8 @@ private:
     unsigned int m_VBO;
     unsigned int m_IBO;
     unsigned int m_Shader;
+
+    bool m_PushedToGPU;
 
 public:
     void SetShaderID(unsigned int id) { m_Shader = id; }

@@ -5,8 +5,12 @@ Mesh::Mesh()
 }
 
 Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, unsigned int shader)
+    : m_Vertices(vertices),
+      m_Indices(indices),
+      m_Shader(shader),
+      m_PushedToGPU(false)
 {
-    AddGemoetry(vertices, indices, shader);
+    // AddGemoetry(vertices, indices, shader);
 }
 
 Mesh::~Mesh()
@@ -29,12 +33,8 @@ void Mesh::Bind()
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 }
 
-void Mesh::AddGemoetry(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, unsigned int shader)
+void Mesh::PushToGPU()
 {
-    m_Vertices = vertices;
-    m_Indices = indices;
-    m_Shader = shader;
-
     glGenVertexArrays(1, &m_VAO);
     glGenBuffers(1, &m_VBO);
     glGenBuffers(1, &m_IBO);
@@ -58,4 +58,6 @@ void Mesh::AddGemoetry(const std::vector<Vertex> &vertices, const std::vector<un
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    m_PushedToGPU = true;
 }
