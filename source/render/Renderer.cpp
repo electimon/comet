@@ -18,17 +18,24 @@ void Renderer::Initialize()
     // Transparency
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Renderer::NewFrame()
 {
+    if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_L) == GLFW_PRESS)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+    if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_N) == GLFW_PRESS)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
     // Clearing the color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Setting the new frame color to be black
-    glClearColor(0.15f, 0.15f, 0.15f, 0.0f);
+    glClearColor(135.0f/255.0f, 206.0f/255.0f, 250.0f/255.0f, 0.0f);
 }
 
 void Renderer::SwapBuffers()
