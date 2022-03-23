@@ -35,7 +35,7 @@ void Renderer::NewFrame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Setting the new frame color to be black
-    glClearColor(135.0f/255.0f, 206.0f/255.0f, 250.0f/255.0f, 0.0f);
+    glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f, 0.0f);
 }
 
 void Renderer::SwapBuffers()
@@ -45,8 +45,27 @@ void Renderer::SwapBuffers()
 
 void Renderer::DrawMeshesFunction()
 {
-    for (auto mesh : m_MeshMap)
+    for (auto &mesh : m_MeshesToQueue)
     {
+        m_MeshMap.insert_or_assign(mesh.first, mesh.second);
+    }
+    m_MeshesToQueue.clear();
+
+    for (auto &mesh : m_MeshesToDelete)
+    {
+        delete m_MeshMap.at(mesh);
+        m_MeshMap.erase(mesh);
+    }
+    m_MeshesToDelete.clear();
+
+
+    for (auto &mesh : m_MeshMap)
+    {
+        if (!mesh.second->IsPushedToGPU())
+        {
+            mesh.second->PushToGPU();
+        }
+
         mesh.second->Bind();
 
         glUniformMatrix4fv(glGetUniformLocation(mesh.second->GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
