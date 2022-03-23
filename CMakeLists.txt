@@ -20,6 +20,7 @@ include_directories(
     # libraries/imgui/include
     libraries/stb_image/include
     libraries/fastnoise
+    libraries/ctpl
 
     game
 )
@@ -33,29 +34,21 @@ link_directories(
 )
 
 file(GLOB_RECURSE GAME_CPP_FILES game/*.cpp)
-# file(GLOB_RECURSE GAME_H_FILES game/*.h)
 
 file(GLOB_RECURSE ENGINE_CPP_FILES source/*.cpp)
 file(GLOB_RECURSE ENGINE_C_FILES source/*.c)
-# file(GLOB_RECURSE ENGINE_HPP_FILES source/*.hpp)
-# file(GLOB_RECURSE ENGINE_H_FILES source/*.h)
-# file(GLOB_RECURSE IMGUI_CPP_FILES libraries/imgui/source/*.cpp)
 
 add_executable(
     ${PROJECT_NAME}
 
     ${GAME_CPP_FILES}
-    # ${GAME_H_FILES}
 
     ${ENGINE_CPP_FILES}
     ${ENGINE_C_FILES}
-    # ${ENGINE_HPP_FILES}
-    # ${ENGINE_H_FILES}
 
     libraries/fastnoise/FastNoise.cpp
     libraries/glad/source/gl.c
     libraries/stb_image/source/stb_image.cpp
-    # ${IMGUI_CPP_FILES}
 )
 
 target_link_libraries(
