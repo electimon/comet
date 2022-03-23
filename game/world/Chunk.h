@@ -16,18 +16,22 @@ struct Chunk
 
     void SetBlock(const glm::ivec3 &coordinate, const Block &block);
     void SetBlock(int x, int y, int z, const Block &block);
-    void Redraw();
+
+    void RemoveBlock(const glm::ivec3 &coordinate);
+    void RemoveBlock(int x, int y, int z);
+
+    // void Redraw();
 
     // Feature functions
     void GenerateSurface();
-    void GenerateSurfaceMesh();
+    void GenerateMesh();
 
     void GenerateWater();
     void GenerateTrees();
 
     void PlaceTree(int x, int y, int z);
 
-    Mesh *GetMesh() { return &m_SolidMesh; }
+    Mesh *GetMesh() { return &m_Mesh; }
     Mesh *GetTransparentMesh() { return &m_TransparentMesh; }
 
 private:
@@ -43,6 +47,6 @@ private:
     std::vector<unsigned int> m_Indices;
     unsigned int m_Offset;
 
-    Mesh m_SolidMesh;
+    Mesh m_Mesh;
     Mesh m_TransparentMesh;
 };
