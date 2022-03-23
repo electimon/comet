@@ -12,11 +12,11 @@ class Mesh
 {
 public:
     Mesh();
-    Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
+    Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, unsigned int shader);
     ~Mesh();
 
     void Bind();
-    void AddGemoetry(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices);
+    void AddGemoetry(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, unsigned int shader);
 
 private:
     std::vector<Vertex> m_Vertices;
