@@ -18,7 +18,7 @@ Chunk::Chunk(glm::ivec3 id)
 {
     // This portion is all threadsafe, since no OpenGL commands are run.
     {
-        Timer timer("generating chunk data");
+        // Timer timer("generating chunk data");
 
         std::cout << "Chunk::Chunk()" << std::endl;
         m_Blocks.reserve(m_ChunkSize * m_ChunkSize);
@@ -26,11 +26,22 @@ Chunk::Chunk(glm::ivec3 id)
         m_Vertices.reserve(8 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
         m_Indices.reserve(36 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
 
-        GenerateSurface();
-        GenerateWater();
-        GenerateTrees();
-
-        GenerateMesh();
+        {
+            Timer timer("GenerateSurface");
+            GenerateSurface();
+        }
+        {
+            Timer timer("GenerateWater");
+            GenerateWater();
+        }
+        {
+            Timer timer("GenerateTrees");
+            GenerateTrees();
+        }
+        {
+            Timer timer("GenerateMesh");
+            GenerateMesh();
+        }
     }
 
     // This portion is not threadsafe.
