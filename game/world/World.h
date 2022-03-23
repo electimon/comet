@@ -21,16 +21,16 @@ public:
     static int GetChunkHeight() { return 64; }
     static int GetWaterHeight() { return 8; }
 
-    void GenerateChunk(glm::ivec3 index);
+    void GenerateChunk(const glm::ivec3 &index);
     void GenerateChunk(int x, int y, int z);
 
-    void AddChunkToRenderQueue(glm::ivec3 index);
+    void AddChunkToRenderQueue(const glm::ivec3 &index);
     void AddChunkToRenderQueue(int x, int y, int z);
 
-    void AddShaderToChunk(glm::ivec3 index, unsigned int shader);
+    void AddShaderToChunk(const glm::ivec3 &index, unsigned int shader);
     void AddShaderToChunk(int x, int y, int z, unsigned int shader);
 
-    void ProcessRequestedChunks(std::unordered_set<glm::ivec3> chunks);
+    void ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &chunks);
 
 private:
     // This will be a temporary cache of the loaded chunks.

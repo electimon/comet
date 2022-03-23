@@ -35,21 +35,21 @@ Chunk::~Chunk()
     std::cout << "Chunk::~Chunk()" << std::endl;
 }
 
-void Chunk::SetBlock(glm::ivec3 coordinate, Block &block)
+void Chunk::SetBlock(const glm::ivec3 &coordinate, const Block &block)
 {
     m_Blocks.insert_or_assign(coordinate, block);
 }
 
-void Chunk::SetBlock(int x, int y, int z, Block &block)
+void Chunk::SetBlock(int x, int y, int z, const Block &block)
 {
     m_Blocks.insert_or_assign(glm::ivec3(x, y, z), block);
 }
 
 void Chunk::PlaceTree(int x, int y, int z)
 {
-    SetBlock(glm::ivec3(x, y, z), Block(5));     // test block
-    SetBlock(glm::ivec3(x, y + 1, z), Block(5)); // test block
-    SetBlock(glm::ivec3(x, y + 2, z), Block(5)); // test block
+    SetBlock(glm::ivec3(x, y + 1, z), Block(5));
+    SetBlock(glm::ivec3(x, y + 2, z), Block(5));
+    SetBlock(glm::ivec3(x, y + 3, z), Block(5));
 
     for (int i = x - 2; i < x + 3; i++)
     {
@@ -58,8 +58,8 @@ void Chunk::PlaceTree(int x, int y, int z)
             if ((i == x - 2 && j == z - 2) || (i == x + 2 && j == z + 2) || (i == x - 2 && j == z + 2) || (i == x + 2 && j == z - 2))
                 continue;
 
-            SetBlock(glm::ivec3(i, y + 3, j), Block(6)); // test block
-            SetBlock(glm::ivec3(i, y + 4, j), Block(6)); // test block
+            SetBlock(glm::ivec3(i, y + 4, j), Block(6));
+            SetBlock(glm::ivec3(i, y + 5, j), Block(6));
         }
     }
 

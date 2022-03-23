@@ -14,8 +14,8 @@ struct Chunk
     Chunk(glm::ivec3 id);
     ~Chunk();
 
-    void SetBlock(glm::ivec3 coordinate, Block &block);
-    void SetBlock(int x, int y, int z, Block &block);
+    void SetBlock(const glm::ivec3 &coordinate, const Block &block);
+    void SetBlock(int x, int y, int z, const Block &block);
     void Redraw();
 
     // Feature functions
