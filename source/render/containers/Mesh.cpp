@@ -4,7 +4,7 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices)
 {
     AddGemoetry(vertices, indices);
 }
@@ -29,7 +29,7 @@ void Mesh::Bind()
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 }
 
-void Mesh::AddGemoetry(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+void Mesh::AddGemoetry(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices)
 {
     m_Vertices = vertices;
     m_Indices = indices;

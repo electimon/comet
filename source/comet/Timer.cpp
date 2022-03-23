@@ -6,7 +6,7 @@ Timer::Timer()
 {
 }
 
-Timer::Timer(std::string scope)
+Timer::Timer(const std::string &scope)
     : m_StartTime(glfwGetTime()),
       m_ScopeName(scope)
 {

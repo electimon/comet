@@ -8,7 +8,7 @@
 struct Timer
 {
     Timer();
-    Timer(std::string scope);
+    Timer(const std::string &scope);
     ~Timer();
 
 private:
