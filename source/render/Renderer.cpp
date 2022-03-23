@@ -53,11 +53,14 @@ void Renderer::DrawMeshesFunction()
 
     for (auto &mesh : m_MeshesToDelete)
     {
-        delete m_MeshMap.at(mesh);
-        m_MeshMap.erase(mesh);
+        // Hack to catch desyncs
+        if (m_MeshMap.find(mesh) != m_MeshMap.end())
+        {
+            delete m_MeshMap.at(mesh);
+            m_MeshMap.erase(mesh);
+        }
     }
     m_MeshesToDelete.clear();
-
 
     for (auto &mesh : m_MeshMap)
     {
