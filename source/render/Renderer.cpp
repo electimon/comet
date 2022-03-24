@@ -58,6 +58,7 @@ void Renderer::DrawMeshesFunction()
 
         glUniformMatrix4fv(glGetUniformLocation(mesh.second.GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(mesh.second.GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
+        glUniform1f(glGetUniformLocation(mesh.second.GetShaderID(), "u_Time"), glfwGetTime());
 
         glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
     }

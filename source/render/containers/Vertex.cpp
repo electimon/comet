@@ -33,3 +33,35 @@ Vertex::Vertex(float xPos, float yPos, float zPos, const glm::vec4 &rgba)
       color(rgba)
 {
 }
+
+Vertex::Vertex(float xPos, float yPos, float zPos, const glm::vec4 &rgba, const glm::vec3 &normal, float ao)
+    : position(xPos, yPos, zPos),
+      normal(normal),
+      color(rgba),
+      ao(ao)
+{
+}
+
+Vertex::Vertex(float xPos, float yPos, float zPos, const glm::vec4 &rgba, float xNormal, float yNormal, float zNormal, float ao)
+    : position(xPos, yPos, zPos),
+      color(rgba),
+      normal(xNormal, yNormal, zNormal),
+      ao(ao)
+{
+}
+
+Vertex::Vertex(float xPos, float yPos, float zPos, const glm::vec3 &rgb, const glm::vec3 &normal, float ao)
+    : position(xPos, yPos, zPos),
+      color(rgb, 1.0f),
+      normal(normal),
+      ao(ao)
+{
+}
+
+Vertex::Vertex(float xPos, float yPos, float zPos, const glm::vec3 &rgb, float xNormal, float yNormal, float zNormal, float ao)
+    : position(xPos, yPos, zPos),
+      color(rgb, 1.0f),
+      normal(xNormal, yNormal, zNormal),
+      ao(ao)
+{
+}
