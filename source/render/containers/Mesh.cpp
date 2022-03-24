@@ -4,10 +4,11 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, unsigned int shader)
-    : m_Vertices(vertices),
-      m_Indices(indices),
+Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, unsigned int shader)
+    : p_Vertices(vertices),
+      p_Indices(indices),
       m_Shader(shader),
+      m_Count((unsigned int)(indices->size())),
       m_PushedToGPU(false)
 {
     // AddGemoetry(vertices, indices, shader);
@@ -45,9 +46,9 @@ void Mesh::PushToGPU()
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, p_Vertices->size() * sizeof(Vertex), &p_Vertices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, p_Indices->size() * sizeof(unsigned int), &p_Indices[0], GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
