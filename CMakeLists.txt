@@ -19,7 +19,7 @@ include_directories(
     libraries/glm/include
     # libraries/imgui/include
     libraries/stb_image/include
-    libraries/fastnoise
+    libraries/fastnoiselite
     libraries/ctpl
 
     game
@@ -48,7 +48,6 @@ add_executable(
     ${ENGINE_CPP_FILES}
     ${ENGINE_C_FILES}
 
-    libraries/fastnoise/FastNoise.cpp
     libraries/glad/source/gl.c
     libraries/stb_image/source/stb_image.cpp
 )

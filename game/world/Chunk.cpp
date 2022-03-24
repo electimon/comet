@@ -2,7 +2,7 @@
 
 #include "glm/gtc/random.hpp"
 
-#include "FastNoise.h"
+#include "FastNoiseLite.h"
 
 #include "Renderer.h"
 #include "containers/Vertex.h"
@@ -294,22 +294,22 @@ void Chunk::GenerateMesh()
 void Chunk::GenerateSurface()
 {
     // can possibly use this for biomes
-    FastNoise cNoise;
-    cNoise.SetFrequency(0.02);
-    cNoise.SetNoiseType(FastNoise::NoiseType::Cellular);
-    cNoise.SetCellularDistanceFunction(FastNoise::CellularDistanceFunction::Euclidean);
-    cNoise.SetCellularReturnType(FastNoise::CellularReturnType::Distance2Sub);
+    FastNoiseLite cNoise;
+    cNoise.SetFrequency(0.02f);
+    cNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Cellular);
+    cNoise.SetCellularDistanceFunction(FastNoiseLite::CellularDistanceFunction::CellularDistanceFunction_Euclidean);
+    cNoise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_Distance2Sub);
     float cNoiseValue;
 
     // mostly going to be used for terrain
-    FastNoise sNoise;
-    sNoise.SetFrequency(0.01);
-    sNoise.SetNoiseType(FastNoise::NoiseType::Simplex);
+    FastNoiseLite sNoise;
+    sNoise.SetFrequency(0.01f);
+    sNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
     float sNoiseValue;
 
     // can possibly be used for decorations
-    FastNoise wNoise;
-    wNoise.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
+    FastNoiseLite wNoise;
+    wNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Perlin);
     float wNoiseValue;
 
     // Increasing the range of surface generation to go one beyond the chunk size
@@ -321,8 +321,8 @@ void Chunk::GenerateSurface()
         for (int z = -1; z < m_ChunkSize + 2; z++)
         {
             // -1 to 1 noise values
-            cNoiseValue = cNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
-            sNoiseValue = sNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
+            cNoiseValue = cNoise.GetNoise((float)(x + m_ChunkSize * m_Chunk.x), float(z + m_ChunkSize * m_Chunk.z));
+            sNoiseValue = sNoise.GetNoise((float)(x + m_ChunkSize * m_Chunk.x), (float)(z + m_ChunkSize * m_Chunk.z));
             // wNoiseValue = wNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
 
             // Calculating a surface height with the noise
@@ -393,18 +393,23 @@ void Chunk::GenerateWater()
 
 void Chunk::GenerateTrees()
 {
-    FastNoise wNoise;
-    wNoise.SetNoiseType(FastNoise::NoiseType::WhiteNoise);
-    float wNoiseValue;
+    FastNoiseLite noise;
+    noise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+    float noiseValue;
+    float noiseValue2;
 
     for (int x = 2; x < m_ChunkSize - 2; x++)
     {
         for (int z = 2; z < m_ChunkSize - 2; z++)
         {
             // 0 to 1 noise values
-            wNoiseValue = (wNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z) + 1.0f) / 2.0f;
+            noise.SetFrequency(2.0f);
+            noiseValue = (noise.GetNoise((float)(x + m_ChunkSize * m_Chunk.x), (float)(z + m_ChunkSize * m_Chunk.z)) + 1.0f) / 2.0f;
+            noise.SetFrequency(0.1f);
+            noiseValue2 = (noise.GetNoise((float)(x + m_ChunkSize * m_Chunk.x), (float)(z + m_ChunkSize * m_Chunk.z)) + 1.0f) / 2.0f;
 
-            if (wNoiseValue > 0.995f && m_SurfaceHeights.at(glm::ivec2(x, z)) > World::GetWaterHeight() + 3)
+
+            if (noiseValue > 0.95f && noiseValue2 > 0.5f && m_SurfaceHeights.at(glm::ivec2(x, z)) > World::GetWaterHeight() + 3)
             {
                 PlaceTree(glm::ivec3(x, m_SurfaceHeights.at(glm::ivec2(x, z)), z));
             }
