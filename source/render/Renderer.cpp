@@ -45,32 +45,14 @@ void Renderer::SwapBuffers()
 
 void Renderer::DrawMeshesFunction()
 {
-    for (auto &mesh : m_MeshesToAdd)
-    {
-        m_MeshMap.insert_or_assign(mesh.first, mesh.second);
-    }
-    m_MeshesToAdd.clear();
-
-    for (auto &mesh : m_MeshesToDelete)
-    {
-        // Hack to catch desyncs
-        if (m_MeshMap.find(mesh) != m_MeshMap.end())
-        {
-            m_MeshMap.erase(mesh);
-        }
-    }
-    m_MeshesToDelete.clear();
-
-
-
-
+    UpdateMeshQueue();
 
     // Rendering meshes in map
     for (auto &mesh : m_MeshMap)
     {
         if (!mesh.second.IsPushedToGPU())
         {
-            mesh.second.PushToGPU();
+            mesh.second.AllocateOnGPU();
         }
 
         mesh.second.Bind();
@@ -80,4 +62,26 @@ void Renderer::DrawMeshesFunction()
 
         glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
     }
+}
+
+void Renderer::UpdateMeshQueue()
+{
+    std::lock_guard<std::mutex> locked(GetInstance().SafeToModifyMeshQueue);
+
+    for (auto &mesh : GetInstance().m_MeshesToAdd)
+    {
+        GetInstance().m_MeshMap.insert_or_assign(mesh.first, mesh.second);
+    }
+    GetInstance().m_MeshesToAdd.clear();
+
+    for (auto &mesh : GetInstance().m_MeshesToDelete)
+    {
+        // Hack to catch desyncs
+        if (GetInstance().m_MeshMap.find(mesh) != GetInstance().m_MeshMap.end())
+        {
+            GetInstance().m_MeshMap.at(mesh).DeallocateOnGPU();
+            GetInstance().m_MeshMap.erase(mesh);
+        }
+    }
+    GetInstance().m_MeshesToDelete.clear();
 }

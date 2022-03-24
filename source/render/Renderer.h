@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -21,14 +22,18 @@ public:
     static void NewFrame();
     static void SwapBuffers();
     static void DrawMeshes() { GetInstance().DrawMeshesFunction(); }
+    static void UpdateMeshQueue();
+
 
     static void AddMeshToQueue(const glm::ivec3 &index, const Mesh &mesh)
     {
+        std::lock_guard<std::mutex> locked(GetInstance().SafeToModifyMeshQueue);
         GetInstance().m_MeshesToAdd.insert_or_assign(index, mesh);
     }
 
     static void DeleteMeshFromQueue(const glm::ivec3 &index)
     {
+        std::lock_guard<std::mutex> locked(GetInstance().SafeToModifyMeshQueue);
         GetInstance().m_MeshesToDelete.insert(index);
     }
 
@@ -41,6 +46,7 @@ private:
     void operator=(Renderer const &);
 
     void DrawMeshesFunction();
+    std::mutex SafeToModifyMeshQueue;
 
     // The renderer owned map
     std::unordered_map<glm::ivec3, Mesh> m_MeshMap;
