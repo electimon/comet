@@ -45,35 +45,39 @@ void Renderer::SwapBuffers()
 
 void Renderer::DrawMeshesFunction()
 {
-    for (auto &mesh : m_MeshesToQueue)
+    for (auto &mesh : m_MeshesToAdd)
     {
         m_MeshMap.insert_or_assign(mesh.first, mesh.second);
     }
-    m_MeshesToQueue.clear();
+    m_MeshesToAdd.clear();
 
     for (auto &mesh : m_MeshesToDelete)
     {
         // Hack to catch desyncs
         if (m_MeshMap.find(mesh) != m_MeshMap.end())
         {
-            delete m_MeshMap.at(mesh);
             m_MeshMap.erase(mesh);
         }
     }
     m_MeshesToDelete.clear();
 
+
+
+
+
+    // Rendering meshes in map
     for (auto &mesh : m_MeshMap)
     {
-        if (!mesh.second->IsPushedToGPU())
+        if (!mesh.second.IsPushedToGPU())
         {
-            mesh.second->PushToGPU();
+            mesh.second.PushToGPU();
         }
 
-        mesh.second->Bind();
+        mesh.second.Bind();
 
-        glUniformMatrix4fv(glGetUniformLocation(mesh.second->GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(mesh.second->GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(mesh.second.GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(mesh.second.GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
 
-        glDrawElements(GL_TRIANGLES, mesh.second->GetCount(), GL_UNSIGNED_INT, (void *)0);
+        glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
     }
 }
