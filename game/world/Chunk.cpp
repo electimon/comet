@@ -141,9 +141,9 @@ void Chunk::GenerateMesh()
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
             m_Vertices.insert(m_Vertices.end(), {
                                                     Vertex(x - 0.5f, y + 0.5f, z + 0.5f, rgba, -1.0f, 0.0f, 0.0f, 1.0f - posYLight - posZLight), // 4
-                                                    Vertex(x - 0.5f, y + 0.5f, z - 0.5f, rgba, -1.0f, 0.0f, 0.0f, 1.0f - negYLight - posZLight), // 5
+                                                    Vertex(x - 0.5f, y + 0.5f, z - 0.5f, rgba, -1.0f, 0.0f, 0.0f, 1.0f - posYLight - negZLight), // 5
                                                     Vertex(x - 0.5f, y - 0.5f, z - 0.5f, rgba, -1.0f, 0.0f, 0.0f, 1.0f - negYLight - negZLight), // 6
-                                                    Vertex(x - 0.5f, y - 0.5f, z + 0.5f, rgba, -1.0f, 0.0f, 0.0f, 1.0f - posYLight - negZLight), // 7
+                                                    Vertex(x - 0.5f, y - 0.5f, z + 0.5f, rgba, -1.0f, 0.0f, 0.0f, 1.0f - negYLight - posZLight), // 7
                                                 });
             m_Offset += 4;
         }
