@@ -19,7 +19,8 @@ public:
     // void AddGemoetry(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, unsigned int shader);
 
     bool IsPushedToGPU() { return m_PushedToGPU; }
-    void PushToGPU();
+    void AllocateOnGPU();
+    void DeallocateOnGPU();
 
 private:
     std::vector<Vertex> *p_Vertices;
