@@ -108,6 +108,8 @@ void Chunk::GenerateMesh()
         z = block.first.z + zOffset;
         glm::vec4 rgba = blockColors[block.second.GetID()];
 
+        size_t oldIndicesSize = m_Indices.size();
+
         // If no block is found next to the block, then render that side.
         if (m_Blocks.find(glm::ivec3(block.first.x, block.first.y, block.first.z + 1)) == m_Blocks.end())
         {
@@ -132,6 +134,11 @@ void Chunk::GenerateMesh()
         if (m_Blocks.find(glm::ivec3(block.first.x, block.first.y + 1, block.first.z)) == m_Blocks.end())
         {
             m_Indices.insert(m_Indices.end(), {3 + m_Offset, 2 + m_Offset, 6 + m_Offset, 6 + m_Offset, 7 + m_Offset, 3 + m_Offset}); // top
+        }
+
+        if (oldIndicesSize = m_Indices.size())
+        {
+            continue;
         }
 
         m_Vertices.insert(m_Vertices.end(), {Vertex(x - 0.5f, y - 0.5f, z + 0.5f, 0.75f * rgba.r, 0.75f * rgba.g, 0.75f * rgba.b, rgba.a),
