@@ -16,42 +16,19 @@ Chunk::Chunk(glm::ivec3 id)
       m_ChunkHeight(World::GetChunkHeight()),
       m_Offset(0)
 {
-    // This portion is all threadsafe, since no OpenGL commands are run.
-    {
-        // Timer timer("generating chunk data");
 
-        std::cout << "Chunk::Chunk()" << std::endl;
-        m_Blocks.reserve(m_ChunkSize * m_ChunkSize);
-        m_SurfaceHeights.reserve(m_ChunkSize * m_ChunkSize);
-        m_Vertices.reserve(8 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
-        m_Indices.reserve(36 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+    std::cout << "Chunk::Chunk()" << std::endl;
 
-        {
-            Timer timer("GenerateSurface");
-            GenerateSurface();
-        }
-        {
-            Timer timer("GenerateWater");
-            GenerateWater();
-        }
-        {
-            Timer timer("GenerateTrees");
-            GenerateTrees();
-        }
-        {
-            Timer timer("GenerateMesh");
-            GenerateMesh();
-        }
-    }
+    m_Blocks.reserve(m_ChunkSize * m_ChunkSize);
+    m_SurfaceHeights.reserve(m_ChunkSize * m_ChunkSize);
+    m_Vertices.reserve(8 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+    m_Indices.reserve(36 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
 
-    // This portion is not threadsafe.
-    // Any OpenGL commands need to be run on the main thread, otherwise glfw commands
-    // are not processed correctly.
-    // TODO: Move mesh generation somewhere else.
-    {
-        Timer timer("adding geometry to a mesh");
-        // m_Mesh.AddGemoetry(m_Vertices, m_Indices);
-    }
+    GenerateSurface();
+    GenerateWater();
+    GenerateTrees();
+
+    GenerateMesh();
 }
 
 Chunk::~Chunk()
