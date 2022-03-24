@@ -15,7 +15,7 @@ Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, un
 
 Mesh::~Mesh()
 {
-    std::cout << "Mesh::~Mesh()" << std::endl;
+    // std::cout << "Mesh::~Mesh()" << std::endl;
 }
 
 void Mesh::Bind()
@@ -30,9 +30,9 @@ void Mesh::AllocateOnGPU()
     glGenBuffers(1, &m_VBO);
     glGenBuffers(1, &m_IBO);
 
-    std::cout << "Generating VAO (id: " << m_VAO << ")" << std::endl;
-    std::cout << "Generating VBO (id: " << m_VBO << ")" << std::endl;
-    std::cout << "Generating IBO (id: " << m_IBO << ")" << std::endl;
+    // std::cout << "Generating VAO (id: " << m_VAO << ")" << std::endl;
+    // std::cout << "Generating VBO (id: " << m_VBO << ")" << std::endl;
+    // std::cout << "Generating IBO (id: " << m_IBO << ")" << std::endl;
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -55,9 +55,9 @@ void Mesh::AllocateOnGPU()
 
 void Mesh::DeallocateOnGPU()
 {
-    std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
-    std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
-    std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
+    // std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
+    // std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
+    // std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
 
     glDeleteVertexArrays(1, &m_VAO);
     glDeleteBuffers(1, &m_VBO);

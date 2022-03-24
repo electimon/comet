@@ -47,13 +47,12 @@ void Renderer::DrawMeshesFunction()
 {
     UpdateMeshQueue();
 
-    // Rendering meshes in map
     for (auto &mesh : m_MeshMap)
     {
-        if (!mesh.second.IsPushedToGPU())
-        {
-            mesh.second.AllocateOnGPU();
-        }
+        // if (!mesh.second.IsPushedToGPU())
+        // {
+        //     mesh.second.AllocateOnGPU();
+        // }
 
         mesh.second.Bind();
 
@@ -71,17 +70,15 @@ void Renderer::UpdateMeshQueue()
     for (auto &mesh : GetInstance().m_MeshesToAdd)
     {
         GetInstance().m_MeshMap.insert_or_assign(mesh.first, mesh.second);
+        GetInstance().m_MeshMap.at(mesh.first).AllocateOnGPU();
+
     }
     GetInstance().m_MeshesToAdd.clear();
 
     for (auto &mesh : GetInstance().m_MeshesToDelete)
     {
-        // Hack to catch desyncs
-        if (GetInstance().m_MeshMap.find(mesh) != GetInstance().m_MeshMap.end())
-        {
-            GetInstance().m_MeshMap.at(mesh).DeallocateOnGPU();
-            GetInstance().m_MeshMap.erase(mesh);
-        }
+        GetInstance().m_MeshMap.at(mesh).DeallocateOnGPU();
+        GetInstance().m_MeshMap.erase(mesh);
     }
     GetInstance().m_MeshesToDelete.clear();
 }

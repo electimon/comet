@@ -18,11 +18,13 @@ struct Chunk
     void RemoveBlock(const glm::ivec3 &coordinate);
 
     // Feature functions
-    void GenerateSurface();
-    void GenerateMesh();
 
+    void GenerateSurface();
+    void GenerateSand();
     void GenerateWater();
     void GenerateTrees();
+
+    void GenerateMesh();
 
     void PlaceTree(const glm::ivec3 &coordinate);
 

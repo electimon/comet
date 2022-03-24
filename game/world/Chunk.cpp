@@ -9,6 +9,7 @@
 
 #include "World.h"
 #include "Timer.h"
+#include "BlockProperties.h"
 
 Chunk::Chunk(glm::ivec3 id)
     : m_Chunk(id),
@@ -17,23 +18,30 @@ Chunk::Chunk(glm::ivec3 id)
       m_Offset(0)
 {
 
-    std::cout << "Chunk::Chunk()" << std::endl;
+    // std::cout << "Chunk::Chunk()" << std::endl;
 
-    m_Blocks.reserve(m_ChunkSize * m_ChunkSize);
+    m_Blocks.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight);
     m_SurfaceHeights.reserve(m_ChunkSize * m_ChunkSize);
-    m_Vertices.reserve(8 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
-    m_Indices.reserve(36 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+    m_Vertices.reserve(10000);
+    m_Indices.reserve(10000);
+
+    // These values were way too high
+    // m_Vertices.reserve(8 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+    // m_Indices.reserve(36 * m_ChunkSize * m_ChunkSize * m_ChunkHeight);
 
     GenerateSurface();
+    GenerateSand();
     GenerateWater();
     GenerateTrees();
 
     GenerateMesh();
+
+    // std::cout << "Chunk contains: " << m_Vertices.size() << " vertices, " << m_Indices.size() << " indices." << std::endl;
 }
 
 Chunk::~Chunk()
 {
-    std::cout << "Chunk::~Chunk()" << std::endl;
+    // std::cout << "Chunk::~Chunk()" << std::endl;
 }
 
 void Chunk::SetBlock(const glm::ivec3 &coordinate, const Block &block)
@@ -54,23 +62,6 @@ void Chunk::GenerateMesh()
 
     int x, y, z, blockID;
 
-    std::vector<glm::vec4> blockColors;
-
-    // White block 0
-    blockColors.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    // Stone 1
-    blockColors.push_back(glm::vec4(94.0f / 255.0f, 94.0f / 255.0f, 94.0f / 255.0f, 1.0f));
-    // Grass 2
-    blockColors.push_back(glm::vec4(26.0f / 255.0f, 166.0f / 255.0f, 18.0f / 255.0f, 1.0f));
-    // Dirt 3
-    blockColors.push_back(glm::vec4(92.0f / 255.0f, 68.0f / 255.0f, 46.0f / 255.0f, 1.0f));
-    // Water 4
-    blockColors.push_back(glm::vec4(66.0f / 255.0f, 173.0f / 255.0f, 245.0f / 255.0f, 0.5f));
-    // Log 5
-    blockColors.push_back(glm::vec4(110.0f / 255.0f, 78.0f / 255.0f, 48.0f / 255.0f, 1.0f));
-    // Leaves 6
-    blockColors.push_back(glm::vec4(42.0f / 255.0f, 117.0f / 255.0f, 9.0f / 255.0f, 1.0f));
-
     for (auto &block : m_Blocks)
     {
         // Because blocks were technically generated outside the bounds of the chunk
@@ -83,7 +74,7 @@ void Chunk::GenerateMesh()
         x = block.first.x + xOffset;
         y = block.first.y;
         z = block.first.z + zOffset;
-        glm::vec4 rgba = blockColors[block.second.GetID()];
+        glm::vec4 rgba = BlockColor[block.second.GetID()];
 
         size_t oldIndicesSize = m_Indices.size();
 
@@ -163,7 +154,7 @@ void Chunk::GenerateSurface()
             // -1 to 1 noise values
             cNoiseValue = cNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
             sNoiseValue = sNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
-            wNoiseValue = wNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
+            // wNoiseValue = wNoise.GetNoise(x + m_ChunkSize * m_Chunk.x, z + m_ChunkSize * m_Chunk.z);
 
             // Calculating a surface height with the noise
             float height = cNoiseValue * sNoiseValue;
@@ -183,6 +174,11 @@ void Chunk::GenerateSurface()
             SetBlock(glm::ivec3(x, height, z), Block(2));     // grass
         }
     }
+}
+
+void Chunk::GenerateSand()
+{
+
 }
 
 void Chunk::GenerateWater()
