@@ -21,7 +21,7 @@ struct Vertex
     Vertex(float xPos, float yPos, float zPos, const glm::vec4 &rgba, const glm::vec3 &normal);
     Vertex(float xPos, float yPos, float zPos, const glm::vec4 &rgba, float xNormal, float yNormal, float zNormal);
 
-    // Position, Color, Normal, AO
+    // Position, Color, Normal, AO, Texture Coordinates
     Vertex(float xPos, float yPos, float zPos, const glm::vec3 &rgb, const glm::vec3 &normal, float ao);
     Vertex(float xPos, float yPos, float zPos, const glm::vec3 &rgb, float xNormal, float yNormal, float zNormal, float ao);
     Vertex(float xPos, float yPos, float zPos, const glm::vec4 &rgba, const glm::vec3 &normal, float ao);
@@ -31,4 +31,5 @@ struct Vertex
     glm::vec4 color;
     glm::vec3 normal;
     float ao;
+    glm::vec2 texturecoords;
 };
