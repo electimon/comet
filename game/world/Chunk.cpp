@@ -136,7 +136,7 @@ void Chunk::GenerateMesh()
             m_Indices.insert(m_Indices.end(), {3 + m_Offset, 2 + m_Offset, 6 + m_Offset, 6 + m_Offset, 7 + m_Offset, 3 + m_Offset}); // top
         }
 
-        if (oldIndicesSize = m_Indices.size())
+        if (oldIndicesSize == m_Indices.size())
         {
             continue;
         }
