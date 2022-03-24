@@ -26,8 +26,8 @@ struct Chunk
 
     void PlaceTree(const glm::ivec3 &coordinate);
 
-    std::vector<Vertex> GetVertices() { return m_Vertices; }
-    std::vector<unsigned int> GetIndices() { return m_Indices; }
+    std::vector<Vertex> *GetVertices() { return &m_Vertices; }
+    std::vector<unsigned int> *GetIndices() { return &m_Indices; }
 
 private:
     std::unordered_map<glm::ivec3, Block> m_Blocks;
