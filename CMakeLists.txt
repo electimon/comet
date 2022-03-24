@@ -34,6 +34,7 @@ link_directories(
 )
 
 file(GLOB_RECURSE GAME_CPP_FILES game/*.cpp)
+file(GLOB_RECURSE GAME_H_FILES game/*.h)
 
 file(GLOB_RECURSE ENGINE_CPP_FILES source/*.cpp)
 file(GLOB_RECURSE ENGINE_C_FILES source/*.c)
@@ -42,6 +43,7 @@ add_executable(
     ${PROJECT_NAME}
 
     ${GAME_CPP_FILES}
+    ${GAME_H_FILES}
 
     ${ENGINE_CPP_FILES}
     ${ENGINE_C_FILES}
