@@ -61,23 +61,30 @@ void World::WorldThread()
     while (!m_EndThread)
     {
         // Create new chunks
-        for (const glm::ivec3 &chunk : m_ChunksToCreate)
+        for (const glm::ivec3 &index : m_ChunksToCreate)
         {
-            GenerateChunk(chunk);
-            Mesh *mesh = new Mesh(m_ChunkDataMap.at(chunk)->GetVertices(), m_ChunkDataMap.at(chunk)->GetIndices(), m_Shader);
-            Renderer::AddMeshToQueue(chunk, mesh);
+            // add chunk to data
+            Chunk *chunk = new Chunk(index);
+            m_ChunkDataMap.insert_or_assign(index, chunk);
+
+            // add mesh to renderer
+            Mesh mesh = Mesh(m_ChunkDataMap.at(index)->GetVertices(), m_ChunkDataMap.at(index)->GetIndices(), m_Shader);
+            Renderer::AddMeshToQueue(index, mesh);
         }
         m_ChunksToCreate.clear();
 
         // Delete old chunks
-        for (const glm::ivec3 &chunk : m_ChunksToDelete)
+        for (const glm::ivec3 &index : m_ChunksToDelete)
         {
-            delete m_ChunkDataMap.at(chunk);
-            m_ChunkDataMap.erase(chunk);
-            Renderer::AddMeshToDelete(chunk);
+            // remove chunk from data
+            delete m_ChunkDataMap.at(index);
+            m_ChunkDataMap.erase(index);
+
+            // remove mesh from renderer
+            Renderer::DeleteMeshFromQueue(index);
         }
         m_ChunksToDelete.clear();
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
