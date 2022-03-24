@@ -64,7 +64,7 @@ void World::WorldThread()
         for (const glm::ivec3 &index : m_ChunksToCreate)
         {
             // add chunk to data
-            Chunk *chunk = new Chunk(index);
+            Chunk *chunk = new Chunk(index); // heap allocation
             m_ChunkDataMap.insert_or_assign(index, chunk);
 
             // add mesh to renderer
@@ -77,7 +77,7 @@ void World::WorldThread()
         for (const glm::ivec3 &index : m_ChunksToDelete)
         {
             // remove chunk from data
-            delete m_ChunkDataMap.at(index);
+            delete m_ChunkDataMap.at(index); // heap deletion
             m_ChunkDataMap.erase(index);
 
             // remove mesh from renderer
@@ -85,6 +85,6 @@ void World::WorldThread()
         }
         m_ChunksToDelete.clear();
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
