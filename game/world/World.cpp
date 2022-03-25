@@ -2,10 +2,14 @@
 
 #include <thread>
 
+#include "ChunkDecorator.h"
+
 World::World()
 {
     std::cout << "World::World()" << std::endl;
     m_Thread = std::thread(&World::WorldThread, this);
+
+    ChunkDecorator::Initialize();
 }
 
 World::~World()

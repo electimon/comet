@@ -9,15 +9,18 @@
 #include "Timer.h"
 #include "BlockProperties.h"
 
-#include "ChunkDecorator.h"
-
 Chunk::Chunk(glm::ivec3 id)
     : m_Chunk(id),
       m_ChunkSize(World::GetChunkSize()),
       m_ChunkHeight(World::GetChunkHeight()),
       m_Offset(0)
 {
+    // New data structure
+    m_BlockData.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight); // "3D" array
+    m_SurfaceData.reserve(m_ChunkSize * m_ChunkSize);               // "2D" array
+
     m_Blocks.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+
     m_SurfaceHeights.reserve(m_ChunkSize * m_ChunkSize);
     m_Vertices.reserve(100000);
     m_Indices.reserve(100000);
@@ -29,7 +32,6 @@ Chunk::Chunk(glm::ivec3 id)
 
 Chunk::~Chunk()
 {
-    // std::cout << "Chunk::~Chunk()" << std::endl;
 }
 
 void Chunk::GenerateMesh()
@@ -169,14 +171,15 @@ void Chunk::GenerateMesh()
 
 void Chunk::GenerateSurface()
 {
+    // ChunkDecorator::SurfaceNoise->GenUniformGrid2D(m_SurfaceData.data(), 0, 0, 16, 16, 0.01f, 1337);
 
     // Increasing the range of surface generation to go one beyond the chunk size
     // makes it so that when generating the geometry for the chunk, it is able to
     // check for surrounding blocks on the edges of chunks correctly and doesn't push
     // indices between chunks to the GPU.
-    for (int x = -1; x < m_ChunkSize + 2; x++)
+    for (int x = 0; x < m_ChunkSize; x++)
     {
-        for (int z = -1; z < m_ChunkSize + 2; z++)
+        for (int z = 0; z < m_ChunkSize; z++)
         {
             // Calculating a surface height with the noise
             float height = 0.0f;
@@ -194,7 +197,6 @@ void Chunk::GenerateSurface()
             m_Blocks.insert_or_assign(glm::ivec3(x, height - 2, z), Block(3)); // dirt
             m_Blocks.insert_or_assign(glm::ivec3(x, height - 1, z), Block(3)); // dirt
             m_Blocks.insert_or_assign(glm::ivec3(x, height, z), Block(2));     // grass
-
         }
     }
 }
