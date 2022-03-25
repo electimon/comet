@@ -18,7 +18,7 @@ include_directories(
     libraries/glfw/include
     libraries/glm/include
     libraries/stb_image/include
-    libraries/fastnoise2/include
+    libraries/FastNoise2/include
 
     game
 )
@@ -29,7 +29,7 @@ add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
 
 link_directories(
     libraries/glfw/lib
-    libraries/fastnoise2/lib
+    libraries/FastNoise2/lib
 )
 
 file(GLOB_RECURSE GAME_CPP_FILES game/*.cpp)
@@ -37,6 +37,7 @@ file(GLOB_RECURSE GAME_H_FILES game/*.h)
 
 file(GLOB_RECURSE ENGINE_CPP_FILES source/*.cpp)
 file(GLOB_RECURSE ENGINE_C_FILES source/*.c)
+
 
 add_executable(
     ${PROJECT_NAME}
@@ -51,15 +52,8 @@ add_executable(
     libraries/stb_image/source/stb_image.cpp
 )
 
-target_link_libraries(
-    ${PROJECT_NAME}
-
-    debug FastNoiseD.lib
-    optimized FastNoise.lib
-
-    debug glfw3.lib
-    optimized glfw3.lib
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw3)
+target_link_libraries(${PROJECT_NAME} PUBLIC FastNoise)
 
 # Added to that OpenGL context does not start terminal
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup /SUBSYSTEM:WINDOWS")
