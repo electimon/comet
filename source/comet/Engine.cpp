@@ -6,6 +6,7 @@
 #include "handlers/ErrorHandler.h"
 #include "handlers/EntityHandler.h"
 
+#include "TextureMap.h"
 #include "Renderer.h"
 #include "Camera.h"
 
@@ -22,11 +23,13 @@ void Engine::Initialize()
     ErrorHandler::GetInstance();
     EntityHandler::GetInstance();
 
+    TextureMap::GetInstance();
     Renderer::GetInstance();
     Camera::GetInstance();
 
     Camera::Initialize();
     Renderer::Initialize();
+
 
     WindowHandler::SetupCallbacks();
     KeyboardHandler::SetupCallbacks();

@@ -6,6 +6,8 @@
 #include "render/containers/Shader.h"
 #include "render/Camera.h"
 
+#include "stb_image.h"
+
 void Renderer::Initialize()
 {
     // Enables culling of the back faces
@@ -18,6 +20,8 @@ void Renderer::Initialize()
     // Transparency
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 }
 
 void Renderer::NewFrame()
@@ -54,11 +58,16 @@ void Renderer::DrawMeshesFunction()
         //     mesh.second.AllocateOnGPU();
         // }
 
+        glBindTexture(GL_TEXTURE_2D, 1);
         mesh.second.Bind();
 
-        glUniformMatrix4fv(glGetUniformLocation(mesh.second.GetShaderID(), "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(mesh.second.GetShaderID(), "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
-        glUniform1f(glGetUniformLocation(mesh.second.GetShaderID(), "u_Time"), glfwGetTime());
+        // Uniforms
+        unsigned int shaderID = mesh.second.GetShaderID();
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
+        // glUniform1f(glGetUniformLocation(shaderID, "u_Time"), glfwGetTime());
+        glUniform1i(glGetUniformLocation(shaderID, "u_TextureMap"), 0);
+
 
         glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
     }

@@ -56,13 +56,11 @@ void Chunk::RemoveBlock(const glm::ivec3 &coordinate)
 
 void Chunk::GenerateMesh()
 {
-    glm::vec4 rgba;
+    // glm::vec4 rgba;
     int x, y, z, blockID;
 
     for (auto &index : m_Blocks)
     {
-        bool use_shitting_lighting = false;
-
         glm::ivec3 block = index.first;
         unsigned int blockID = index.second.GetID();
 
@@ -82,145 +80,22 @@ void Chunk::GenerateMesh()
         float nxnypz = 1.0f;
         float nxnynz = 1.0f;
 
-        if (use_shitting_lighting)
-        {
-
-            // Corners
-            bool pxpypz_Corner = m_Blocks.find(glm::ivec3(block.x + 1, block.y + 1, block.z + 1)) != m_Blocks.end();
-            bool pxpynz_Corner = m_Blocks.find(glm::ivec3(block.x + 1, block.y + 1, block.z - 1)) != m_Blocks.end();
-            bool pxnypz_Corner = m_Blocks.find(glm::ivec3(block.x + 1, block.y - 1, block.z + 1)) != m_Blocks.end();
-            bool pxnynz_Corner = m_Blocks.find(glm::ivec3(block.x + 1, block.y - 1, block.z - 1)) != m_Blocks.end();
-            bool nxpypz_Corner = m_Blocks.find(glm::ivec3(block.x - 1, block.y + 1, block.z + 1)) != m_Blocks.end();
-            bool nxpynz_Corner = m_Blocks.find(glm::ivec3(block.x - 1, block.y + 1, block.z - 1)) != m_Blocks.end();
-            bool nxnypz_Corner = m_Blocks.find(glm::ivec3(block.x - 1, block.y - 1, block.z + 1)) != m_Blocks.end();
-            bool nxnynz_Corner = m_Blocks.find(glm::ivec3(block.x - 1, block.y - 1, block.z - 1)) != m_Blocks.end();
-
-            // Edges
-            bool pxpy_Edge = m_Blocks.find(glm::ivec3(block.x + 1, block.y + 1, block.z)) != m_Blocks.end();
-            bool nxpy_Edge = m_Blocks.find(glm::ivec3(block.x - 1, block.y + 1, block.z)) != m_Blocks.end();
-            bool pynz_Edge = m_Blocks.find(glm::ivec3(block.x, block.y + 1, block.z - 1)) != m_Blocks.end();
-            bool pypz_Edge = m_Blocks.find(glm::ivec3(block.x, block.y + 1, block.z + 1)) != m_Blocks.end();
-            bool pxpz_Edge = m_Blocks.find(glm::ivec3(block.x + 1, block.y, block.z + 1)) != m_Blocks.end();
-            bool pxnz_Edge = m_Blocks.find(glm::ivec3(block.x + 1, block.y, block.z - 1)) != m_Blocks.end();
-            bool nxpz_Edge = m_Blocks.find(glm::ivec3(block.x - 1, block.y, block.z + 1)) != m_Blocks.end();
-            bool nxnz_Edge = m_Blocks.find(glm::ivec3(block.x - 1, block.y, block.z - 1)) != m_Blocks.end();
-            bool pxny_Edge = m_Blocks.find(glm::ivec3(block.x + 1, block.y - 1, block.z)) != m_Blocks.end();
-            bool nxny_Edge = m_Blocks.find(glm::ivec3(block.x - 1, block.y - 1, block.z)) != m_Blocks.end();
-            bool nypz_Edge = m_Blocks.find(glm::ivec3(block.x, block.y - 1, block.z + 1)) != m_Blocks.end();
-            bool nynz_Edge = m_Blocks.find(glm::ivec3(block.x, block.y - 1, block.z - 1)) != m_Blocks.end();
-
-            float scale = 0.25f;
-
-            if (pxpy_Edge)
-            {
-                pxpypz -= scale;
-                pxpynz -= scale;
-            }
-            if (nxpy_Edge)
-            {
-                nxpypz -= scale;
-                nxpynz -= scale;
-            }
-            if (pypz_Edge)
-            {
-                pxpypz -= scale;
-                nxpypz -= scale;
-            }
-            if (pynz_Edge)
-            {
-                pxpynz -= scale;
-                nxpynz -= scale;
-            }
-            if (pxpz_Edge)
-            {
-                pxpypz -= scale;
-                pxnypz -= scale;
-            }
-            if (pxnz_Edge)
-            {
-                pxpynz -= scale;
-                pxnynz -= scale;
-            }
-            if (nxpz_Edge)
-            {
-                nxpypz -= scale;
-                nxnypz -= scale;
-            }
-            if (nxnz_Edge)
-            {
-                nxpynz -= scale;
-                nxnynz -= scale;
-            }
-            if (pxny_Edge)
-            {
-                pxnypz -= scale;
-                pxnynz -= scale;
-            }
-            if (nxny_Edge)
-            {
-                nxnypz -= scale;
-                nxnynz -= scale;
-            }
-            if (nypz_Edge)
-            {
-                pxnypz -= scale;
-                nxnypz -= scale;
-            }
-            if (nynz_Edge)
-            {
-                pxnynz -= scale;
-                nxnynz -= scale;
-            }
-
-            if (pxpypz_Corner)
-            {
-                pxpypz -= scale;
-            }
-            if (pxpynz_Corner)
-            {
-                pxpynz -= scale;
-            }
-            if (pxnypz_Corner)
-            {
-                pxnypz -= scale;
-            }
-            if (pxnynz_Corner)
-            {
-                pxnynz -= scale;
-            }
-            if (nxpypz_Corner)
-            {
-                nxpypz -= scale;
-            }
-            if (nxpynz_Corner)
-            {
-                nxpynz -= scale;
-            }
-            if (nxnypz_Corner)
-            {
-                nxnypz -= scale;
-            }
-            if (nxnynz_Corner)
-            {
-                nxnynz -= scale;
-            }
-        }
-
         x = block.x + m_Chunk.x * m_ChunkSize;
         y = block.y;
         z = block.z + m_Chunk.z * m_ChunkSize;
-        glm::vec4 rgba = BlockColor[blockID];
+        // glm::vec4 rgba = BlockColor[blockID];
 
         // +X Quad
         if (m_Blocks.find(glm::ivec3(block.x + 1, block.y, block.z)) == m_Blocks.end())
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
-            m_Vertices.insert(m_Vertices.end(), {
-                                                    Vertex(x + 0.5f, y + 0.5f, z + 0.5f, rgba, +1.0f, 0.0f, 0.0f, pxpypz),
-                                                    Vertex(x + 0.5f, y - 0.5f, z + 0.5f, rgba, +1.0f, 0.0f, 0.0f, pxnypz),
-                                                    Vertex(x + 0.5f, y - 0.5f, z - 0.5f, rgba, +1.0f, 0.0f, 0.0f, pxnynz),
-                                                    Vertex(x + 0.5f, y + 0.5f, z - 0.5f, rgba, +1.0f, 0.0f, 0.0f, pxpynz),
-                                                });
+            m_Vertices.insert(m_Vertices.end(),
+                              {
+                                  Vertex(glm::vec3(x + 0.5f, y + 0.5f, z + 0.5f), TextureMap::GetTopRight(blockID), glm::vec3(+1.0f, 0.0f, 0.0f), pxpypz),
+                                  Vertex(glm::vec3(x + 0.5f, y - 0.5f, z + 0.5f), TextureMap::GetBottomRight(blockID), glm::vec3(+1.0f, 0.0f, 0.0f), pxnypz),
+                                  Vertex(glm::vec3(x + 0.5f, y - 0.5f, z - 0.5f), TextureMap::GetBottomLeft(blockID), glm::vec3(+1.0f, 0.0f, 0.0f), pxnynz),
+                                  Vertex(glm::vec3(x + 0.5f, y + 0.5f, z - 0.5f), TextureMap::GetTopLeft(blockID), glm::vec3(+1.0f, 0.0f, 0.0f), pxpynz),
+                              });
             m_Offset += 4;
         }
 
@@ -228,12 +103,13 @@ void Chunk::GenerateMesh()
         if (m_Blocks.find(glm::ivec3(block.x - 1, block.y, block.z)) == m_Blocks.end())
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
-            m_Vertices.insert(m_Vertices.end(), {
-                                                    Vertex(x - 0.5f, y + 0.5f, z + 0.5f, rgba, -1.0f, 0.0f, 0.0f, nxpypz),
-                                                    Vertex(x - 0.5f, y + 0.5f, z - 0.5f, rgba, -1.0f, 0.0f, 0.0f, nxpynz),
-                                                    Vertex(x - 0.5f, y - 0.5f, z - 0.5f, rgba, -1.0f, 0.0f, 0.0f, nxnynz),
-                                                    Vertex(x - 0.5f, y - 0.5f, z + 0.5f, rgba, -1.0f, 0.0f, 0.0f, nxnypz),
-                                                });
+            m_Vertices.insert(m_Vertices.end(),
+                              {
+                                  Vertex(glm::vec3(x - 0.5f, y + 0.5f, z + 0.5f), TextureMap::GetTopRight(blockID), glm::vec3(-1.0f, 0.0f, 0.0f), nxpypz),
+                                  Vertex(glm::vec3(x - 0.5f, y + 0.5f, z - 0.5f), TextureMap::GetTopLeft(blockID), glm::vec3(-1.0f, 0.0f, 0.0f), nxpynz),
+                                  Vertex(glm::vec3(x - 0.5f, y - 0.5f, z - 0.5f), TextureMap::GetBottomLeft(blockID), glm::vec3(-1.0f, 0.0f, 0.0f), nxnynz),
+                                  Vertex(glm::vec3(x - 0.5f, y - 0.5f, z + 0.5f), TextureMap::GetBottomRight(blockID), glm::vec3(-1.0f, 0.0f, 0.0f), nxnypz),
+                              });
             m_Offset += 4;
         }
 
@@ -241,12 +117,16 @@ void Chunk::GenerateMesh()
         if (m_Blocks.find(glm::ivec3(block.x, block.y + 1, block.z)) == m_Blocks.end())
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
-            m_Vertices.insert(m_Vertices.end(), {
-                                                    Vertex(x + 0.5f, y + 0.5f, z + 0.5f, rgba, 0.0f, +1.0f, 0.0f, pxpypz),
-                                                    Vertex(x + 0.5f, y + 0.5f, z - 0.5f, rgba, 0.0f, +1.0f, 0.0f, pxpynz),
-                                                    Vertex(x - 0.5f, y + 0.5f, z - 0.5f, rgba, 0.0f, +1.0f, 0.0f, nxpynz),
-                                                    Vertex(x - 0.5f, y + 0.5f, z + 0.5f, rgba, 0.0f, +1.0f, 0.0f, nxpypz),
-                                                });
+
+            glm::vec2 test = TextureMap::GetTopRight(blockID);
+
+            m_Vertices.insert(m_Vertices.end(),
+                              {
+                                  Vertex(glm::vec3(x + 0.5f, y + 0.5f, z + 0.5f), TextureMap::GetTopLeft(blockID), glm::vec3(0.0f, +1.0f, 0.0f), pxpypz),
+                                  Vertex(glm::vec3(x + 0.5f, y + 0.5f, z - 0.5f), TextureMap::GetTopRight(blockID), glm::vec3(0.0f, +1.0f, 0.0f), pxpynz),
+                                  Vertex(glm::vec3(x - 0.5f, y + 0.5f, z - 0.5f), TextureMap::GetBottomRight(blockID), glm::vec3(0.0f, +1.0f, 0.0f), nxpynz),
+                                  Vertex(glm::vec3(x - 0.5f, y + 0.5f, z + 0.5f), TextureMap::GetBottomLeft(blockID), glm::vec3(0.0f, +1.0f, 0.0f), nxpypz),
+                              });
             m_Offset += 4;
         }
 
@@ -254,12 +134,13 @@ void Chunk::GenerateMesh()
         if (m_Blocks.find(glm::ivec3(block.x, block.y - 1, block.z)) == m_Blocks.end())
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
-            m_Vertices.insert(m_Vertices.end(), {
-                                                    Vertex(x + 0.5f, y - 0.5f, z + 0.5f, rgba, 0.0f, -1.0f, 0.0f, pxnypz),
-                                                    Vertex(x - 0.5f, y - 0.5f, z + 0.5f, rgba, 0.0f, -1.0f, 0.0f, nxnypz),
-                                                    Vertex(x - 0.5f, y - 0.5f, z - 0.5f, rgba, 0.0f, -1.0f, 0.0f, nxnynz),
-                                                    Vertex(x + 0.5f, y - 0.5f, z - 0.5f, rgba, 0.0f, -1.0f, 0.0f, pxnynz),
-                                                });
+            m_Vertices.insert(m_Vertices.end(),
+                              {
+                                  Vertex(glm::vec3(x + 0.5f, y - 0.5f, z + 0.5f), TextureMap::GetTopRight(blockID), glm::vec3(0.0f, -1.0f, 0.0f), pxnypz),
+                                  Vertex(glm::vec3(x - 0.5f, y - 0.5f, z + 0.5f), TextureMap::GetBottomRight(blockID), glm::vec3(0.0f, -1.0f, 0.0f), nxnypz),
+                                  Vertex(glm::vec3(x - 0.5f, y - 0.5f, z - 0.5f), TextureMap::GetBottomLeft(blockID), glm::vec3(0.0f, -1.0f, 0.0f), nxnynz),
+                                  Vertex(glm::vec3(x + 0.5f, y - 0.5f, z - 0.5f), TextureMap::GetTopLeft(blockID), glm::vec3(0.0f, -1.0f, 0.0f), pxnynz),
+                              });
             m_Offset += 4;
         }
 
@@ -267,12 +148,13 @@ void Chunk::GenerateMesh()
         if (m_Blocks.find(glm::ivec3(block.x, block.y, block.z + 1)) == m_Blocks.end())
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
-            m_Vertices.insert(m_Vertices.end(), {
-                                                    Vertex(x + 0.5f, y + 0.5f, z + 0.5f, rgba, 0.0f, 0.0f, +1.0f, pxpypz),
-                                                    Vertex(x - 0.5f, y + 0.5f, z + 0.5f, rgba, 0.0f, 0.0f, +1.0f, nxpypz),
-                                                    Vertex(x - 0.5f, y - 0.5f, z + 0.5f, rgba, 0.0f, 0.0f, +1.0f, nxnypz),
-                                                    Vertex(x + 0.5f, y - 0.5f, z + 0.5f, rgba, 0.0f, 0.0f, +1.0f, pxnypz),
-                                                });
+            m_Vertices.insert(m_Vertices.end(),
+                              {
+                                  Vertex(glm::vec3(x + 0.5f, y + 0.5f, z + 0.5f), TextureMap::GetTopRight(blockID), glm::vec3(0.0f, 0.0f, +1.0f), pxpypz),
+                                  Vertex(glm::vec3(x - 0.5f, y + 0.5f, z + 0.5f), TextureMap::GetTopLeft(blockID), glm::vec3(0.0f, 0.0f, +1.0f), nxpypz),
+                                  Vertex(glm::vec3(x - 0.5f, y - 0.5f, z + 0.5f), TextureMap::GetBottomLeft(blockID), glm::vec3(0.0f, 0.0f, +1.0f), nxnypz),
+                                  Vertex(glm::vec3(x + 0.5f, y - 0.5f, z + 0.5f), TextureMap::GetBottomRight(blockID), glm::vec3(0.0f, 0.0f, +1.0f), pxnypz),
+                              });
             m_Offset += 4;
         }
 
@@ -280,12 +162,13 @@ void Chunk::GenerateMesh()
         if (m_Blocks.find(glm::ivec3(block.x, block.y, block.z - 1)) == m_Blocks.end())
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
-            m_Vertices.insert(m_Vertices.end(), {
-                                                    Vertex(x + 0.5f, y + 0.5f, z - 0.5f, rgba, 0.0f, 0.0f, -1.0f, pxpynz),
-                                                    Vertex(x + 0.5f, y - 0.5f, z - 0.5f, rgba, 0.0f, 0.0f, -1.0f, pxnynz),
-                                                    Vertex(x - 0.5f, y - 0.5f, z - 0.5f, rgba, 0.0f, 0.0f, -1.0f, nxnynz),
-                                                    Vertex(x - 0.5f, y + 0.5f, z - 0.5f, rgba, 0.0f, 0.0f, -1.0f, nxpynz),
-                                                });
+            m_Vertices.insert(m_Vertices.end(),
+                              {
+                                  Vertex(glm::vec3(x + 0.5f, y + 0.5f, z - 0.5f), TextureMap::GetTopRight(blockID), glm::vec3(0.0f, 0.0f, -1.0f), pxpynz),
+                                  Vertex(glm::vec3(x + 0.5f, y - 0.5f, z - 0.5f), TextureMap::GetBottomRight(blockID), glm::vec3(0.0f, 0.0f, -1.0f), pxnynz),
+                                  Vertex(glm::vec3(x - 0.5f, y - 0.5f, z - 0.5f), TextureMap::GetBottomLeft(blockID), glm::vec3(0.0f, 0.0f, -1.0f), nxnynz),
+                                  Vertex(glm::vec3(x - 0.5f, y + 0.5f, z - 0.5f), TextureMap::GetTopLeft(blockID), glm::vec3(0.0f, 0.0f, -1.0f), nxpynz),
+                              });
             m_Offset += 4;
         }
     }
@@ -334,13 +217,13 @@ void Chunk::GenerateSurface()
 
             for (int y = 0; y < height - 3; y++)
             {
-                SetBlock(glm::ivec3(x, y, z), Block(1)); // stone
+                SetBlock(glm::ivec3(x, y, z), Block(241)); // stone
             }
 
-            SetBlock(glm::ivec3(x, height - 3, z), Block(3)); // dirt
-            SetBlock(glm::ivec3(x, height - 2, z), Block(3)); // dirt
-            SetBlock(glm::ivec3(x, height - 1, z), Block(3)); // dirt
-            SetBlock(glm::ivec3(x, height, z), Block(2));     // grass
+            SetBlock(glm::ivec3(x, height - 3, z), Block(242)); // dirt
+            SetBlock(glm::ivec3(x, height - 2, z), Block(242)); // dirt
+            SetBlock(glm::ivec3(x, height - 1, z), Block(242)); // dirt
+            SetBlock(glm::ivec3(x, height, z), Block(240));     // grass
         }
     }
 }
@@ -358,8 +241,7 @@ void Chunk::GenerateSand()
             {
                 int yRel = m_SurfaceHeights.at(glm::ivec2(xRel, zRel));
 
-                SetBlock(glm::ivec3(xRel, yRel, zRel), Block(7));
-
+                SetBlock(glm::ivec3(xRel, yRel, zRel), Block(226));
             }
         }
     }
@@ -383,7 +265,7 @@ void Chunk::GenerateWater()
                 // fill in with water surface level is below the world water height
                 for (int yRel = m_SurfaceHeights.at(glm::ivec2(xRel, zRel)) + 1; yRel < World::GetWaterHeight() + 1; yRel++)
                 {
-                    SetBlock(glm::ivec3(xRel, yRel, zRel), Block(4)); // water
+                    SetBlock(glm::ivec3(xRel, yRel, zRel), Block(63)); // water
                     y = yRel;
                 }
             }
@@ -408,7 +290,6 @@ void Chunk::GenerateTrees()
             noise.SetFrequency(0.1f);
             noiseValue2 = (noise.GetNoise((float)(x + m_ChunkSize * m_Chunk.x), (float)(z + m_ChunkSize * m_Chunk.z)) + 1.0f) / 2.0f;
 
-
             if (noiseValue > 0.95f && noiseValue2 > 0.5f && m_SurfaceHeights.at(glm::ivec2(x, z)) > World::GetWaterHeight() + 3)
             {
                 PlaceTree(glm::ivec3(x, m_SurfaceHeights.at(glm::ivec2(x, z)), z));
@@ -423,10 +304,10 @@ void Chunk::PlaceTree(const glm::ivec3 &coordinate)
     int y = coordinate.y;
     int z = coordinate.z;
 
-    SetBlock(glm::ivec3(x, y, z), Block(3));
-    SetBlock(glm::ivec3(x, y + 1, z), Block(5));
-    SetBlock(glm::ivec3(x, y + 2, z), Block(5));
-    SetBlock(glm::ivec3(x, y + 3, z), Block(5));
+    SetBlock(glm::ivec3(x, y, z), Block(242));
+    SetBlock(glm::ivec3(x, y + 1, z), Block(228));
+    SetBlock(glm::ivec3(x, y + 2, z), Block(228));
+    SetBlock(glm::ivec3(x, y + 3, z), Block(228));
 
     for (int i = x - 2; i < x + 3; i++)
     {
@@ -435,8 +316,8 @@ void Chunk::PlaceTree(const glm::ivec3 &coordinate)
             if ((i == x - 2 && j == z - 2) || (i == x + 2 && j == z + 2) || (i == x - 2 && j == z + 2) || (i == x + 2 && j == z - 2))
                 continue;
 
-            SetBlock(glm::ivec3(i, y + 4, j), Block(6));
-            SetBlock(glm::ivec3(i, y + 5, j), Block(6));
+            SetBlock(glm::ivec3(i, y + 5, j), Block(197)); // leaves
+            SetBlock(glm::ivec3(i, y + 4, j), Block(197)); // leaves
         }
     }
 
@@ -444,7 +325,7 @@ void Chunk::PlaceTree(const glm::ivec3 &coordinate)
     {
         for (int j = z - 1; j < z + 2; j++)
         {
-            SetBlock(glm::ivec3(i, y + 6, j), Block(6));
+            SetBlock(glm::ivec3(i, y + 6, j), Block(197)); // leaves
         }
     }
 
@@ -455,7 +336,7 @@ void Chunk::PlaceTree(const glm::ivec3 &coordinate)
             if ((i == x - 1 && j == z - 1) || (i == x + 1 && j == z + 1) || (i == x - 1 && j == z + 1) || (i == x + 1 && j == z - 1))
                 continue;
 
-            SetBlock(glm::ivec3(i, y + 7, j), Block(6));
+            SetBlock(glm::ivec3(i, y + 7, j), Block(197)); // leaves
         }
     }
 }
