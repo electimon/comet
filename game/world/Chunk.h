@@ -14,25 +14,22 @@ struct Chunk
     Chunk(glm::ivec3 id);
     ~Chunk();
 
-    void SetBlock(const glm::ivec3 &coordinate, const Block &block);
-    void RemoveBlock(const glm::ivec3 &coordinate);
-
-    // Feature functions
-
     void GenerateSurface();
-    void GenerateSand();
-    void GenerateWater();
-    void GenerateTrees();
 
     void GenerateMesh();
-
-    void PlaceTree(const glm::ivec3 &coordinate);
 
     std::vector<Vertex> *GetVertices() { return &m_Vertices; }
     std::vector<unsigned int> *GetIndices() { return &m_Indices; }
 
+    const Block &GetBlock(glm::ivec3 chunkRelativeCoordinate)
+    {
+
+    };
+
 private:
     std::unordered_map<glm::ivec3, Block> m_Blocks;
+    std::vector<Block> m_BlockData; // testing new data format
+
     std::unordered_map<glm::ivec2, int> m_SurfaceHeights;
 
     glm::ivec3 m_Chunk;
