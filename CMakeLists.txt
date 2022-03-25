@@ -17,10 +17,8 @@ include_directories(
     libraries/glad/include
     libraries/glfw/include
     libraries/glm/include
-    # libraries/imgui/include
     libraries/stb_image/include
-    libraries/fastnoiselite
-    libraries/ctpl
+    libraries/fastnoise2/include
 
     game
 )
@@ -31,6 +29,7 @@ add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
 
 link_directories(
     libraries/glfw/lib
+    libraries/fastnoise2/lib
 )
 
 file(GLOB_RECURSE GAME_CPP_FILES game/*.cpp)
@@ -54,6 +53,9 @@ add_executable(
 
 target_link_libraries(
     ${PROJECT_NAME}
+
+    debug FastNoiseD.lib
+    optimized FastNoise.lib
 
     debug glfw3.lib
     optimized glfw3.lib
