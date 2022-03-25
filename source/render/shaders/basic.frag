@@ -25,8 +25,13 @@ void main()
     vec3 lightDir = vec3(0.5, 1.0, 0.75);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
-    vec4 result = vec4((ambient + diffuse) / 2.0, 1.0);
     // vec3 result = vec3(v_Color.x, v_Color.y, v_Color.z) * v_AO;
 
-    FragColor = texture(u_TextureMap, v_TextureCoordinates) * v_AO * result;
+    float dayLength = 1.0;
+    float brightness = max(cos(dayLength * v_Time), 0.3); 
+
+
+    vec4 result = vec4((ambient + diffuse) * brightness / 2.0, 1.0);
+
+    FragColor = texture(u_TextureMap, v_TextureCoordinates) * v_AO  * result;
 }

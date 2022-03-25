@@ -39,7 +39,12 @@ void Renderer::NewFrame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Setting the new frame color to be black
-    glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f, 0.0f);
+    glm::vec4 backgroundColor = glm::vec4(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f, 0.0f);
+    float backgroundBrightness = std::max(std::cos((float)glfwGetTime()), 0.3f);
+
+    glm::vec4 result = backgroundColor * backgroundBrightness;
+
+    glClearColor(backgroundColor.x * result.x, backgroundColor.y * result.y, backgroundColor.z * result.z, backgroundColor.w * result.w);
 }
 
 void Renderer::SwapBuffers()
@@ -65,7 +70,7 @@ void Renderer::DrawMeshesFunction()
         unsigned int shaderID = mesh.second.GetShaderID();
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
-        // glUniform1f(glGetUniformLocation(shaderID, "u_Time"), glfwGetTime());
+        glUniform1f(glGetUniformLocation(shaderID, "u_Time"), glfwGetTime());
         glUniform1i(glGetUniformLocation(shaderID, "u_TextureMap"), 0);
 
 
