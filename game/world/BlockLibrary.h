@@ -43,6 +43,18 @@ public:
 
         std::vector<int> Cobblestone{224, 224, 224, 224, 224, 224}; // 9
         GetInstance().m_BlockIndices.push_back(Cobblestone);
+
+        std::vector<int> CoalOre{210, 210, 210, 210, 210, 210}; // 10
+        GetInstance().m_BlockIndices.push_back(CoalOre);
+
+        std::vector<int> IronOre{209, 209, 209, 209, 209, 209}; // 11
+        GetInstance().m_BlockIndices.push_back(IronOre);
+
+        std::vector<int> GoldOre{208, 208, 208, 208, 208, 208}; // 12
+        GetInstance().m_BlockIndices.push_back(GoldOre);
+
+        std::vector<int> DiamondOre{194, 194, 194, 194, 194, 194}; // 13
+        GetInstance().m_BlockIndices.push_back(DiamondOre);
     }
 
     static std::vector<int> GetIndices(unsigned int blockID)
