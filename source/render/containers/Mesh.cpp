@@ -56,6 +56,8 @@ void Mesh::AllocateOnGPU()
 
     m_PushedToGPU = true;
 
+    // This clears the geometry data in the mesh object once it is rendered onto the GPU.
+    // Will have to re-draw chunk anytime a change is made, so doing this helps with memory management.
     p_Vertices->clear();
     p_Vertices->shrink_to_fit();
 
