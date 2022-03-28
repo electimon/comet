@@ -73,8 +73,8 @@ void Renderer::DrawMeshesFunction()
                 glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f)),
                 glm::vec3(0.0f, static_cast<float>(50.0 * glm::sin(3.141592653589 / 2 * mesh.second.GetTimeDelta())), 0.0f));
 
-            glUniform1f(glGetUniformLocation(shaderID, "u_Brightness"), 1.0f);
-            // glUniform1f(glGetUniformLocation(shaderID, "u_Brightness"), mesh.second.GetBrightness());
+            // glUniform1f(glGetUniformLocation(shaderID, "u_Brightness"), 1.0f);
+            glUniform1f(glGetUniformLocation(shaderID, "u_Brightness"), mesh.second.GetBrightness());
         }
         else
         {
