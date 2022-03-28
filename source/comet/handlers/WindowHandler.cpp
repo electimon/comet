@@ -34,6 +34,7 @@ int WindowHandler::CreateWindow()
     }
 
     glfwSetWindowUserPointer(p_GLFWwindow, this);
+    glfwSwapInterval(1);
 
     CenterWindow();
 
