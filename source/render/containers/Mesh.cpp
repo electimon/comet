@@ -9,8 +9,10 @@ Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, un
       p_Indices(indices),
       m_Shader(shader),
       m_Count((unsigned int)(indices->size())),
-      m_PushedToGPU(false)
+      m_PushedToGPU(false),
+      m_ModelMatrix(1.0f)
 {
+    m_TimeCreated = glfwGetTime();
 }
 
 Mesh::~Mesh()

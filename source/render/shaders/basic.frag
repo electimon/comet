@@ -4,6 +4,7 @@ in vec3 v_Position;
 in vec2 v_TextureCoordinates;
 in vec3 v_Normal;
 in float v_AO;
+in float v_Brightness;
 
 in float v_Time;
 
@@ -34,5 +35,5 @@ void main()
 
     vec4 result = vec4((ambient + diffuse) / 2.0, 1.0);
 
-    FragColor = texture(u_TextureMap, v_TextureCoordinates) * result;
+    FragColor = texture(u_TextureMap, v_TextureCoordinates) * result * v_Brightness;
 }

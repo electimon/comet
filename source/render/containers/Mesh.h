@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 
+#include "glfw/glfw3.h"
 #include "glm/glm.hpp"
 #include "glad/gl.h"
 
@@ -21,6 +22,9 @@ public:
     bool IsPushedToGPU() { return m_PushedToGPU; }
     void AllocateOnGPU();
     void DeallocateOnGPU();
+    void Update() { m_TimeDelta = glfwGetTime() - m_TimeCreated; }
+    double GetTimeDelta() { return m_TimeDelta; }
+    float GetBrightness() { return m_TimeDelta; }
 
 private:
     std::vector<Vertex> *p_Vertices;
@@ -33,9 +37,14 @@ private:
     unsigned int m_Count;
 
     bool m_PushedToGPU;
+    double m_TimeCreated;
+    double m_TimeDelta;
+    float m_AO;
 
 public:
+    glm::mat4 m_ModelMatrix;
     void SetShaderID(unsigned int id) { m_Shader = id; }
     unsigned int GetShaderID() { return m_Shader; }
     unsigned int GetCount() { return m_Count; }
+    glm::mat4 GetModelMatrix() { return m_ModelMatrix; }
 };

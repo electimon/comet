@@ -44,6 +44,17 @@ public:
         GetInstance().m_BiomeNoise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_CellValue);
         GetInstance().m_BiomeNoise.SetDomainWarpType(FastNoiseLite::DomainWarpType::DomainWarpType_BasicGrid);
         GetInstance().m_BiomeNoise.SetDomainWarpAmp(50.0f);
+
+        GetInstance().m_CaveNoise.SetFrequency(0.01f);
+        GetInstance().m_CaveNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Cellular);
+        GetInstance().m_CaveNoise.SetRotationType3D(FastNoiseLite::RotationType3D::RotationType3D_ImproveXYPlanes);
+        GetInstance().m_CaveNoise.SetCellularDistanceFunction(FastNoiseLite::CellularDistanceFunction::CellularDistanceFunction_EuclideanSq);
+        GetInstance().m_CaveNoise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_Distance2Div);
+        GetInstance().m_CaveNoise.SetCellularJitter(1.0f);
+    }
+    static float GetCaveNoise(int x, int y, int z)
+    {
+        return GetInstance().m_CaveNoise.GetNoise(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
     }
     static float GetBiomeNoise(int x, int z)
     {
@@ -86,6 +97,7 @@ private:
     FastNoiseLite m_FastNoise;
     FastNoiseLite m_MediumChaotic;
     FastNoiseLite m_BiomeNoise;
+    FastNoiseLite m_CaveNoise;
 
     glm::ivec3 m_ChunkIndex;
     int m_ChunkHeight;

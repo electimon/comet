@@ -17,6 +17,8 @@ struct Chunk
 
     void GenerateSurface();
     void GenerateTrees();
+    void GenerateBedrock();
+    void GenerateCaves();
 
     void GenerateMesh();
 

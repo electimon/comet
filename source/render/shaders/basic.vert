@@ -7,22 +7,26 @@ layout (location = 3) in float a_AO;
 
 uniform mat4 u_ProjMatrix;
 uniform mat4 u_ViewMatrix;
+uniform mat4 u_ModelMatrix;
 uniform float u_Time;
+uniform float u_Brightness;
 
 out vec3 v_Position;
 out vec2 v_TextureCoordinates;
 out vec3 v_Normal;
 out float v_AO;
 out float v_Time;
+out float v_Brightness;
 
 void main()
 {
-    gl_Position = u_ProjMatrix * u_ViewMatrix * vec4(a_Position, 1.0);
+    gl_Position = u_ProjMatrix * u_ViewMatrix * u_ModelMatrix * vec4(a_Position.x, a_Position.y, a_Position.z, 1.0);
 
     v_Position = a_Position;
     v_TextureCoordinates = a_TextureCoordinates;
     v_Normal = a_Normal;
     v_AO = a_AO;
+    v_Brightness = u_Brightness;
 
     v_Time = u_Time;
 }

@@ -25,6 +25,9 @@ Chunk::Chunk(glm::ivec3 id)
     m_Indices.reserve(10000);
 
     GenerateSurface();
+
+    GenerateBedrock();
+    // GenerateCaves();
     GenerateTrees();
     // GenerateCaves();
 
@@ -51,10 +54,10 @@ void Chunk::GenerateSurface()
             chaos = ChunkGenerator::GetMediumChaotic((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
 
             height += 2.0f; // 1 to 3
-            height *= 2.5f; // 0 10
+            height *= 5.0f; // 5 to 15
 
             biome += 2.0f;  // 1 to 3
-            biome *= 50.0f; // 50 to 150
+            biome *= 10.0f; // 10 to 30
 
             // chaos += 1.0f; // 0 to 2
             chaos *= 10.0f; // -10 to 10
@@ -179,6 +182,57 @@ void Chunk::GenerateTrees()
 
                     SetBlock(x + 1, y + 6, z, 6);
                 }
+            }
+        }
+    }
+}
+
+void Chunk::GenerateBedrock()
+{
+    float noise;
+    for (int x = 0; x < m_ChunkSize; x++)
+    {
+        for (int z = 0; z < m_ChunkSize; z++)
+        {
+            noise = ChunkGenerator::GetFastNoise(x, z);
+
+            SetBlock(x, 0, z, 8);
+
+            if (noise > 0.20f)
+                SetBlock(x, 1, z, 8);
+            else
+                continue;
+            if (noise > 0.40f)
+                SetBlock(x, 2, z, 8);
+            else
+                continue;
+            if (noise > 0.60f)
+                SetBlock(x, 3, z, 8);
+            else
+                continue;
+            if (noise > 0.80f)
+                SetBlock(x, 4, z, 8);
+        }
+    }
+}
+
+void Chunk::GenerateCaves()
+{
+    float noise;
+
+    for (int x = 0; x < m_ChunkSize; x++)
+    {
+        for (int y = 0; y < m_ChunkHeight; y++)
+        {
+            for (int z = 0; z < m_ChunkSize; z++)
+            {
+                if (GetBlock(x, y, z) != 1)
+                    continue;
+
+                noise = ChunkGenerator::GetCaveNoise(x + m_Chunk.x * m_ChunkSize, y, z + m_Chunk.z * m_ChunkSize);
+
+                if (noise > 0.8f)
+                    SetBlock(x, y, z, 0);
             }
         }
     }
