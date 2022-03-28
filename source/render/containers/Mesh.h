@@ -5,6 +5,7 @@
 
 #include "glfw/glfw3.h"
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include "glad/gl.h"
 
 #include "Vertex.h"
@@ -22,7 +23,25 @@ public:
     bool IsPushedToGPU() { return m_PushedToGPU; }
     void AllocateOnGPU();
     void DeallocateOnGPU();
-    void Update() { m_TimeDelta = glfwGetTime() - m_TimeCreated; }
+
+    void Update()
+    {
+        m_TimeDelta = glfwGetTime() - m_TimeCreated;
+
+        if (m_TimeDelta < 1.0)
+        {
+            m_ModelMatrix = glm::translate(
+                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f)),
+                glm::vec3(0.0f, static_cast<float>(50.0 * glm::sin(3.141592653589 / 2 * m_TimeDelta)), 0.0f));
+            m_Brightness = m_TimeDelta;
+        }
+        else
+        {
+            m_ModelMatrix = glm::mat4(1.0f);
+            m_Brightness = 1.0;
+        }
+    }
+
     double GetTimeDelta() { return m_TimeDelta; }
     float GetBrightness() { return m_TimeDelta; }
 
@@ -35,6 +54,7 @@ private:
     unsigned int m_IBO;
     unsigned int m_Shader;
     unsigned int m_Count;
+    double m_Brightness;
 
     bool m_PushedToGPU;
     double m_TimeCreated;

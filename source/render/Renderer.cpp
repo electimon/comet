@@ -66,22 +66,11 @@ void Renderer::DrawMeshesFunction()
 
         // Uniforms
         unsigned int shaderID = mesh.second.GetShaderID();
-        if (mesh.second.GetTimeDelta() < 1.0)
-        {
-            mesh.second.Update();
-            mesh.second.m_ModelMatrix = glm::translate(
-                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f)),
-                glm::vec3(0.0f, static_cast<float>(50.0 * glm::sin(3.141592653589 / 2 * mesh.second.GetTimeDelta())), 0.0f));
 
-            // glUniform1f(glGetUniformLocation(shaderID, "u_Brightness"), 1.0f);
-            glUniform1f(glGetUniformLocation(shaderID, "u_Brightness"), mesh.second.GetBrightness());
-        }
-        else
-        {
-            mesh.second.m_ModelMatrix = glm::mat4(1.0f);
-            glUniform1f(glGetUniformLocation(shaderID, "u_Brightness"), 1.0f);
-        }
+        mesh.second.Update();
+        glUniform1f(glGetUniformLocation(shaderID, "u_Brightness"), mesh.second.GetBrightness());
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.second.m_ModelMatrix[0][0]);
+
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
         glUniform1f(glGetUniformLocation(shaderID, "u_Time"), glfwGetTime());
