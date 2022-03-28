@@ -8,6 +8,7 @@
 #include "containers/Mesh.h"
 
 #include "Block.h"
+#include "BlockLibrary.h"
 
 struct Chunk
 {
@@ -15,37 +16,46 @@ struct Chunk
     ~Chunk();
 
     void GenerateSurface();
+    void GenerateTrees();
 
     void GenerateMesh();
 
     std::vector<Vertex> *GetVertices() { return &m_Vertices; }
     std::vector<unsigned int> *GetIndices() { return &m_Indices; }
 
-    unsigned char GetBlock(const glm::ivec3 &coord)
+    unsigned char GetBlock(int x, int y, int z)
     {
-        if (coord.x < 0 || coord.y < 0 || coord.z < 0)
+        if (x < 0 || y < 0 || z < 0)
             return 0;
-        if (coord.x == m_ChunkSize || coord.y == m_ChunkHeight || coord.z == m_ChunkSize)
+        if (x == m_ChunkSize || y == m_ChunkHeight || z == m_ChunkSize)
             return 0;
 
-        int index = (coord.x * m_ChunkHeight * m_ChunkSize) + (coord.y * m_ChunkSize) + (coord.z);
-
-        return m_BlockData[index];
+        return m_BlockData[(x * m_ChunkHeight * m_ChunkSize) + (y * m_ChunkSize) + (z)];
     }
 
-    void SetBlock(const glm::ivec3 &coord, unsigned char input)
+    void SetBlock(int x, int y, int z, unsigned char input)
     {
-        m_BlockData[(coord.x * m_ChunkHeight * m_ChunkSize) + (coord.y * m_ChunkSize) + (coord.z)] = input;
+        if (x < 0 || y < 0 || z < 0)
+            return;
+        if (x == m_ChunkSize || y == m_ChunkHeight || z == m_ChunkSize)
+            return;
+
+        m_BlockData[(x * m_ChunkHeight * m_ChunkSize) + (y * m_ChunkSize) + (z)] = input;
     }
 
-    float GetHeight(const glm::ivec2 &coord)
+    void SetHeight(int x, int z, int y)
     {
-        return m_BlockData[m_ChunkSize * coord.x + coord.y]; // y is actually z
+        m_HeightData[m_ChunkSize * x + z] = y;
+    }
+
+    float GetHeight(int x, int z)
+    {
+        return m_HeightData[m_ChunkSize * x + z];
     }
 
 private:
     std::vector<unsigned char> m_BlockData; // testing new data format
-    std::vector<float> m_SurfaceHeightData; // only used during generation, not needed when saving chunk
+    std::vector<int> m_HeightData; // only used during generation, not needed when saving chunk
 
     glm::ivec3 m_Chunk;
 
