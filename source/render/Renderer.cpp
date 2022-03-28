@@ -58,12 +58,10 @@ void Renderer::DrawMeshesFunction()
 
     for (auto &mesh : m_MeshMap)
     {
-        // if (!mesh.second.IsPushedToGPU())
-        // {
-        //     mesh.second.AllocateOnGPU();
-        // }
-
+        // Binding the texture map
         glBindTexture(GL_TEXTURE_2D, 1);
+
+        // Binding the next mesh in queue
         mesh.second.Bind();
 
         // Uniforms
@@ -73,7 +71,7 @@ void Renderer::DrawMeshesFunction()
         glUniform1f(glGetUniformLocation(shaderID, "u_Time"), glfwGetTime());
         glUniform1i(glGetUniformLocation(shaderID, "u_TextureMap"), 0);
 
-
+        // Drawing mesh
         glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
     }
 }
