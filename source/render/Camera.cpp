@@ -46,7 +46,7 @@ void Camera::Move()
     // Sprinting
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
-        magnitude *= 5;
+        magnitude *= 20;
     }
 
     // Basic movement processing
