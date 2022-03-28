@@ -1,6 +1,7 @@
 #include "World.h"
 
 #include "ChunkGenerator.h"
+#include "BlockLibrary.h"
 
 #include <thread>
 
@@ -10,6 +11,7 @@ World::World()
     m_Thread = std::thread(&World::WorldThread, this);
 
     ChunkGenerator::Initialize();
+    BlockLibrary::Initialize();
 }
 
 World::~World()
