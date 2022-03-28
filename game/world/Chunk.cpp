@@ -4,10 +4,12 @@
 
 #include "Renderer.h"
 #include "containers/Vertex.h"
+#include "FastNoiseLite.h"
 
 #include "World.h"
 #include "Timer.h"
 #include "BlockProperties.h"
+#include "ChunkGenerator.h"
 
 Chunk::Chunk(glm::ivec3 id)
     : m_Chunk(id),
@@ -16,16 +18,21 @@ Chunk::Chunk(glm::ivec3 id)
       m_Offset(0)
 {
     // New data structure
-    m_BlockData.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight); // "3D" array
-    m_SurfaceData.reserve(m_ChunkSize * m_ChunkSize);               // "2D" array
-
     m_Blocks.reserve(m_ChunkSize * m_ChunkSize * m_ChunkHeight);
+    m_BlockData.reserve((m_ChunkSize + 1) * (m_ChunkSize + 1) * m_ChunkHeight); // "3D" array
 
-    m_SurfaceHeights.reserve(m_ChunkSize * m_ChunkSize);
-    m_Vertices.reserve(100000);
-    m_Indices.reserve(100000);
+    m_SurfaceHeights.reserve((m_ChunkSize) * (m_ChunkSize));
+    m_SurfaceHeightData.reserve((m_ChunkSize) * (m_ChunkSize)); // "2D" array
+
+    m_Vertices.reserve(10000);
+    m_Indices.reserve(10000);
 
     GenerateSurface();
+
+    // glm::ivec2 coordinate = {2, 3};
+
+    // float test1 = m_SurfaceHeights.at(coordinate);
+    // float test2 = GetHeight(coordinate);
 
     GenerateMesh();
 }
@@ -34,9 +41,48 @@ Chunk::~Chunk()
 {
 }
 
+void Chunk::GenerateSurface()
+{
+    float height = 0.0f;
+    float biome = 0.0f;
+
+    // Increasing the range of surface generation to go one beyond the chunk size
+    // makes it so that when generating the geometry for the chunk, it is able to
+    // check for surrounding blocks on the edges of chunks correctly and doesn't push
+    // indices between chunks to the GPU.
+    int i = 0;
+
+    // 0 -> 15
+    // -1 -> 16
+    for (int x = 0; x < m_ChunkSize; x++)
+    {
+        for (int z = 0; z < m_ChunkSize; z++)
+        {
+            // Calculating a surface height with the noise
+            height = ChunkGenerator::GetSurfaceNoise(static_cast<int>(m_Chunk.x * m_ChunkSize) + x, static_cast<int>(m_Chunk.z * m_ChunkSize) + z);
+            biome = ChunkGenerator::GetBiomeNoise(static_cast<int>(m_Chunk.x * m_ChunkSize) + x, static_cast<int>(m_Chunk.z * m_ChunkSize) + z);
+
+            // height += 1.0f; // 0 to 2
+            biome += 1.0f;  // 0 to 2
+            height *= 2.5f; // 0 10
+            biome *= 50.0f; // 0 10
+            float y = static_cast<int>(height + biome);
+
+            m_SurfaceHeights.insert_or_assign(glm::ivec2(x, z), y);
+            m_SurfaceHeightData.push_back(y);
+
+            for (int i = 0; i < 50; i++)
+            {
+                m_Blocks.insert_or_assign(glm::ivec3(x, static_cast<int>(height + biome), z), Block(2));
+                // m_BlockData.set(1.0f);
+                SetBlock({x, y, z}, 1.0f); // updates block data
+            }
+        }
+    }
+}
+
 void Chunk::GenerateMesh()
 {
-    // glm::vec4 rgba;
     int x, y, z, blockID;
 
     std::vector<std::vector<int>> textureIndices;
@@ -64,7 +110,7 @@ void Chunk::GenerateMesh()
         // to assist with the mesh generation, check the bounds here.
         if (block.x < 0 || block.y < 0 || block.z < 0)
             continue;
-        if (block.x > m_ChunkSize || block.y > m_ChunkHeight || block.z > m_ChunkSize)
+        if (block.x == m_ChunkSize || block.y == m_ChunkHeight || block.z == m_ChunkSize)
             continue;
 
         float pxpypz = 1.0f;
@@ -81,7 +127,8 @@ void Chunk::GenerateMesh()
         z = block.z + m_Chunk.z * m_ChunkSize;
 
         // +X Quad
-        if (m_Blocks.find(glm::ivec3(block.x + 1, block.y, block.z)) == m_Blocks.end())
+        // if (m_Blocks.find(glm::ivec3(block.x + 1, block.y, block.z)) == m_Blocks.end())
+        if (GetBlock({x + 1, y, z}))
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
             m_Vertices.insert(m_Vertices.end(),
@@ -95,7 +142,8 @@ void Chunk::GenerateMesh()
         }
 
         // -X Quad
-        if (m_Blocks.find(glm::ivec3(block.x - 1, block.y, block.z)) == m_Blocks.end())
+        // if (m_Blocks.find(glm::ivec3(block.x - 1, block.y, block.z)) == m_Blocks.end())
+        if (GetBlock({x - 1, y, z}))
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
             m_Vertices.insert(m_Vertices.end(),
@@ -110,6 +158,7 @@ void Chunk::GenerateMesh()
 
         // +Y Quad
         if (m_Blocks.find(glm::ivec3(block.x, block.y + 1, block.z)) == m_Blocks.end())
+        if (GetBlock({x, y + 1, z}))
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
 
@@ -127,6 +176,7 @@ void Chunk::GenerateMesh()
 
         // -Y Quad
         if (m_Blocks.find(glm::ivec3(block.x, block.y - 1, block.z)) == m_Blocks.end())
+        if (GetBlock({x, y - 1, z}))
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
             m_Vertices.insert(m_Vertices.end(),
@@ -141,6 +191,7 @@ void Chunk::GenerateMesh()
 
         // +Z Quad
         if (m_Blocks.find(glm::ivec3(block.x, block.y, block.z + 1)) == m_Blocks.end())
+        if (GetBlock({x, y, z + 1}))
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
             m_Vertices.insert(m_Vertices.end(),
@@ -155,6 +206,7 @@ void Chunk::GenerateMesh()
 
         // -Z Quad
         if (m_Blocks.find(glm::ivec3(block.x, block.y, block.z - 1)) == m_Blocks.end())
+        if (GetBlock({x, y, z - 1}))
         {
             m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
             m_Vertices.insert(m_Vertices.end(),
@@ -165,38 +217,6 @@ void Chunk::GenerateMesh()
                                   Vertex(glm::vec3(x - 0.5f, y + 0.5f, z - 0.5f), TextureMap::GetTopLeft(textureIndices[blockID - 1][5]), glm::vec3(0.0f, 0.0f, -1.0f), nxpynz),
                               });
             m_Offset += 4;
-        }
-    }
-}
-
-void Chunk::GenerateSurface()
-{
-    // ChunkDecorator::SurfaceNoise->GenUniformGrid2D(m_SurfaceData.data(), 0, 0, 16, 16, 0.01f, 1337);
-
-    // Increasing the range of surface generation to go one beyond the chunk size
-    // makes it so that when generating the geometry for the chunk, it is able to
-    // check for surrounding blocks on the edges of chunks correctly and doesn't push
-    // indices between chunks to the GPU.
-    for (int x = 0; x < m_ChunkSize; x++)
-    {
-        for (int z = 0; z < m_ChunkSize; z++)
-        {
-            // Calculating a surface height with the noise
-            float height = 0.0f;
-
-            height *= 32.0f; // scale
-            height += 24.0f; // offset
-            m_SurfaceHeights.insert_or_assign(glm::ivec2(x, z), (int)height);
-
-            for (int y = 0; y < height - 3; y++)
-            {
-                m_Blocks.insert_or_assign(glm::ivec3(x, y, z), Block(1)); // stone
-            }
-
-            m_Blocks.insert_or_assign(glm::ivec3(x, height - 3, z), Block(3)); // dirt
-            m_Blocks.insert_or_assign(glm::ivec3(x, height - 2, z), Block(3)); // dirt
-            m_Blocks.insert_or_assign(glm::ivec3(x, height - 1, z), Block(3)); // dirt
-            m_Blocks.insert_or_assign(glm::ivec3(x, height, z), Block(2));     // grass
         }
     }
 }

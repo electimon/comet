@@ -55,6 +55,12 @@ void Mesh::AllocateOnGPU()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     m_PushedToGPU = true;
+
+    p_Vertices->clear();
+    p_Vertices->shrink_to_fit();
+
+    p_Indices->clear();
+    p_Indices->shrink_to_fit();
 }
 
 void Mesh::DeallocateOnGPU()

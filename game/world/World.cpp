@@ -1,15 +1,15 @@
 #include "World.h"
 
-#include <thread>
+#include "ChunkGenerator.h"
 
-#include "ChunkDecorator.h"
+#include <thread>
 
 World::World()
 {
     std::cout << "World::World()" << std::endl;
     m_Thread = std::thread(&World::WorldThread, this);
 
-    ChunkDecorator::Initialize();
+    ChunkGenerator::Initialize();
 }
 
 World::~World()

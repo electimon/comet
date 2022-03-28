@@ -21,28 +21,37 @@ struct Chunk
     std::vector<Vertex> *GetVertices() { return &m_Vertices; }
     std::vector<unsigned int> *GetIndices() { return &m_Indices; }
 
-    const Block &GetBlock(const glm::ivec3 &coord)
+    const float &GetBlock(const glm::ivec3 &coord)
     {
         return m_BlockData[coord.x * m_ChunkHeight * m_ChunkSize + coord.y * m_ChunkSize + coord.z];
     };
 
-    void SetBlock(const glm::ivec3 &coord, const Block &block)
+    void SetBlock(const glm::ivec3 &coord, float input)
     {
-        m_BlockData[coord.x * m_ChunkHeight * m_ChunkSize + coord.y * m_ChunkSize + coord.z] = block;
+        m_BlockData[coord.x * m_ChunkHeight * m_ChunkSize + coord.y * m_ChunkSize + coord.z] = input;
     }
 
-    int GetHeight(const glm::ivec2 &coord)
+    float GetHeight(const glm::ivec2 &coord)
     {
-        return m_SurfaceData[coord.x * m_ChunkSize + coord.y];
+        return m_SurfaceHeightData[m_ChunkSize * coord.x + coord.y]; // y is actually z
+    }
+
+    void DeleteGeometry()
+    {
+        m_Vertices.clear();
+        m_Vertices.shrink_to_fit();
+
+        m_Indices.clear();
+        m_Indices.shrink_to_fit();
     }
 
 private:
+    std::vector<float> m_BlockData;         // testing new data format
+    std::vector<float> m_SurfaceHeightData; // only used during generation, not needed when saving chunk
+
+    //
     std::unordered_map<glm::ivec3, Block> m_Blocks;
-
-    std::vector<Block> m_BlockData; // testing new data format
-    std::vector<float> m_SurfaceData;
-
-    std::unordered_map<glm::ivec2, int> m_SurfaceHeights;
+    std::unordered_map<glm::ivec2, float> m_SurfaceHeights;
 
     glm::ivec3 m_Chunk;
 

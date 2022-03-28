@@ -32,7 +32,7 @@ void main()
 
 
 
-    // vec4 result = vec4((ambient + diffuse) / 2.0, 1.0);
+    vec4 result = vec4((ambient + diffuse) / 2.0, 1.0);
 
-    FragColor = texture(u_TextureMap, v_TextureCoordinates);
+    FragColor = texture(u_TextureMap, v_TextureCoordinates) * result;
 }
