@@ -21,37 +21,31 @@ struct Chunk
     std::vector<Vertex> *GetVertices() { return &m_Vertices; }
     std::vector<unsigned int> *GetIndices() { return &m_Indices; }
 
-    const float &GetBlock(const glm::ivec3 &coord)
+    unsigned char GetBlock(const glm::ivec3 &coord)
     {
-        return m_BlockData[coord.x * m_ChunkHeight * m_ChunkSize + coord.y * m_ChunkSize + coord.z];
-    };
+        if (coord.x < 0 || coord.y < 0 || coord.z < 0)
+            return 0;
+        if (coord.x == m_ChunkSize || coord.y == m_ChunkHeight || coord.z == m_ChunkSize)
+            return 0;
 
-    void SetBlock(const glm::ivec3 &coord, float input)
+        int index = (coord.x * m_ChunkHeight * m_ChunkSize) + (coord.y * m_ChunkSize) + (coord.z);
+
+        return m_BlockData[index];
+    }
+
+    void SetBlock(const glm::ivec3 &coord, unsigned char input)
     {
-        m_BlockData[coord.x * m_ChunkHeight * m_ChunkSize + coord.y * m_ChunkSize + coord.z] = input;
+        m_BlockData[(coord.x * m_ChunkHeight * m_ChunkSize) + (coord.y * m_ChunkSize) + (coord.z)] = input;
     }
 
     float GetHeight(const glm::ivec2 &coord)
     {
-        return m_SurfaceHeightData[m_ChunkSize * coord.x + coord.y]; // y is actually z
-    }
-
-    void DeleteGeometry()
-    {
-        m_Vertices.clear();
-        m_Vertices.shrink_to_fit();
-
-        m_Indices.clear();
-        m_Indices.shrink_to_fit();
+        return m_BlockData[m_ChunkSize * coord.x + coord.y]; // y is actually z
     }
 
 private:
-    std::vector<float> m_BlockData;         // testing new data format
+    std::vector<unsigned char> m_BlockData; // testing new data format
     std::vector<float> m_SurfaceHeightData; // only used during generation, not needed when saving chunk
-
-    //
-    std::unordered_map<glm::ivec3, Block> m_Blocks;
-    std::unordered_map<glm::ivec2, float> m_SurfaceHeights;
 
     glm::ivec3 m_Chunk;
 
