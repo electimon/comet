@@ -2,13 +2,13 @@
 
 #include <thread>
 
-Player::Player(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f))
+Player::Player(glm::vec3 position)
     : m_Position(position)
 {
     Camera::SetPosition(position);
     EntityHandler::AddEntityToQueue(this);
 
-    m_RenderDistance = 16;
+    m_RenderDistance = 4;
     m_ChunkSize = World::GetChunkSize();
 }
 
