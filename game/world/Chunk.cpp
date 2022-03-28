@@ -25,7 +25,7 @@ Chunk::Chunk(glm::ivec3 id)
     m_Indices.reserve(10000);
 
     GenerateSurface();
-    // GenerateTrees();
+    GenerateTrees();
     // GenerateCaves();
 
     GenerateMesh();
@@ -39,27 +39,28 @@ void Chunk::GenerateSurface()
 {
     float height = 0.0f;
     float biome = 0.0f;
+    float chaos = 0.0f;
 
-    // Increasing the range of surface generation to go one beyond the chunk size
-    // makes it so that when generating the geometry for the chunk, it is able to
-    // check for surrounding blocks on the edges of chunks correctly and doesn't push
-    // indices between chunks to the GPU.
-
-    // 0 -> 15
-    // -1 -> 16
     for (int x = 0; x < m_ChunkSize; x++)
     {
         for (int z = 0; z < m_ChunkSize; z++)
         {
             // Calculating a surface height with the noise
             height = ChunkGenerator::GetMediumNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
-            biome = ChunkGenerator::GetSlowNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
+            biome = ChunkGenerator::GetBiomeNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
+            chaos = ChunkGenerator::GetMediumChaotic((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
 
-            // height += 1.0f; // 0 to 2
-            biome += 1.0f;  // 0 to 2
+            height += 2.0f; // 1 to 3
             height *= 2.5f; // 0 10
-            biome *= 50.0f; // 0 10
-            int y = static_cast<int>(height + biome);
+
+            biome += 2.0f;  // 1 to 3
+            biome *= 50.0f; // 50 to 150
+
+            // chaos += 1.0f; // 0 to 2
+            chaos *= 10.0f; // -10 to 10
+
+            int y = static_cast<int>(chaos + biome + height);
+            // int y = static_cast<int>(height + biome + chaos);
 
             SetHeight(x, z, y);
 
@@ -92,46 +93,92 @@ void Chunk::GenerateTrees()
             if (GetBlock(x, y - 1, z) == 0)
                 continue;
 
-            noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.y * m_ChunkHeight) + y, (m_Chunk.z * m_ChunkSize) + z);
+            noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
             noise2 = ChunkGenerator::GetMediumNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
 
             // std::cout << "WhiteNoise: " << noise1 << " CellNoise: " << noise2 << std::endl;
 
-            if (noise1 > 0.8f && noise2 > 0.5f)
+            if (noise1 > 0.9f && noise2 > 0.5f)
             {
                 SetBlock(x, y + 1, z, 5);
                 SetBlock(x, y + 2, z, 5);
-                if (noise1 > 0.9f)
+                if (noise1 > 0.95f)
                 {
                     SetBlock(x, y + 3, z, 5);
                     y += 1;
                 }
+                {
+                    SetBlock(x - 2, y + 3, z - 1, 6);
+                    SetBlock(x - 2, y + 3, z, 6);
+                    SetBlock(x - 2, y + 3, z + 1, 6);
 
-                SetBlock(x - 2, y + 3, z - 1, 6);
-                SetBlock(x - 2, y + 3, z, 6);
-                SetBlock(x - 2, y + 3, z + 1, 6);
+                    SetBlock(x - 1, y + 3, z - 2, 6);
+                    SetBlock(x - 1, y + 3, z - 1, 6);
+                    SetBlock(x - 1, y + 3, z, 6);
+                    SetBlock(x - 1, y + 3, z + 1, 6);
+                    SetBlock(x - 1, y + 3, z + 2, 6);
 
-                SetBlock(x - 1, y + 3, z - 2, 6);
-                SetBlock(x - 1, y + 3, z - 1, 6);
-                SetBlock(x - 1, y + 3, z, 6);
-                SetBlock(x - 1, y + 3, z + 1, 6);
-                SetBlock(x - 1, y + 3, z + 2, 6);
+                    SetBlock(x, y + 3, z - 2, 6);
+                    SetBlock(x, y + 3, z - 1, 6);
+                    SetBlock(x, y + 3, z, 5);
+                    SetBlock(x, y + 3, z + 1, 6);
+                    SetBlock(x, y + 3, z + 2, 6);
 
-                SetBlock(x, y + 3, z - 2, 6);
-                SetBlock(x, y + 3, z - 1, 6);
+                    SetBlock(x + 1, y + 3, z - 2, 6);
+                    SetBlock(x + 1, y + 3, z - 1, 6);
+                    SetBlock(x + 1, y + 3, z, 6);
+                    SetBlock(x + 1, y + 3, z + 1, 6);
+                    SetBlock(x + 1, y + 3, z + 2, 6);
 
-                SetBlock(x, y + 3, z + 1, 6);
-                SetBlock(x, y + 3, z + 2, 6);
+                    SetBlock(x + 2, y + 3, z - 1, 6);
+                    SetBlock(x + 2, y + 3, z, 6);
+                    SetBlock(x + 2, y + 3, z + 1, 6);
+                }
+                {
+                    SetBlock(x - 2, y + 4, z - 1, 6);
+                    SetBlock(x - 2, y + 4, z, 6);
+                    SetBlock(x - 2, y + 4, z + 1, 6);
 
-                SetBlock(x + 1, y + 3, z - 2, 6);
-                SetBlock(x + 1, y + 3, z - 1, 6);
-                SetBlock(x + 1, y + 3, z, 6);
-                SetBlock(x + 1, y + 3, z + 1, 6);
-                SetBlock(x + 1, y + 3, z + 2, 6);
+                    SetBlock(x - 1, y + 4, z - 2, 6);
+                    SetBlock(x - 1, y + 4, z - 1, 6);
+                    SetBlock(x - 1, y + 4, z, 6);
+                    SetBlock(x - 1, y + 4, z + 1, 6);
+                    SetBlock(x - 1, y + 4, z + 2, 6);
 
-                SetBlock(x + 2, y + 3, z - 1, 6);
-                SetBlock(x + 2, y + 3, z, 6);
-                SetBlock(x + 2, y + 3, z + 1, 6);
+                    SetBlock(x, y + 4, z - 2, 6);
+                    SetBlock(x, y + 4, z - 1, 6);
+                    SetBlock(x, y + 4, z, 6);
+                    SetBlock(x, y + 4, z + 1, 6);
+                    SetBlock(x, y + 4, z + 2, 6);
+
+                    SetBlock(x + 1, y + 4, z - 2, 6);
+                    SetBlock(x + 1, y + 4, z - 1, 6);
+                    SetBlock(x + 1, y + 4, z, 6);
+                    SetBlock(x + 1, y + 4, z + 1, 6);
+                    SetBlock(x + 1, y + 4, z + 2, 6);
+
+                    SetBlock(x + 2, y + 4, z - 1, 6);
+                    SetBlock(x + 2, y + 4, z, 6);
+                    SetBlock(x + 2, y + 4, z + 1, 6);
+                }
+                {
+                    SetBlock(x - 1, y + 5, z, 6);
+
+                    SetBlock(x, y + 5, z - 1, 6);
+                    SetBlock(x, y + 5, z, 6);
+                    SetBlock(x, y + 5, z + 1, 6);
+
+                    SetBlock(x + 1, y + 5, z, 6);
+                }
+                {
+                    SetBlock(x - 1, y + 6, z, 6);
+
+                    SetBlock(x, y + 6, z - 1, 6);
+                    SetBlock(x, y + 6, z, 6);
+                    SetBlock(x, y + 6, z + 1, 6);
+
+                    SetBlock(x + 1, y + 6, z, 6);
+                }
             }
         }
     }
