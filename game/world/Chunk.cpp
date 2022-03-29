@@ -32,6 +32,9 @@ Chunk::Chunk(glm::ivec3 id)
     // GenerateCaves();
 
     GenerateMesh();
+
+    m_HeightData.clear();
+    m_HeightData.shrink_to_fit();
 }
 
 Chunk::~Chunk()
@@ -54,13 +57,13 @@ void Chunk::GenerateSurface()
             chaos = ChunkGenerator::GetMediumChaotic((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
 
             height += 2.0f; // 1 to 3
-            height *= 5.0f; // 5 to 15
+            height *= 2.0f; // 5 to 15
 
             biome += 2.0f;  // 1 to 3
-            biome *= 10.0f; // 10 to 30
+            biome *= 20.0f; // 10 to 30
 
             // chaos += 1.0f; // 0 to 2
-            chaos *= 10.0f; // -10 to 10
+            chaos *= 4.0f; // -10 to 10
 
             int y = static_cast<int>(chaos + biome + height);
             // int y = static_cast<int>(height + biome + chaos);
