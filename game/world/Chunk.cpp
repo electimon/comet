@@ -256,7 +256,7 @@ void Chunk::GenerateMesh()
                     continue;
 
                 blockID = GetBlock(x, y, z);
-                std::vector<int> blockIndices = BlockLibrary::GetIndices(blockID);
+                std::vector<unsigned char> blockIndices = BlockLibrary::GetIndices(blockID);
 
                 worldx = x + m_ChunkSize * m_Chunk.x;
                 worldy = y;
