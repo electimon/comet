@@ -116,13 +116,13 @@ void Camera::Rotate()
     }
 
     // Keep pitch angle from going too far over
-    if (camera.m_Pitch > glm::radians(89.999f))
+    if (camera.m_Pitch > glm::radians(89.0f))
     {
-        camera.m_Pitch = glm::radians(89.999f);
+        camera.m_Pitch = glm::radians(89.0f);
     }
-    else if (camera.m_Pitch < glm::radians(-89.999f))
+    else if (camera.m_Pitch < glm::radians(-89.0f))
     {
-        camera.m_Pitch = glm::radians(-89.999f);
+        camera.m_Pitch = glm::radians(-89.0f);
     }
 
     camera.m_Direction.x = glm::cos(camera.m_Yaw) * glm::cos(camera.m_Pitch);

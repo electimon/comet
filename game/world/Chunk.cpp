@@ -18,8 +18,8 @@ Chunk::Chunk(glm::ivec3 id)
     m_BlockData.resize(CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT); // "3D" array of block id values
     m_HeightData.resize(CHUNK_WIDTH * CHUNK_WIDTH);               // "2D" array of height values
 
-    m_Vertices.reserve(10000);
-    m_Indices.reserve(10000);
+    m_Vertices.reserve(100000);
+    m_Indices.reserve(100000);
 
     GenerateSurface();
 
@@ -98,8 +98,6 @@ void Chunk::GenerateTrees()
 
             noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
             noise2 = ChunkGenerator::GetMediumNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
-
-            // std::cout << "WhiteNoise: " << noise1 << " CellNoise: " << noise2 << std::endl;
 
             if (noise1 > 0.9f && noise2 > 0.5f)
             {
@@ -247,6 +245,8 @@ void Chunk::GenerateMesh()
     unsigned char blockID;
     int worldx, worldy, worldz;
 
+    bool px, nx, py, ny, pz, nz;
+
     for (int x = 0; x < CHUNK_WIDTH; x++)
     {
         for (int y = 0; y < CHUNK_HEIGHT; y++)
@@ -263,8 +263,25 @@ void Chunk::GenerateMesh()
                 worldy = y;
                 worldz = z + CHUNK_WIDTH * m_Chunk.z;
 
+                px = GetBlock(x + 1, y, z) == 0;
+                nx = GetBlock(x - 1, y, z) == 0;
+                py = GetBlock(x, y + 1, z) == 0;
+                ny = GetBlock(x, y - 1, z) == 0;
+                pz = GetBlock(x, y, z + 1) == 0;
+                nz = GetBlock(x, y, z - 1) == 0;
+
+                if (blockID == 6)
+                {
+                    px = true;
+                    nx = true;
+                    py = true;
+                    ny = true;
+                    pz = true;
+                    nz = true;
+                }
+
                 // +X Quad
-                if (GetBlock(x + 1, y, z) == 0)
+                if (px)
                 {
                     m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
@@ -279,7 +296,7 @@ void Chunk::GenerateMesh()
                 }
 
                 // -X Quad
-                if (GetBlock(x - 1, y, z) == 0)
+                if (nx)
                 {
                     m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
@@ -294,7 +311,7 @@ void Chunk::GenerateMesh()
                 }
 
                 // +Y Quad
-                if (GetBlock(x, y + 1, z) == 0)
+                if (py)
                 {
                     m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
@@ -309,7 +326,7 @@ void Chunk::GenerateMesh()
                 }
 
                 // -Y Quad
-                if (GetBlock(x, y - 1, z) == 0)
+                if (ny)
                 {
                     m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
@@ -324,7 +341,7 @@ void Chunk::GenerateMesh()
                 }
 
                 // +Z Quad
-                if (GetBlock(x, y, z + 1) == 0)
+                if (pz)
                 {
                     m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
@@ -339,7 +356,7 @@ void Chunk::GenerateMesh()
                 }
 
                 // -Z Quad
-                if (GetBlock(x, y, z - 1) == 0)
+                if (nz)
                 {
                     m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(

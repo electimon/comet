@@ -15,15 +15,15 @@ int main(void)
     Engine::Initialize();
 
     // Shader Setup
-    Shader basic("../game/shaders/basic.vert",
-                 "../game/shaders/basic.frag");
+    Shader block("../game/shaders/block.vert",
+                 "../game/shaders/block.frag");
 
     Texture texture("../game/textures/terrain.png");
 
     TextureMap::Configure(texture.GetWidth(), texture.GetHeight(), 16);
 
     World world;
-    world.SetShader(basic);
+    world.SetShader(block);
 
     Player player(glm::vec3(0.0f, 100.0f, 0.0f));
     player.SetWorld(&world);

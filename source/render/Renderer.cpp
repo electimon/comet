@@ -59,23 +59,23 @@ void Renderer::DrawMeshQueue()
 
     for (auto &mesh : GetInstance().m_MeshMap)
     {
-        Shader shader = mesh.second.GetShader();
-        shaderID = shader.GetID();
+        shaderID = mesh.second.GetShader().GetID();
+
+        mesh.second.Update();
 
         // Binding the next mesh in queue
         mesh.second.Bind();
-        mesh.second.Update();
 
-        { // Uniforms
-            glUniform1f(shader.GetUniformLocation("u_Transparency"), mesh.second.GetTransparency());
-            glUniformMatrix4fv(shader.GetUniformLocation("u_ModelMatrix"), 1, GL_FALSE, &mesh.second.GetModelMatrix()[0][0]);
-            glUniformMatrix4fv(shader.GetUniformLocation("u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
-            glUniformMatrix4fv(shader.GetUniformLocation("u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
-            glUniform1i(shader.GetUniformLocation("u_Texture"), 0);
-        }
+        // Uniforms
+        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.second.GetTransparency());
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.second.GetModelMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
+        glUniform1i(glGetUniformLocation(shaderID, "u_Texture"), 0);
 
         // Drawing mesh
-        glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
+        unsigned int count = mesh.second.GetCount();
+        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void *)0);
     }
 }
 
@@ -83,7 +83,6 @@ void Renderer::ProcessMeshQueues()
 {
     {
         std::lock_guard<std::mutex> locked(GetInstance().m_AddMeshQueueLock);
-
         for (auto &mesh : GetInstance().m_MeshesToAdd)
         {
             GetInstance().m_MeshMap.insert_or_assign(mesh.first, mesh.second);
@@ -94,7 +93,6 @@ void Renderer::ProcessMeshQueues()
 
     {
         std::lock_guard<std::mutex> locked(GetInstance().m_UpdateMeshQueueLock);
-
         for (auto &mesh : GetInstance().m_MeshesToUpdate)
         {
             GetInstance().m_MeshMap.at(mesh).UpdateGeometry();
@@ -104,7 +102,6 @@ void Renderer::ProcessMeshQueues()
 
     {
         std::lock_guard<std::mutex> locked(GetInstance().m_DeleteMeshQueueLock);
-
         for (auto &mesh : GetInstance().m_MeshesToDelete)
         {
             GetInstance().m_MeshMap.at(mesh).Finalize();

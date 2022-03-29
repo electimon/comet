@@ -1,5 +1,7 @@
 #include "World.h"
 
+#include "Engine.h"
+
 #include "ChunkGenerator.h"
 #include "BlockLibrary.h"
 
@@ -63,7 +65,7 @@ void World::ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &request
 
 void World::WorldThread()
 {
-    while (true)
+    while (!Engine::ShouldClose())
     {
 
         // SetBlock(0, 100 + i, 0, 1);

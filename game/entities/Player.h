@@ -27,7 +27,7 @@ public:
 
     void BreakBlock()
     {
-        float step = 0.1f;
+        float step = 0.01f;
         glm::vec3 direction = Camera::GetDirection();
         glm::vec3 position = Camera::GetPosition();
 
@@ -37,7 +37,7 @@ public:
             if(p_World->GetBlock(position + direction) != 0)
             {
                 p_World->SetBlock(position + direction, 0);
-                return;
+                return; 
             }
         }
     }

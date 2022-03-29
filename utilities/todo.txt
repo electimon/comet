@@ -1,7 +1,9 @@
-03/24/2022
-- transparent water
+03/29/2022
+# easier
 - collision
-- block breaking
 - day/night cycle
 - clouds
+- cave generation
 
+# difficult
+- transparent water

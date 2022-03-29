@@ -1,4 +1,4 @@
 #pragma once
 
-constexpr int CHUNK_HEIGHT = 512;
-constexpr int CHUNK_WIDTH = 16;
+#define CHUNK_HEIGHT 512
+#define CHUNK_WIDTH 16
