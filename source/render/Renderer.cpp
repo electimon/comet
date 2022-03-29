@@ -83,7 +83,7 @@ void Renderer::DrawMeshesFunction()
 
 void Renderer::UpdateMeshQueue()
 {
-    std::lock_guard<std::mutex> locked(GetInstance().SafeToModifyMeshQueue);
+    std::lock_guard<std::mutex> locked(GetInstance().m_MeshQueueLock);
 
     for (auto &mesh : GetInstance().m_MeshesToAdd)
     {
