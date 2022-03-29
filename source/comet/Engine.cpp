@@ -62,8 +62,7 @@ void Engine::MainThread()
 
         // Drawing the mesh render queue
         Renderer::DrawMeshes();
-
-        // Draw UI
+        // Draw UI after everything else
         DebugInfoUI::Update();
 
         // Swaps buffers to display new drawn frame
