@@ -12,27 +12,30 @@ public:
         return s_Instance;
     }
 
+    // Singleton approach, assuming that if game is using a texture map
+    // then game is probably only going to be loading in a single texture.
+
     static void LoadTexture(int width, int height, int resolution);
 
     static std::vector<std::vector<float>> GetTextureCoordinates()
     {
-        return GetInstance().m_TextureCoordinates;
+        return GetInstance().m_Coords;
     }
     static glm::vec2 GetTopLeft(int index)
     {
-        return glm::vec2(GetInstance().m_TextureCoordinates[index][0], GetInstance().m_TextureCoordinates[index][2]);
+        return {GetInstance().m_Coords[index][0], GetInstance().m_Coords[index][2]};
     }
     static glm::vec2 GetTopRight(int index)
     {
-        return glm::vec2(GetInstance().m_TextureCoordinates[index][1], GetInstance().m_TextureCoordinates[index][2]);
+        return {GetInstance().m_Coords[index][1], GetInstance().m_Coords[index][2]};
     }
     static glm::vec2 GetBottomLeft(int index)
     {
-        return glm::vec2(GetInstance().m_TextureCoordinates[index][0], GetInstance().m_TextureCoordinates[index][3]);
+        return {GetInstance().m_Coords[index][0], GetInstance().m_Coords[index][3]};
     }
     static glm::vec2 GetBottomRight(int index)
     {
-        return glm::vec2(GetInstance().m_TextureCoordinates[index][1], GetInstance().m_TextureCoordinates[index][3]);
+        return {GetInstance().m_Coords[index][1], GetInstance().m_Coords[index][3]};
     }
 
 private:
@@ -45,5 +48,5 @@ private:
     unsigned int m_Resolution; // the pixel resolution of each texture
 
     // vector of 4x1 vectors (left, right, bottom, top coordinates)
-    std::vector<std::vector<float>> m_TextureCoordinates;
+    std::vector<std::vector<float>> m_Coords;
 };

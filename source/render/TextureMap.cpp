@@ -23,7 +23,7 @@ void TextureMap::LoadTexture(int width, int height, int resolution)
 
             std::vector<float> temp = {left, right, bottom, top};
 
-            map.m_TextureCoordinates.push_back(temp);
+            map.m_Coords.push_back(temp);
         }
     }
 }
