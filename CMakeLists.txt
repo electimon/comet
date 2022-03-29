@@ -17,6 +17,7 @@ include_directories(
     libraries/glad/include
     libraries/glfw/include
     libraries/glm/include
+    libraries/imgui/include
     libraries/stb_image/include
     libraries/FastNoiseLite/include
 
@@ -36,7 +37,9 @@ file(GLOB_RECURSE GAME_H_FILES game/*.h)
 
 file(GLOB_RECURSE ENGINE_CPP_FILES source/*.cpp)
 file(GLOB_RECURSE ENGINE_C_FILES source/*.c)
+file(GLOB_RECURSE ENGINE_H_FILES source/*.h)
 
+file(GLOB_RECURSE IMGUI_CPP_FILES libraries/imgui/source/*.cpp)
 
 add_executable(
     ${PROJECT_NAME}
@@ -46,6 +49,9 @@ add_executable(
 
     ${ENGINE_CPP_FILES}
     ${ENGINE_C_FILES}
+    ${ENGINE_H_FILES}
+
+    ${IMGUI_CPP_FILES}
 
     libraries/glad/source/gl.c
     libraries/stb_image/source/stb_image.cpp

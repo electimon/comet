@@ -20,7 +20,7 @@ public:
     static bool ShouldWindowClose() { return glfwWindowShouldClose(GetInstance().p_GLFWwindow); }
 
     int CreateWindow();
-    GLFWwindow *GetGLFWWindow() { return p_GLFWwindow; }
+    static GLFWwindow *GetGLFWWindow() { return GetInstance().p_GLFWwindow; }
 
 private:
     WindowHandler() {}

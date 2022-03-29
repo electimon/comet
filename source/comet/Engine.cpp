@@ -9,6 +9,7 @@
 #include "TextureMap.h"
 #include "Renderer.h"
 #include "Camera.h"
+#include "DebugInfoUI.h"
 
 void Engine::Initialize()
 {
@@ -29,6 +30,7 @@ void Engine::Initialize()
 
     Camera::Initialize();
     Renderer::Initialize();
+    DebugInfoUI::Initialize();
 
 
     WindowHandler::SetupCallbacks();
@@ -60,6 +62,10 @@ void Engine::MainThread()
 
         // Drawing the mesh render queue
         Renderer::DrawMeshes();
+
+        // Draw UI
+        DebugInfoUI::Update();
+
         // Swaps buffers to display new drawn frame
         Renderer::SwapBuffers();
         // Poll events for next frame

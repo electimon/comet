@@ -46,11 +46,17 @@ public:
         GetInstance().m_BiomeNoise.SetDomainWarpAmp(50.0f);
 
         GetInstance().m_CaveNoise.SetFrequency(0.01f);
-        GetInstance().m_CaveNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Cellular);
-        GetInstance().m_CaveNoise.SetRotationType3D(FastNoiseLite::RotationType3D::RotationType3D_ImproveXYPlanes);
-        GetInstance().m_CaveNoise.SetCellularDistanceFunction(FastNoiseLite::CellularDistanceFunction::CellularDistanceFunction_EuclideanSq);
-        GetInstance().m_CaveNoise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_Distance2Div);
-        GetInstance().m_CaveNoise.SetCellularJitter(1.0f);
+        GetInstance().m_CaveNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+        // GetInstance().m_CaveNoise.SetRotationType3D(FastNoiseLite::RotationType3D::RotationType3D_ImproveXYPlanes);
+        // GetInstance().m_CaveNoise.SetCellularDistanceFunction(FastNoiseLite::CellularDistanceFunction::CellularDistanceFunction_EuclideanSq);
+        // GetInstance().m_CaveNoise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_Distance2Div);
+        // GetInstance().m_CaveNoise.SetCellularJitter(1.0f);
+        GetInstance().m_CaveNoise.SetFractalType(FastNoiseLite::FractalType::FractalType_PingPong);
+        GetInstance().m_CaveNoise.SetFractalOctaves(5);
+        GetInstance().m_CaveNoise.SetFractalLacunarity(2.0f);
+        GetInstance().m_CaveNoise.SetFractalGain(0.05f);
+        GetInstance().m_CaveNoise.SetFractalWeightedStrength(0.0f);
+        GetInstance().m_CaveNoise.SetFractalPingPongStrength(2.0f);
     }
     static float GetCaveNoise(int x, int y, int z)
     {
