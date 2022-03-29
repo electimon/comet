@@ -24,16 +24,10 @@ public:
         ImGui::StyleColorsDark();
         ImGui_ImplGlfw_InitForOpenGL(WindowHandler::GetGLFWWindow(), true);
         ImGui_ImplOpenGL3_Init("#version 460");
-
-        GetInstance().m_TimeDelta = 0.0;
-        GetInstance().m_TimeLast = 0.0;
-        GetInstance().m_FPS = 0.0;
     }
 
-    static void Update()
+    static void DrawFrame()
     {
-        DebugInfoUI::UpdateTime();
-
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -52,21 +46,8 @@ public:
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
-    static void UpdateTime()
-    {
-        double currentTime = glfwGetTime();
-        GetInstance().m_TimeDelta = currentTime - GetInstance().m_TimeLast;
-        GetInstance().m_TimeLast = currentTime;
-
-        GetInstance().m_FPS = 1.0 / GetInstance().m_TimeDelta;
-    }
-
 private:
     DebugInfoUI() {}
     DebugInfoUI(DebugInfoUI const &);
     void operator=(DebugInfoUI const &);
-
-    double m_FPS;
-    double m_TimeLast;
-    double m_TimeDelta;
 };

@@ -10,7 +10,6 @@ public:
         static EventHandler s_Instance;
         return s_Instance;
     }
-
     static void PollEvents();
 
 private:

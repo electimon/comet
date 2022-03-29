@@ -60,8 +60,6 @@ Shader::Shader(const char *vertFile, const char *fragFile)
 
 Shader::~Shader()
 {
-    std::cout << "Shader::~Shader()" << std::endl;
-
     std::cout << "Deleting shader (id: " << m_ID << ")" << std::endl;
     glDeleteProgram(m_ID);
 }

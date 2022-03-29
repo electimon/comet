@@ -33,17 +33,17 @@ public:
             m_ModelMatrix = glm::translate(
                 glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f)),
                 glm::vec3(0.0f, static_cast<float>(50.0 * glm::sin(3.141592653589 / 2 * m_TimeDelta)), 0.0f));
-            m_Brightness = m_TimeDelta;
+            m_Transparency = m_TimeDelta;
         }
         else
         {
             m_ModelMatrix = glm::mat4(1.0f);
-            m_Brightness = 1.0;
+            m_Transparency = 1.0;
         }
     }
 
     double GetTimeDelta() { return m_TimeDelta; }
-    float GetBrightness() { return m_TimeDelta; }
+    float GetTransparency() { return m_TimeDelta; }
 
 private:
     std::vector<Vertex> *p_Vertices;
@@ -54,12 +54,11 @@ private:
     unsigned int m_IBO;
     unsigned int m_Shader;
     unsigned int m_Count;
-    double m_Brightness;
+    double m_Transparency;
 
     bool m_PushedToGPU;
     double m_TimeCreated;
     double m_TimeDelta;
-    float m_AO;
 
 public:
     glm::mat4 m_ModelMatrix;

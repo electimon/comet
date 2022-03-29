@@ -269,10 +269,10 @@ void Chunk::GenerateMesh()
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}, 1.0f),
-                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}, 1.0f),
-                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}, 1.0f),
-                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}, 1.0f),
+                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
                         });
                     m_Offset += 4;
                 }
@@ -284,10 +284,10 @@ void Chunk::GenerateMesh()
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}, 1.0f),
+                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
                         });
                     m_Offset += 4;
                 }
@@ -299,10 +299,10 @@ void Chunk::GenerateMesh()
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}, 1.0f),
-                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetBottomRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetBottomLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}, 1.0f),
+                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetBottomRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetBottomLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
                         });
                     m_Offset += 4;
                 }
@@ -314,10 +314,10 @@ void Chunk::GenerateMesh()
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetTopRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}, 1.0f),
-                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}, 1.0f),
+                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetTopRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
                         });
                     m_Offset += 4;
                 }
@@ -329,10 +329,10 @@ void Chunk::GenerateMesh()
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}, 1.0f),
-                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}, 1.0f),
+                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetTopLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
                         });
                     m_Offset += 4;
                 }
@@ -344,10 +344,10 @@ void Chunk::GenerateMesh()
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}, 1.0f),
-                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}, 1.0f),
-                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}, 1.0f),
+                            Vertex({worldx + 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                            Vertex({worldx + 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                            Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                            Vertex({worldx - 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
                         });
                     m_Offset += 4;
                 }

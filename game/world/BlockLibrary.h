@@ -61,8 +61,6 @@ public:
         return GetInstance().m_BlockIndices[blockID];
     }
 
-    void ProcessTextures();
-
 private:
     BlockLibrary() {}
     BlockLibrary(BlockLibrary const &);

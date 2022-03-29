@@ -16,13 +16,13 @@ public:
         return s_Instance;
     }
 
-    static void Initialize() { GetInstance().InitializeFunc(); }
-    static void Update() { GetInstance().UpdateFunc(); }
-    static void CalcViewMatrix() { GetInstance().CalcViewMatrixFunc(); }
-    static void CalcProjMatrix() { GetInstance().CalcProjMatrixFunc(); }
+    static void Initialize();
+    static void Update();
+    static void CalcViewMatrix();
+    static void CalcProjMatrix();
 
-    void Move();
-    void Rotate();
+    static void Move();
+    static void Rotate();
 
     static glm::mat4 GetViewMatrix() { return GetInstance().m_ViewMatrix; }
     static glm::mat4 GetProjMatrix() { return GetInstance().m_ProjMatrix; }
@@ -33,13 +33,13 @@ public:
     static glm::vec3 GetPosition() {return GetInstance().m_CameraPosition;}
     static void SetPosition(const glm::vec3 &position) {GetInstance().m_CameraPosition = position;}
 
+
 private:
     Camera() {}
     Camera(Camera const &);
     void operator=(Camera const &);
 
     void InitializeFunc();
-    void UpdateFunc();
     void CalcViewMatrixFunc();
     void CalcProjMatrixFunc();
 

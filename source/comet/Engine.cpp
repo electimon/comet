@@ -58,12 +58,14 @@ void Engine::MainThread()
         // Updates entities with an update function
         EntityHandler::UpdateEntities();
 
+
         // ALL DRAWING SHOULD HAPPEN AFTER ANY ENTITY MOVEMENT
 
+
         // Drawing the mesh render queue
-        Renderer::DrawMeshes();
+        Renderer::DrawMeshQueue();
         // Draw UI after everything else
-        DebugInfoUI::Update();
+        DebugInfoUI::DrawFrame();
 
         // Swaps buffers to display new drawn frame
         Renderer::SwapBuffers();
