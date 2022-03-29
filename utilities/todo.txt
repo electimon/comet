@@ -2,6 +2,6 @@
 - transparent water
 - collision
 - block breaking
-- side textures separate from top/bottom textures
 - day/night cycle
+- clouds
 
