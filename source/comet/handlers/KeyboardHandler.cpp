@@ -21,8 +21,8 @@ void KeyboardHandler::KeyCallback(int key, int scancode, int action, int mods)
         // glfwSetWindowShouldClose(glfwGetCurrentContext(), 1);
         MouseHandler::ReleaseCursor();
     }
-    if (key == GLFW_KEY_HOME && action == GLFW_PRESS)
-    {
-        WindowHandler::CenterWindow();
-    }
+    // if (key == GLFW_KEY_HOME && action == GLFW_PRESS)
+    // {
+    //     WindowHandler::CenterWindow();
+    // }
 }

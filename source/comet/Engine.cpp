@@ -32,7 +32,6 @@ void Engine::Initialize()
     Renderer::Initialize();
     DebugInfoUI::Initialize();
 
-
     WindowHandler::SetupCallbacks();
     KeyboardHandler::SetupCallbacks();
     MouseHandler::SetupCallbacks();

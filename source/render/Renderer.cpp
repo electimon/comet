@@ -19,13 +19,14 @@ void Renderer::Initialize()
     // Enables depth testing
     glEnable(GL_DEPTH_TEST);
 
-    // Transparency
+    // Enables transparency
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Renderer::NewFrame()
 {
+    // Switch between triangle rendering modes with keys L and N
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_L) == GLFW_PRESS)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -38,12 +39,7 @@ void Renderer::NewFrame()
     // Clearing the color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Setting the new frame color to be black
-    // glm::vec4 backgroundColor = glm::vec4(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f, 0.0f);
-    // float backgroundBrightness = std::max(std::cos((float)glfwGetTime()), 0.3f);
-    // glm::vec4 result = backgroundColor * backgroundBrightness;
-    // glClearColor(backgroundColor.x * result.x, backgroundColor.y * result.y, backgroundColor.z * result.z, backgroundColor.w * result.w);
-
+    // Background color
     glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f, 0.0f);
 }
 
@@ -54,61 +50,84 @@ void Renderer::SwapBuffers()
 
 void Renderer::DrawMeshQueue()
 {
-    UpdateMeshQueue();
     unsigned int shaderID;
+
+    ProcessMeshQueues();
 
     // Binding the texture map
     glBindTexture(GL_TEXTURE_2D, 1);
 
     for (auto &mesh : GetInstance().m_MeshMap)
     {
+        Shader shader = mesh.second.GetShader();
+        shaderID = shader.GetID();
+
         // Binding the next mesh in queue
         mesh.second.Bind();
-
-        // Uniforms
-        shaderID = mesh.second.GetShaderID();
-
         mesh.second.Update();
-        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.second.GetTransparency());
 
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.second.m_ModelMatrix[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
-
-        glUniform1i(glGetUniformLocation(shaderID, "u_Texture"), 0);
+        { // Uniforms
+            glUniform1f(shader.GetUniformLocation("u_Transparency"), mesh.second.GetTransparency());
+            glUniformMatrix4fv(shader.GetUniformLocation("u_ModelMatrix"), 1, GL_FALSE, &mesh.second.GetModelMatrix()[0][0]);
+            glUniformMatrix4fv(shader.GetUniformLocation("u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
+            glUniformMatrix4fv(shader.GetUniformLocation("u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
+            glUniform1i(shader.GetUniformLocation("u_Texture"), 0);
+        }
 
         // Drawing mesh
         glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
     }
 }
 
-void Renderer::UpdateMeshQueue()
+void Renderer::ProcessMeshQueues()
 {
-    std::lock_guard<std::mutex> locked(GetInstance().m_MeshQueueLock);
-
-    for (auto &mesh : GetInstance().m_MeshesToAdd)
     {
-        GetInstance().m_MeshMap.insert_or_assign(mesh.first, mesh.second);
-        GetInstance().m_MeshMap.at(mesh.first).AllocateOnGPU();
-    }
-    GetInstance().m_MeshesToAdd.clear();
+        std::lock_guard<std::mutex> locked(GetInstance().m_AddMeshQueueLock);
 
-    for (auto &mesh : GetInstance().m_MeshesToDelete)
-    {
-        GetInstance().m_MeshMap.at(mesh).DeallocateOnGPU();
-        GetInstance().m_MeshMap.erase(mesh);
+        for (auto &mesh : GetInstance().m_MeshesToAdd)
+        {
+            GetInstance().m_MeshMap.insert_or_assign(mesh.first, mesh.second);
+            GetInstance().m_MeshMap.at(mesh.first).Initialize();
+        }
+        GetInstance().m_MeshesToAdd.clear();
     }
-    GetInstance().m_MeshesToDelete.clear();
+
+    {
+        std::lock_guard<std::mutex> locked(GetInstance().m_UpdateMeshQueueLock);
+
+        for (auto &mesh : GetInstance().m_MeshesToUpdate)
+        {
+            GetInstance().m_MeshMap.at(mesh).UpdateGeometry();
+        }
+        GetInstance().m_MeshesToUpdate.clear();
+    }
+
+    {
+        std::lock_guard<std::mutex> locked(GetInstance().m_DeleteMeshQueueLock);
+
+        for (auto &mesh : GetInstance().m_MeshesToDelete)
+        {
+            GetInstance().m_MeshMap.at(mesh).Finalize();
+            GetInstance().m_MeshMap.erase(mesh);
+        }
+        GetInstance().m_MeshesToDelete.clear();
+    }
 }
 
 void Renderer::AddMeshToQueue(const glm::ivec3 &index, const Mesh &mesh)
 {
-    std::lock_guard<std::mutex> locked(GetInstance().m_MeshQueueLock);
+    std::lock_guard<std::mutex> locked(GetInstance().m_AddMeshQueueLock);
     GetInstance().m_MeshesToAdd.insert_or_assign(index, mesh);
+}
+
+void Renderer::UpdateMeshInQueue(const glm::ivec3 &index)
+{
+    std::lock_guard<std::mutex> locked(GetInstance().m_UpdateMeshQueueLock);
+    GetInstance().m_MeshesToUpdate.insert(index);
 }
 
 void Renderer::DeleteMeshFromQueue(const glm::ivec3 &index)
 {
-    std::lock_guard<std::mutex> locked(GetInstance().m_MeshQueueLock);
+    std::lock_guard<std::mutex> locked(GetInstance().m_DeleteMeshQueueLock);
     GetInstance().m_MeshesToDelete.insert(index);
 }

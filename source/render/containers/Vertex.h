@@ -5,7 +5,7 @@
 struct Vertex
 {
     Vertex();
-    // Position, Texture Coordinates, Normal, AO
+    // Position, Texture Coordinates, Normal
     Vertex(glm::vec3 position, glm::vec2 textureCoordinate, glm::vec3 normal);
 
     glm::vec3 m_Position;

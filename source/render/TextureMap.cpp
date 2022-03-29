@@ -1,6 +1,6 @@
 #include "TextureMap.h"
 
-void TextureMap::LoadTexture(int width, int height, int resolution)
+void TextureMap::Configure(int width, int height, int resolution)
 {
     TextureMap &map = GetInstance();
 

@@ -6,10 +6,10 @@ void Camera::Initialize()
 {
     Camera &camera = GetInstance();
 
-    camera.m_CameraPosition = {0.0f, 0.0f, 0.0f};
-    camera.m_CameraRight = {1.0f, 0.0f, 0.0f};
-    camera.m_CameraUp = {0.0f, 1.0f, 0.0f};
-    camera.m_CameraForward = {0.0f, 0.0f, -1.0f};
+    camera.m_Position = {0.0f, 0.0f, 0.0f};
+    camera.m_RightVector = {1.0f, 0.0f, 0.0f};
+    camera.m_UpVector = {0.0f, 1.0f, 0.0f};
+    camera.m_ForwardVector = {0.0f, 0.0f, -1.0f};
 
     camera.m_FOV = glm::radians(85.0f);
     camera.m_Aspect = 16.0f / 9.0f;
@@ -30,7 +30,7 @@ void Camera::Initialize()
 void Camera::CalcViewMatrix()
 {
     Camera &camera = GetInstance();
-    camera.m_ViewMatrix = glm::lookAt(camera.m_CameraPosition, camera.m_CameraPosition + camera.m_CameraForward, camera.POSITIVE_Y);
+    camera.m_ViewMatrix = glm::lookAt(camera.m_Position, camera.m_Position + camera.m_ForwardVector, camera.POSITIVE_Y);
 }
 
 void Camera::CalcProjMatrix()
@@ -47,7 +47,7 @@ void Camera::Move()
     glm::vec3 movementDirection = {0.0f, 0.0f, 0.0f};
 
     // Used so when walking forward vertical movement doesn't occur.
-    glm::vec3 cameraFowardXZ = {camera.m_CameraForward.x, 0.0f, camera.m_CameraForward.z};
+    glm::vec3 cameraFowardXZ = {camera.m_ForwardVector.x, 0.0f, camera.m_ForwardVector.z};
 
     // Sprinting
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
@@ -66,11 +66,11 @@ void Camera::Move()
     }
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_A) == GLFW_PRESS)
     {
-        movementDirection -= camera.m_CameraRight;
+        movementDirection -= camera.m_RightVector;
     }
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_D) == GLFW_PRESS)
     {
-        movementDirection += camera.m_CameraRight;
+        movementDirection += camera.m_RightVector;
     }
 
     // Fixes diagonal directed movement to not be faster than along an axis.
@@ -91,7 +91,7 @@ void Camera::Move()
         movementDirection -= camera.POSITIVE_Y;
     }
 
-    camera.m_CameraPosition += movementDirection * magnitude;
+    camera.m_Position += movementDirection * magnitude;
 }
 
 void Camera::Rotate()
@@ -125,12 +125,12 @@ void Camera::Rotate()
         camera.m_Pitch = glm::radians(-89.999f);
     }
 
-    camera.m_CameraDirection.x = glm::cos(camera.m_Yaw) * glm::cos(camera.m_Pitch);
-    camera.m_CameraDirection.y = glm::sin(camera.m_Pitch);
-    camera.m_CameraDirection.z = glm::sin(camera.m_Yaw) * glm::cos(camera.m_Pitch);
+    camera.m_Direction.x = glm::cos(camera.m_Yaw) * glm::cos(camera.m_Pitch);
+    camera.m_Direction.y = glm::sin(camera.m_Pitch);
+    camera.m_Direction.z = glm::sin(camera.m_Yaw) * glm::cos(camera.m_Pitch);
 
-    camera.m_CameraForward = glm::normalize(camera.m_CameraDirection);
-    camera.m_CameraRight = glm::cross(camera.m_CameraForward, camera.POSITIVE_Y);
+    camera.m_ForwardVector = glm::normalize(camera.m_Direction);
+    camera.m_RightVector = glm::cross(camera.m_ForwardVector, camera.POSITIVE_Y);
 }
 
 void Camera::Update()

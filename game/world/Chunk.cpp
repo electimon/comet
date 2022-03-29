@@ -12,14 +12,11 @@
 #include "ChunkGenerator.h"
 
 Chunk::Chunk(glm::ivec3 id)
-    : m_Chunk(id),
-      m_ChunkSize(World::GetChunkSize()),
-      m_ChunkHeight(World::GetChunkHeight()),
-      m_Offset(0)
+    : m_Chunk(id)
 {
     // New data structure
-    m_BlockData.resize(m_ChunkSize * m_ChunkSize * m_ChunkHeight); // "3D" array of block id values
-    m_HeightData.resize(m_ChunkSize * m_ChunkSize);                // "2D" array of height values
+    m_BlockData.resize(CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT); // "3D" array of block id values
+    m_HeightData.resize(CHUNK_WIDTH * CHUNK_WIDTH);               // "2D" array of height values
 
     m_Vertices.reserve(10000);
     m_Indices.reserve(10000);
@@ -47,14 +44,14 @@ void Chunk::GenerateSurface()
     float biome = 0.0f;
     float chaos = 0.0f;
 
-    for (int x = 0; x < m_ChunkSize; x++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        for (int z = 0; z < m_ChunkSize; z++)
+        for (int z = 0; z < CHUNK_WIDTH; z++)
         {
             // Calculating a surface height with the noise
-            height = ChunkGenerator::GetMediumNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
-            biome = ChunkGenerator::GetBiomeNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
-            chaos = ChunkGenerator::GetMediumChaotic((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
+            height = ChunkGenerator::GetMediumNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            biome = ChunkGenerator::GetBiomeNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            chaos = ChunkGenerator::GetMediumChaotic((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
 
             height += 2.0f; // 1 to 3
             height *= 2.0f; // 5 to 15
@@ -90,17 +87,17 @@ void Chunk::GenerateTrees()
     float noise2;
     int y;
 
-    for (int x = 2; x < m_ChunkSize - 2; x++)
+    for (int x = 2; x < CHUNK_WIDTH - 2; x++)
     {
-        for (int z = 2; z < m_ChunkSize - 2; z++)
+        for (int z = 2; z < CHUNK_WIDTH - 2; z++)
         {
             y = GetHeight(x, z);
 
             if (GetBlock(x, y - 1, z) == 0)
                 continue;
 
-            noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
-            noise2 = ChunkGenerator::GetMediumNoise((m_Chunk.x * m_ChunkSize) + x, (m_Chunk.z * m_ChunkSize) + z);
+            noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            noise2 = ChunkGenerator::GetMediumNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
 
             // std::cout << "WhiteNoise: " << noise1 << " CellNoise: " << noise2 << std::endl;
 
@@ -193,9 +190,9 @@ void Chunk::GenerateTrees()
 void Chunk::GenerateBedrock()
 {
     float noise;
-    for (int x = 0; x < m_ChunkSize; x++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        for (int z = 0; z < m_ChunkSize; z++)
+        for (int z = 0; z < CHUNK_WIDTH; z++)
         {
             noise = ChunkGenerator::GetFastNoise(x, z);
 
@@ -223,16 +220,16 @@ void Chunk::GenerateCaves()
 {
     float noise;
 
-    for (int x = 0; x < m_ChunkSize; x++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        for (int y = 0; y < m_ChunkHeight; y++)
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
         {
-            for (int z = 0; z < m_ChunkSize; z++)
+            for (int z = 0; z < CHUNK_WIDTH; z++)
             {
                 if (GetBlock(x, y, z) != 1)
                     continue;
 
-                noise = ChunkGenerator::GetCaveNoise(x + m_Chunk.x * m_ChunkSize, y, z + m_Chunk.z * m_ChunkSize);
+                noise = ChunkGenerator::GetCaveNoise(x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH);
 
                 if (noise > 0.8f)
                     SetBlock(x, y, z, 0);
@@ -243,14 +240,18 @@ void Chunk::GenerateCaves()
 
 void Chunk::GenerateMesh()
 {
+    m_Vertices.clear();
+    m_Indices.clear();
+    unsigned int offset = 0;
+
     unsigned char blockID;
     int worldx, worldy, worldz;
 
-    for (int x = 0; x < m_ChunkSize; x++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        for (int y = 0; y < m_ChunkHeight; y++)
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
         {
-            for (int z = 0; z < m_ChunkSize; z++)
+            for (int z = 0; z < CHUNK_WIDTH; z++)
             {
                 if (GetBlock(x, y, z) == 0)
                     continue;
@@ -258,14 +259,14 @@ void Chunk::GenerateMesh()
                 blockID = GetBlock(x, y, z);
                 std::vector<unsigned char> blockIndices = BlockLibrary::GetIndices(blockID);
 
-                worldx = x + m_ChunkSize * m_Chunk.x;
+                worldx = x + CHUNK_WIDTH * m_Chunk.x;
                 worldy = y;
-                worldz = z + m_ChunkSize * m_Chunk.z;
+                worldz = z + CHUNK_WIDTH * m_Chunk.z;
 
                 // +X Quad
                 if (GetBlock(x + 1, y, z) == 0)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
@@ -274,13 +275,13 @@ void Chunk::GenerateMesh()
                             Vertex({worldx + 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
                             Vertex({worldx + 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
                         });
-                    m_Offset += 4;
+                    offset += 4;
                 }
 
                 // -X Quad
                 if (GetBlock(x - 1, y, z) == 0)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
@@ -289,13 +290,13 @@ void Chunk::GenerateMesh()
                             Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
                             Vertex({worldx - 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
                         });
-                    m_Offset += 4;
+                    offset += 4;
                 }
 
                 // +Y Quad
                 if (GetBlock(x, y + 1, z) == 0)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
@@ -304,13 +305,13 @@ void Chunk::GenerateMesh()
                             Vertex({worldx - 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetBottomRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
                             Vertex({worldx - 0.5f, worldy + 0.5f, worldz + 0.5f}, TextureMap::GetBottomLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
                         });
-                    m_Offset += 4;
+                    offset += 4;
                 }
 
                 // -Y Quad
                 if (GetBlock(x, y - 1, z) == 0)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
@@ -319,13 +320,13 @@ void Chunk::GenerateMesh()
                             Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
                             Vertex({worldx + 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
                         });
-                    m_Offset += 4;
+                    offset += 4;
                 }
 
                 // +Z Quad
                 if (GetBlock(x, y, z + 1) == 0)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
@@ -334,13 +335,13 @@ void Chunk::GenerateMesh()
                             Vertex({worldx - 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
                             Vertex({worldx + 0.5f, worldy - 0.5f, worldz + 0.5f}, TextureMap::GetBottomRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
                         });
-                    m_Offset += 4;
+                    offset += 4;
                 }
 
                 // -Z Quad
                 if (GetBlock(x, y, z - 1) == 0)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + m_Offset, 1 + m_Offset, 2 + m_Offset, 2 + m_Offset, 3 + m_Offset, 0 + m_Offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
@@ -349,7 +350,7 @@ void Chunk::GenerateMesh()
                             Vertex({worldx - 0.5f, worldy - 0.5f, worldz - 0.5f}, TextureMap::GetBottomLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
                             Vertex({worldx - 0.5f, worldy + 0.5f, worldz - 0.5f}, TextureMap::GetTopLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
                         });
-                    m_Offset += 4;
+                    offset += 4;
                 }
             }
         }

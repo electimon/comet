@@ -4,11 +4,11 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, unsigned int shader)
+Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, const Shader &shader)
     : p_Vertices(vertices),
       p_Indices(indices),
       m_Shader(shader),
-      m_Count((unsigned int)(indices->size())),
+      m_Count(static_cast<unsigned int>(indices->size())),
       m_PushedToGPU(false),
       m_ModelMatrix(1.0f)
 {
@@ -17,60 +17,84 @@ Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, un
 
 Mesh::~Mesh()
 {
-    // std::cout << "Mesh::~Mesh()" << std::endl;
 }
 
 void Mesh::Bind()
 {
-    glUseProgram(m_Shader);
+    glUseProgram(m_Shader.GetID());
     glBindVertexArray(m_VAO);
 }
 
-void Mesh::AllocateOnGPU()
+void Mesh::Unbind()
+{
+    glUseProgram(0);
+    glBindVertexArray(0);
+}
+
+void Mesh::Initialize()
 {
     glGenVertexArrays(1, &m_VAO);
     glGenBuffers(1, &m_VBO);
     glGenBuffers(1, &m_IBO);
 
-    // std::cout << "Generating VAO (id: " << m_VAO << ")" << std::endl;
-    // std::cout << "Generating VBO (id: " << m_VBO << ")" << std::endl;
-    // std::cout << "Generating IBO (id: " << m_IBO << ")" << std::endl;
-
     glBindVertexArray(m_VAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, p_Vertices->size() * sizeof(Vertex), p_Vertices->data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 100000 * sizeof(Vertex), (void *)0, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, p_Vertices->size() * sizeof(Vertex), p_Vertices->data());
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, p_Indices->size() * sizeof(unsigned int), p_Indices->data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 100000 * sizeof(unsigned int), (void *)0, GL_STATIC_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, p_Indices->size() * sizeof(unsigned int), p_Indices->data());
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, m_Position));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(offsetof(Vertex, m_Position)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, m_TextureCoordinate));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(offsetof(Vertex, m_TextureCoordinate)));
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, m_Normal));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(offsetof(Vertex, m_Normal)));
 
     glBindVertexArray(0);
-
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     m_PushedToGPU = true;
-
-    // This clears the geometry data in the mesh object once it is rendered onto the GPU.
-    // Will have to re-draw chunk anytime a change is made, so doing this helps with memory management.
-    p_Vertices->clear();
-    p_Vertices->shrink_to_fit();
-
-    p_Indices->clear();
-    p_Indices->shrink_to_fit();
 }
 
-void Mesh::DeallocateOnGPU()
+void Mesh::Update()
 {
-    // std::cout << "Deleting VAO (id: " << m_VAO << ")" << std::endl;
-    // std::cout << "Deleting VBO (id: " << m_VBO << ")" << std::endl;
-    // std::cout << "Deleting IBO (id: " << m_IBO << ")" << std::endl;
+    m_TimeDelta = glfwGetTime() - m_TimeCreated;
 
+    if (m_TimeDelta < 1.0)
+    {
+        m_ModelMatrix = glm::translate(
+            glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f)),
+            glm::vec3(0.0f, static_cast<float>(50.0 * glm::sin(3.141592653589 / 2 * m_TimeDelta)), 0.0f));
+        m_Transparency = m_TimeDelta;
+    }
+    else
+    {
+        m_ModelMatrix = glm::mat4(1.0f);
+        m_Transparency = 1.0;
+    }
+}
+
+void Mesh::UpdateGeometry()
+{
+    m_Count = static_cast<unsigned int>(p_Indices->size());
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, p_Vertices->size() * sizeof(Vertex), p_Vertices->data());
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, p_Indices->size() * sizeof(unsigned int), p_Indices->data());
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void Mesh::Finalize()
+{
     glDeleteVertexArrays(1, &m_VAO);
     glDeleteBuffers(1, &m_VBO);
     glDeleteBuffers(1, &m_IBO);

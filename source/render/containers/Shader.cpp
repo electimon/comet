@@ -1,6 +1,29 @@
 #include "Shader.h"
 
+Shader::Shader()
+{
+}
+
 Shader::Shader(const char *vertFile, const char *fragFile)
+{
+    Create(vertFile, fragFile);
+}
+
+Shader::~Shader()
+{
+}
+
+void Shader::Bind()
+{
+    glUseProgram(m_ID);
+}
+
+void Shader::Unbind()
+{
+    glUseProgram(0);
+}
+
+void Shader::Create(const char *vertFile, const char *fragFile)
 {
     m_ID = glCreateProgram();
 
@@ -22,7 +45,8 @@ Shader::Shader(const char *vertFile, const char *fragFile)
     if (!success)
     {
         glGetShaderInfoLog(vertexID, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                  << infoLog << std::endl;
     }
 
     // Fragment Shader
@@ -39,7 +63,8 @@ Shader::Shader(const char *vertFile, const char *fragFile)
     if (!success)
     {
         glGetShaderInfoLog(fragmentID, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+                  << infoLog << std::endl;
     }
 
     glAttachShader(m_ID, vertexID);
@@ -58,20 +83,9 @@ Shader::Shader(const char *vertFile, const char *fragFile)
     glDeleteShader(fragmentID);
 }
 
-Shader::~Shader()
+void Shader::Delete()
 {
-    std::cout << "Deleting shader (id: " << m_ID << ")" << std::endl;
     glDeleteProgram(m_ID);
-}
-
-void Shader::Bind()
-{
-    glUseProgram(m_ID);
-}
-
-void Shader::Unbind()
-{
-    glUseProgram(0);
 }
 
 unsigned int Shader::GetID()
@@ -81,9 +95,9 @@ unsigned int Shader::GetID()
 
 int Shader::GetUniformLocation(const std::string &name)
 {
-    if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+    if (m_UniformMap.find(name) != m_UniformMap.end())
     {
-        return m_UniformLocationCache[name];
+        return m_UniformMap[name];
     }
 
     int location = glGetUniformLocation(m_ID, name.c_str());
@@ -93,7 +107,7 @@ int Shader::GetUniformLocation(const std::string &name)
         std::cout << "Uniform " << name << " not found. Ignoring..." << std::endl;
     }
 
-    m_UniformLocationCache[name] = location;
+    m_UniformMap[name] = location;
 
     return location;
 }

@@ -15,7 +15,7 @@ public:
     // Singleton approach, assuming that if game is using a texture map
     // then game is probably only going to be loading in a single texture.
 
-    static void LoadTexture(int width, int height, int resolution);
+    static void Configure(int width, int height, int resolution);
 
     static std::vector<std::vector<float>> GetTextureCoordinates()
     {

@@ -8,8 +8,7 @@ Player::Player(glm::vec3 position)
     Camera::SetPosition(position);
     EntityHandler::AddEntityToQueue(this);
 
-    m_RenderDistance = 6;
-    m_ChunkSize = World::GetChunkSize();
+    m_RenderDistance = 4;
 }
 
 Player::~Player()
@@ -18,27 +17,19 @@ Player::~Player()
 
 void Player::Update()
 {
+    if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(), GLFW_MOUSE_BUTTON_LEFT))
+    {
+        if (m_Cooldown + 0.2 < glfwGetTime())
+            Player::BreakBlock();
+    }
+    if (glfwGetKey(WindowHandler::GetGLFWWindow(), GLFW_KEY_HOME))
+    {
+        Camera::SetPosition({0.0f, 100.0f, 0.0f});
+    }
+
     m_Position = Camera::GetPosition();
 
-    glm::ivec3 newChunkIndex;
-
-    if (m_Position.x < 0.0f)
-    {
-        newChunkIndex.x = ((float)m_Position.x - m_ChunkSize) / m_ChunkSize;
-    }
-    else
-    {
-        newChunkIndex.x = ((float)m_Position.x) / m_ChunkSize;
-    }
-
-    if (m_Position.z < 0.0f)
-    {
-        newChunkIndex.z = ((float)m_Position.z - m_ChunkSize) / m_ChunkSize;
-    }
-    else
-    {
-        newChunkIndex.z = ((float)m_Position.z) / m_ChunkSize;
-    }
+    glm::ivec3 newChunkIndex = World::GetChunkIndexFromWorldCoord(m_Position);
 
     if (newChunkIndex != m_ChunkIndex)
     {
@@ -63,10 +54,6 @@ void Player::UpdateRequestedChunks()
             m_RequestedChunks.insert(glm::ivec3(x, 0, z));
         }
     }
-
-    // Pass set of new chunks to the world to deal with
-
-    // std::thread thread(&p_World->ProcessRequestedChunks, m_RequestedChunks);
 
     p_World->ProcessRequestedChunks(m_RequestedChunks);
 }

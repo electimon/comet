@@ -16,6 +16,7 @@ World::World()
 
 World::~World()
 {
+    m_Thread.join();
     std::cout << "World::~World()" << std::endl;
 }
 
@@ -62,10 +63,12 @@ void World::ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &request
 
 void World::WorldThread()
 {
-    m_EndThread = false;
-
-    while (!m_EndThread)
+    while (true)
     {
+
+        // SetBlock(0, 100 + i, 0, 1);
+        // i++;
+
         // Create new chunks
         for (const glm::ivec3 &index : m_ChunksToCreate)
         {
@@ -91,6 +94,6 @@ void World::WorldThread()
         }
         m_ChunksToDelete.clear();
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }

@@ -24,12 +24,31 @@ public:
 
     void SetWorld(World *world) { p_World = world; }
 
+    void BreakBlock()
+    {
+        float step = 0.1f;
+        glm::vec3 direction = Camera::GetDirection();
+        glm::vec3 position = Camera::GetPosition();
+
+        while (glm::length(direction) < 5.0f)
+        {
+            direction += direction * step;
+            if(p_World->GetBlock(position + direction) != 0)
+            {
+                p_World->SetBlock(position + direction, 0);
+                m_Cooldown = glfwGetTime();
+                return;
+            }
+        }
+    }
+
 private:
     glm::vec3 m_Position;
     glm::ivec3 m_ChunkIndex;
     std::unordered_set<glm::ivec3> m_RequestedChunks;
     int m_RenderDistance;
-    int m_ChunkSize;
+
+    double m_Cooldown;
 
     World *p_World;
 };
