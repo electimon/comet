@@ -7,6 +7,7 @@
 
 #include "handlers/Entity.h"
 #include "handlers/EntityHandler.h"
+#include "handlers/MouseHandler.h"
 
 #include "world/Chunk.h"
 #include "world/World.h"
@@ -36,7 +37,6 @@ public:
             if(p_World->GetBlock(position + direction) != 0)
             {
                 p_World->SetBlock(position + direction, 0);
-                m_Cooldown = glfwGetTime();
                 return;
             }
         }
@@ -47,8 +47,6 @@ private:
     glm::ivec3 m_ChunkIndex;
     std::unordered_set<glm::ivec3> m_RequestedChunks;
     int m_RenderDistance;
-
-    double m_Cooldown;
 
     World *p_World;
 };

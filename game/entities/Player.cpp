@@ -17,11 +17,11 @@ Player::~Player()
 
 void Player::Update()
 {
-    if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(), GLFW_MOUSE_BUTTON_LEFT))
+    if (MouseHandler::GetLeftClick())
     {
-        if (m_Cooldown + 0.2 < glfwGetTime())
-            Player::BreakBlock();
+        Player::BreakBlock();
     }
+
     if (glfwGetKey(WindowHandler::GetGLFWWindow(), GLFW_KEY_HOME))
     {
         Camera::SetPosition({0.0f, 100.0f, 0.0f});

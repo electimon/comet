@@ -50,6 +50,9 @@ void Engine::MainThread()
         // Clears color and depth buffers
         Renderer::NewFrame();
 
+        // Update all handlers
+        MouseHandler::UpdateStates();
+
         // Update camera views for inputs
         Camera::Update();
         // Reset accumulated movement

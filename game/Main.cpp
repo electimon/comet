@@ -15,8 +15,8 @@ int main(void)
     Engine::Initialize();
 
     // Shader Setup
-    Shader basic("../source/render/shaders/basic.vert",
-                 "../source/render/shaders/basic.frag");
+    Shader basic("../game/shaders/basic.vert",
+                 "../game/shaders/basic.frag");
 
     Texture texture("../game/textures/terrain.png");
 

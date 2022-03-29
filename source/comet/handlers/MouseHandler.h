@@ -15,6 +15,54 @@ public:
         return s_Instance;
     }
 
+    static void UpdateStates()
+    {
+        if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+        {
+            if (!GetInstance().m_LeftClick && !GetInstance().m_LeftHold)
+            {
+                GetInstance().m_LeftClick = true;
+            }
+            else
+            {
+                GetInstance().m_LeftClick = false;
+                GetInstance().m_LeftHold = true;
+            }
+        }
+        else
+        {
+            GetInstance().m_LeftClick = false;
+            GetInstance().m_LeftHold = false;
+        }
+
+        if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+        {
+            if (!GetInstance().m_RightClick && !GetInstance().m_RightHold)
+            {
+                GetInstance().m_RightClick = true;
+            }
+            else
+            {
+                GetInstance().m_RightClick = false;
+                GetInstance().m_RightHold = true;
+            }
+        }
+        else
+        {
+            GetInstance().m_RightClick = false;
+            GetInstance().m_RightHold = false;
+        }
+
+    }
+
+    static void ResetStates()
+    {
+        GetInstance().m_LeftClick = false;
+        GetInstance().m_LeftHold = false;
+        GetInstance().m_RightClick = false;
+        GetInstance().m_RightHold = false;
+    }
+
     static void SetupCallbacks();
     static void ResetMovement() { GetInstance().m_MovementSinceLastFrame = {0.0, 0.0}; }
 
@@ -34,6 +82,11 @@ public:
         GetInstance().m_CursorCaptured = false;
     }
 
+    static bool GetLeftClick() {return GetInstance().m_LeftClick;};
+    static bool GetLeftHold() {return GetInstance().m_LeftHold;};
+    static bool GetRightClick() {return GetInstance().m_RightClick;};
+    static bool GetRightHold() {return GetInstance().m_RightHold;};
+
 private:
     MouseHandler() {}
     MouseHandler(MouseHandler const &);
@@ -47,4 +100,8 @@ private:
 
     std::array<double, 2> m_MovementSinceLastFrame;
     bool m_CursorCaptured;
+    bool m_LeftClick;
+    bool m_LeftHold;
+    bool m_RightClick;
+    bool m_RightHold;
 };
