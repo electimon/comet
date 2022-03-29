@@ -20,19 +20,19 @@ public:
     }
     static glm::vec2 GetTopLeft(int index)
     {
-        return glm::vec2(GetInstance().m_TextureCoordinates[index][0], GetInstance().m_TextureCoordinates[index][3]);
+        return glm::vec2(GetInstance().m_TextureCoordinates[index][0], GetInstance().m_TextureCoordinates[index][2]);
     }
     static glm::vec2 GetTopRight(int index)
     {
-        return glm::vec2(GetInstance().m_TextureCoordinates[index][1], GetInstance().m_TextureCoordinates[index][3]);
+        return glm::vec2(GetInstance().m_TextureCoordinates[index][1], GetInstance().m_TextureCoordinates[index][2]);
     }
     static glm::vec2 GetBottomLeft(int index)
     {
-        return glm::vec2(GetInstance().m_TextureCoordinates[index][0], GetInstance().m_TextureCoordinates[index][2]);
+        return glm::vec2(GetInstance().m_TextureCoordinates[index][0], GetInstance().m_TextureCoordinates[index][3]);
     }
     static glm::vec2 GetBottomRight(int index)
     {
-        return glm::vec2(GetInstance().m_TextureCoordinates[index][1], GetInstance().m_TextureCoordinates[index][2]);
+        return glm::vec2(GetInstance().m_TextureCoordinates[index][1], GetInstance().m_TextureCoordinates[index][3]);
     }
 
 private:

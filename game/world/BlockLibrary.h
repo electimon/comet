@@ -14,46 +14,46 @@ public:
 
     static void Initialize()
     {
-        std::vector<int> Debug{16, 16, 16, 16, 16, 16}; // 0
+        std::vector<int> Debug{47, 47, 47, 47, 47, 47}; // 0
         GetInstance().m_BlockIndices.push_back(Debug);
 
-        std::vector<int> Stone{241, 241, 241, 241, 241, 241}; // 1
+        std::vector<int> Stone{1, 1, 1, 1, 1, 1}; // 1
         GetInstance().m_BlockIndices.push_back(Stone);
 
-        std::vector<int> Grass{243, 243, 240, 242, 243, 243}; // 2
+        std::vector<int> Grass{3, 3, 0, 2, 3, 3}; // 2
         GetInstance().m_BlockIndices.push_back(Grass);
 
-        std::vector<int> Dirt{242, 242, 242, 242, 242, 242}; // 3
+        std::vector<int> Dirt{2, 2, 2, 2, 2, 2}; // 3
         GetInstance().m_BlockIndices.push_back(Dirt);
 
-        std::vector<int> Water{63, 63, 63, 63, 63, 63}; // 4
+        std::vector<int> Water{207, 207, 207, 207, 207, 207}; // 4
         GetInstance().m_BlockIndices.push_back(Water);
 
-        std::vector<int> Log{228, 228, 229, 229, 228, 228}; // 5
+        std::vector<int> Log{20, 20, 21, 21, 20, 20}; // 5
         GetInstance().m_BlockIndices.push_back(Log);
 
-        std::vector<int> Leaves{197, 197, 197, 197, 197, 197}; // 6
+        std::vector<int> Leaves{53, 53, 53, 53, 53, 53}; // 6
         GetInstance().m_BlockIndices.push_back(Leaves);
 
-        std::vector<int> Sand{226, 226, 226, 226, 226, 226}; // 7
+        std::vector<int> Sand{18, 18, 18, 18, 18, 18}; // 7
         GetInstance().m_BlockIndices.push_back(Sand);
 
-        std::vector<int> Bedrock{225, 225, 225, 225, 225, 225}; // 8
+        std::vector<int> Bedrock{17, 17, 17, 17, 17, 17}; // 8
         GetInstance().m_BlockIndices.push_back(Bedrock);
 
-        std::vector<int> Cobblestone{224, 224, 224, 224, 224, 224}; // 9
+        std::vector<int> Cobblestone{16, 16, 16, 16, 16, 16}; // 9
         GetInstance().m_BlockIndices.push_back(Cobblestone);
 
-        std::vector<int> CoalOre{210, 210, 210, 210, 210, 210}; // 10
+        std::vector<int> CoalOre{34, 34, 34, 34, 34, 34}; // 10
         GetInstance().m_BlockIndices.push_back(CoalOre);
 
-        std::vector<int> IronOre{209, 209, 209, 209, 209, 209}; // 11
+        std::vector<int> IronOre{33, 33, 33, 33, 33, 33}; // 11
         GetInstance().m_BlockIndices.push_back(IronOre);
 
-        std::vector<int> GoldOre{208, 208, 208, 208, 208, 208}; // 12
+        std::vector<int> GoldOre{32, 32, 32, 32, 32, 32}; // 12
         GetInstance().m_BlockIndices.push_back(GoldOre);
 
-        std::vector<int> DiamondOre{194, 194, 194, 194, 194, 194}; // 13
+        std::vector<int> DiamondOre{66, 66, 66, 66, 66, 66}; // 13
         GetInstance().m_BlockIndices.push_back(DiamondOre);
     }
 
