@@ -19,8 +19,7 @@ int main(void)
     char fragshader[] = "../source/render/shaders/basic.frag";
     Shader basic(vertexshader, fragshader);
 
-    Texture texture;
-    texture.Create("../game/textures/terrain.png");
+    Texture texture("../game/textures/terrain.png");
     TextureMap::LoadTexture(texture.GetWidth(), texture.GetHeight(), 16);
 
     World world;
