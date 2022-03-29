@@ -6,8 +6,9 @@
 class Texture
 {
 public:
-    Texture(){}
-    ~Texture(){}
+    Texture() {}
+    Texture(const char *filepath) { Create(filepath); }
+    ~Texture() {}
 
     void Create(const char *filepath)
     {
