@@ -3,11 +3,11 @@
 class Block
 {
 public:
-    Block(unsigned char id);
+    Block(unsigned __int8 id);
     ~Block();
 
-    unsigned char GetID();
+    unsigned __int8 GetID();
 
 private:
-    unsigned char m_ID;
+    unsigned __int8 m_ID;
 };

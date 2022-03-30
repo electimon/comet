@@ -26,8 +26,6 @@ public:
     void UpdateGeometry();
     void Finalize();
 
-    void SetShader(const Shader &shader) { m_Shader = shader; }
-
     bool IsPushedToGPU() { return m_PushedToGPU; }
     float GetTransparency() { return m_TimeDelta; }
     double GetTimeDelta() { return m_TimeDelta; }
