@@ -12,9 +12,6 @@ public:
     }
     static void Initialize()
     {
-        GetInstance().m_ChunkHeight = 512;
-        GetInstance().m_ChunkSize = 16;
-
         GetInstance().m_MediumNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
         GetInstance().m_MediumNoise.SetFrequency(0.01f);
         GetInstance().m_MediumNoise.SetSeed(1337);
@@ -57,7 +54,35 @@ public:
         GetInstance().m_CaveNoise.SetFractalGain(0.05f);
         GetInstance().m_CaveNoise.SetFractalWeightedStrength(0.0f);
         GetInstance().m_CaveNoise.SetFractalPingPongStrength(2.0f);
+
+        GetInstance().m_OpenSimplex2_1f.SetFrequency(0.01f);
+        GetInstance().m_OpenSimplex2_2f.SetFrequency(0.02f);
+        GetInstance().m_OpenSimplex2_4f.SetFrequency(0.04f);
+        GetInstance().m_OpenSimplex2_8f.SetFrequency(0.08f);
+        GetInstance().m_OpenSimplex2_16f.SetFrequency(0.16f);
     }
+
+    static float GetOpenSimplex2_1f(int x, int z)
+    {
+        return GetInstance().m_OpenSimplex2_1f.GetNoise(static_cast<float>(x), static_cast<float>(z));
+    }
+    static float GetOpenSimplex2_2f(int x, int z)
+    {
+        return GetInstance().m_OpenSimplex2_2f.GetNoise(static_cast<float>(x), static_cast<float>(z));
+    }
+    static float GetOpenSimplex2_4f(int x, int z)
+    {
+        return GetInstance().m_OpenSimplex2_4f.GetNoise(static_cast<float>(x), static_cast<float>(z));
+    }
+    static float GetOpenSimplex2_8f(int x, int z)
+    {
+        return GetInstance().m_OpenSimplex2_8f.GetNoise(static_cast<float>(x), static_cast<float>(z));
+    }
+    static float GetOpenSimplex2_16f(int x, int z)
+    {
+        return GetInstance().m_OpenSimplex2_16f.GetNoise(static_cast<float>(x), static_cast<float>(z));
+    }
+
     static float GetCaveNoise(int x, int y, int z)
     {
         return GetInstance().m_CaveNoise.GetNoise(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
@@ -105,7 +130,9 @@ private:
     FastNoiseLite m_BiomeNoise;
     FastNoiseLite m_CaveNoise;
 
-    glm::ivec3 m_ChunkIndex;
-    int m_ChunkHeight;
-    int m_ChunkSize;
+    FastNoiseLite m_OpenSimplex2_1f;
+    FastNoiseLite m_OpenSimplex2_2f;
+    FastNoiseLite m_OpenSimplex2_4f;
+    FastNoiseLite m_OpenSimplex2_8f;
+    FastNoiseLite m_OpenSimplex2_16f;
 };
