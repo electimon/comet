@@ -55,11 +55,11 @@ public:
         GetInstance().m_CaveNoise.SetFractalWeightedStrength(0.0f);
         GetInstance().m_CaveNoise.SetFractalPingPongStrength(2.0f);
 
-        GetInstance().m_OpenSimplex2_1f.SetFrequency(0.01f);
-        GetInstance().m_OpenSimplex2_2f.SetFrequency(0.02f);
-        GetInstance().m_OpenSimplex2_4f.SetFrequency(0.04f);
-        GetInstance().m_OpenSimplex2_8f.SetFrequency(0.08f);
-        GetInstance().m_OpenSimplex2_16f.SetFrequency(0.16f);
+        GetInstance().m_OpenSimplex2_1f.SetFrequency(0.004f);
+        GetInstance().m_OpenSimplex2_2f.SetFrequency(0.008f);
+        GetInstance().m_OpenSimplex2_4f.SetFrequency(0.016f);
+        GetInstance().m_OpenSimplex2_8f.SetFrequency(0.032f);
+        GetInstance().m_OpenSimplex2_16f.SetFrequency(0.064f);
     }
 
     static float GetOpenSimplex2_1f(int x, int z)

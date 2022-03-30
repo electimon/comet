@@ -41,31 +41,24 @@ Chunk::~Chunk()
 void Chunk::GenerateSurface()
 {
     float height = 0.0f;
-    float biome = 0.0f;
-    float chaos = 0.0f;
+    int y = 0;
 
     for (int x = 0; x < CHUNK_WIDTH; x++)
     {
         for (int z = 0; z < CHUNK_WIDTH; z++)
         {
             // Calculating a surface height with the noise
-            height = ChunkGenerator::GetMediumNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
-            biome = ChunkGenerator::GetBiomeNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
-            chaos = ChunkGenerator::GetMediumChaotic((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            height =
+                1.0000f * ChunkGenerator::GetOpenSimplex2_1f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
+                0.5000f * ChunkGenerator::GetOpenSimplex2_2f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
+                0.2500f * ChunkGenerator::GetOpenSimplex2_4f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
+                0.1250f * ChunkGenerator::GetOpenSimplex2_8f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
+                0.0625f * ChunkGenerator::GetOpenSimplex2_16f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            height *= 20.0f;
+            height += 40.0f;
+            y = static_cast<int>(height);
 
-            height += 2.0f; // 1 to 3
-            height *= 2.0f; // 5 to 15
-
-            biome += 2.0f;  // 1 to 3
-            biome *= 20.0f; // 10 to 30
-
-            // chaos += 1.0f; // 0 to 2
-            chaos *= 4.0f; // -10 to 10
-
-            int y = static_cast<int>(chaos + biome + height);
-            // int y = static_cast<int>(height + biome + chaos);
-
-            SetHeight(x, z, y);
+            SetHeight(x, z, height);
 
             SetBlock(x, y, z, 2);     // grass
             SetBlock(x, y - 1, z, 3); // dirt
