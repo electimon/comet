@@ -32,7 +32,7 @@ public:
         std::vector<unsigned __int8> Log{20, 20, 21, 21, 20, 20}; // 5
         GetInstance().m_BlockIndices.push_back(Log);
 
-        std::vector<unsigned __int8> Leaves{52, 52, 52, 52, 52, 52}; // 6
+        std::vector<unsigned __int8> Leaves{53, 53, 53, 53, 53, 53}; // 6
         GetInstance().m_BlockIndices.push_back(Leaves);
 
         std::vector<unsigned __int8> Sand{18, 18, 18, 18, 18, 18}; // 7

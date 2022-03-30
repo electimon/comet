@@ -1,15 +1,5 @@
 #include "Renderer.h"
 
-#include "glm/gtc/constants.hpp"
-
-#include "handlers/WindowHandler.h"
-
-#include "render/containers/Mesh.h"
-#include "render/containers/Shader.h"
-#include "render/Camera.h"
-
-#include "stb_image.h"
-
 void Renderer::Initialize()
 {
     // Enables culling of the back faces

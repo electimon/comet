@@ -1,7 +1,5 @@
 #pragma once
 
-#include "render/Camera.h"
-
 class Entity
 {
 public:

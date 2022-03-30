@@ -1,6 +1,5 @@
 #include "MouseHandler.h"
 
-
 void MouseHandler::SetupCallbacks()
 {
     glfwSetWindowUserPointer(glfwGetCurrentContext(), &MouseHandler::GetInstance());

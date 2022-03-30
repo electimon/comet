@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "glad/gl.h"
-#include "glfw/glfw3.h"
+#include <glad/gl.h>
+#include <glfw/glfw3.h>
 
 class WindowHandler
 {

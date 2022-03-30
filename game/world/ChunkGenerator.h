@@ -14,25 +14,20 @@ public:
     {
         GetInstance().m_MediumNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
         GetInstance().m_MediumNoise.SetFrequency(0.01f);
-        GetInstance().m_MediumNoise.SetSeed(1337);
 
         GetInstance().m_SlowNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
         GetInstance().m_SlowNoise.SetFrequency(0.001f);
-        GetInstance().m_SlowNoise.SetSeed(1337);
 
         GetInstance().m_CellularNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Cellular);
         GetInstance().m_CellularNoise.SetFrequency(0.01f);
-        GetInstance().m_CellularNoise.SetSeed(1337);
 
         GetInstance().m_FastNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
         GetInstance().m_FastNoise.SetFrequency(1.0f);
-        GetInstance().m_FastNoise.SetSeed(1337);
 
         GetInstance().m_MediumChaotic.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
         GetInstance().m_MediumChaotic.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
         GetInstance().m_MediumChaotic.SetFractalOctaves(4);
         GetInstance().m_MediumChaotic.SetFractalLacunarity(2.00f);
-        // GetInstance().m_MediumChaotic.SetFractalGain(0.5f);
         GetInstance().m_MediumChaotic.SetFrequency(0.01f);
 
         GetInstance().m_BiomeNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Value);
@@ -44,10 +39,6 @@ public:
 
         GetInstance().m_CaveNoise.SetFrequency(0.01f);
         GetInstance().m_CaveNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
-        // GetInstance().m_CaveNoise.SetRotationType3D(FastNoiseLite::RotationType3D::RotationType3D_ImproveXYPlanes);
-        // GetInstance().m_CaveNoise.SetCellularDistanceFunction(FastNoiseLite::CellularDistanceFunction::CellularDistanceFunction_EuclideanSq);
-        // GetInstance().m_CaveNoise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_Distance2Div);
-        // GetInstance().m_CaveNoise.SetCellularJitter(1.0f);
         GetInstance().m_CaveNoise.SetFractalType(FastNoiseLite::FractalType::FractalType_PingPong);
         GetInstance().m_CaveNoise.SetFractalOctaves(5);
         GetInstance().m_CaveNoise.SetFractalLacunarity(2.0f);
@@ -62,23 +53,23 @@ public:
         GetInstance().m_OpenSimplex2_16f.SetFrequency(0.064f);
     }
 
-    static float GetOpenSimplex2_1f(int x, int z)
+    static float GetPerlin1(int x, int z)
     {
         return GetInstance().m_OpenSimplex2_1f.GetNoise(static_cast<float>(x), static_cast<float>(z));
     }
-    static float GetOpenSimplex2_2f(int x, int z)
+    static float GetPerlin2(int x, int z)
     {
         return GetInstance().m_OpenSimplex2_2f.GetNoise(static_cast<float>(x), static_cast<float>(z));
     }
-    static float GetOpenSimplex2_4f(int x, int z)
+    static float GetPerlin4(int x, int z)
     {
         return GetInstance().m_OpenSimplex2_4f.GetNoise(static_cast<float>(x), static_cast<float>(z));
     }
-    static float GetOpenSimplex2_8f(int x, int z)
+    static float GetPerlin8(int x, int z)
     {
         return GetInstance().m_OpenSimplex2_8f.GetNoise(static_cast<float>(x), static_cast<float>(z));
     }
-    static float GetOpenSimplex2_16f(int x, int z)
+    static float GetPerlin16(int x, int z)
     {
         return GetInstance().m_OpenSimplex2_16f.GetNoise(static_cast<float>(x), static_cast<float>(z));
     }

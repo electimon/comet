@@ -1,11 +1,12 @@
 #pragma once
 
-#include "glfw/glfw3.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include <glfw/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-#include "Engine.h"
-#include "handlers/WindowHandler.h"
+#include "../comet/Engine.h"
+#include "../comet/handlers/WindowHandler.h"
+#include "../comet/handlers/MouseHandler.h"
 
 class Camera
 {
@@ -28,13 +29,13 @@ public:
     static void SetYaw(float yaw) { GetInstance().m_Yaw = yaw; }
     static void SetPitch(float pitch) { GetInstance().m_Pitch = pitch; }
     static void SetRoll(float roll) { GetInstance().m_Roll = roll; }
-    static void SetPosition(const glm::vec3 &position) {GetInstance().m_Position = position;}
+    static void SetPosition(const glm::vec3 &position) { GetInstance().m_Position = position; }
 
     static glm::mat4 GetViewMatrix() { return GetInstance().m_ViewMatrix; }
     static glm::mat4 GetProjMatrix() { return GetInstance().m_ProjMatrix; }
     static glm::vec3 GetForwardVector() { return GetInstance().m_ForwardVector; }
     static glm::vec3 GetDirection() { return GetInstance().m_Direction; }
-    static glm::vec3 GetPosition() {return GetInstance().m_Position;}
+    static glm::vec3 GetPosition() { return GetInstance().m_Position; }
 
 private:
     Camera() {}

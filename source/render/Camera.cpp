@@ -1,7 +1,5 @@
 #include "Camera.h"
 
-#include "handlers/MouseHandler.h"
-
 void Camera::Initialize()
 {
     Camera &camera = GetInstance();

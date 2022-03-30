@@ -1,7 +1,5 @@
 #include "KeyboardHandler.h"
 
-#include "MouseHandler.h"
-
 void KeyboardHandler::SetupCallbacks()
 {
     glfwSetWindowUserPointer(glfwGetCurrentContext(), &KeyboardHandler::GetInstance());

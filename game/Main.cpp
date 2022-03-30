@@ -1,8 +1,4 @@
-#include "comet/Engine.h"
-
-#include "TextureMap.h"
-#include "Texture.h"
-#include "containers/Shader.h"
+#include <Engine.h>
 
 #include "world/World.h"
 #include "world/Chunk.h"

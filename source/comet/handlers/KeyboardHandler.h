@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MouseHandler.h"
 #include "WindowHandler.h"
 
 class KeyboardHandler

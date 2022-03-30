@@ -5,6 +5,19 @@
 #include <thread>
 #include <chrono>
 
+#include "handlers/MouseHandler.h"
+#include "handlers/KeyboardHandler.h"
+#include "handlers/EventHandler.h"
+#include "handlers/ErrorHandler.h"
+#include "handlers/EntityHandler.h"
+
+#include "../render/Renderer.h"
+#include "../render/Camera.h"
+#include "../render/DebugInfoUI.h"
+#include "../render/Texture.h"
+#include "../render/TextureMap.h"
+#include "../render/containers/Shader.h"
+
 #include "Timer.h"
 
 class Engine
@@ -21,7 +34,7 @@ public:
     static void MainThread();
 
     static double GetTimeDelta() { return GetInstance().m_TimeDelta; }
-    
+
     static bool ShouldClose() { return GetInstance().m_ShouldClose; }
     static void CloseWindow() { GetInstance().m_ShouldClose = true; }
 

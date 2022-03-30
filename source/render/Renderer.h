@@ -5,10 +5,17 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "glm/gtx/hash.hpp"
+#include <glm/gtx/hash.hpp>
+#include <glm/gtc/constants.hpp>
 
-#include "render/containers/Mesh.h"
-#include "render/containers/Shader.h"
+#include <stb_image.h>
+
+#include "../comet/handlers/WindowHandler.h"
+
+#include "containers/Mesh.h"
+#include "containers/Shader.h"
+
+#include "Camera.h"
 
 class Renderer
 {

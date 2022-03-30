@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "glfw/glfw3.h"
+#include <glfw/glfw3.h>
 
 #include "WindowHandler.h"
 
@@ -52,7 +52,6 @@ public:
             GetInstance().m_RightClick = false;
             GetInstance().m_RightHold = false;
         }
-
     }
 
     static void ResetStates()
@@ -82,10 +81,10 @@ public:
         GetInstance().m_CursorCaptured = false;
     }
 
-    static bool GetLeftClick() {return GetInstance().m_LeftClick;};
-    static bool GetLeftHold() {return GetInstance().m_LeftHold;};
-    static bool GetRightClick() {return GetInstance().m_RightClick;};
-    static bool GetRightHold() {return GetInstance().m_RightHold;};
+    static bool GetLeftClick() { return GetInstance().m_LeftClick; };
+    static bool GetLeftHold() { return GetInstance().m_LeftHold; };
+    static bool GetRightClick() { return GetInstance().m_RightClick; };
+    static bool GetRightHold() { return GetInstance().m_RightHold; };
 
 private:
     MouseHandler() {}

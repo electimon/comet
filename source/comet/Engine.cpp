@@ -1,16 +1,5 @@
 #include "Engine.h"
 
-#include "handlers/MouseHandler.h"
-#include "handlers/KeyboardHandler.h"
-#include "handlers/EventHandler.h"
-#include "handlers/ErrorHandler.h"
-#include "handlers/EntityHandler.h"
-
-#include "TextureMap.h"
-#include "Renderer.h"
-#include "Camera.h"
-#include "DebugInfoUI.h"
-
 void Engine::Initialize()
 {
     GetInstance().m_TimeDelta = 0.0;
@@ -60,9 +49,7 @@ void Engine::MainThread()
         // Updates entities with an update function
         EntityHandler::UpdateEntities();
 
-
         // ALL DRAWING SHOULD HAPPEN AFTER ANY ENTITY MOVEMENT
-
 
         // Drawing the mesh render queue
         Renderer::DrawMeshQueue();

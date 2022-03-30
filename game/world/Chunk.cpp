@@ -49,11 +49,11 @@ void Chunk::GenerateSurface()
         {
             // Calculating a surface height with the noise
             height =
-                1.0000f * ChunkGenerator::GetOpenSimplex2_1f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
-                0.5000f * ChunkGenerator::GetOpenSimplex2_2f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
-                0.2500f * ChunkGenerator::GetOpenSimplex2_4f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
-                0.1250f * ChunkGenerator::GetOpenSimplex2_8f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
-                0.0625f * ChunkGenerator::GetOpenSimplex2_16f((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+                1.0000f * ChunkGenerator::GetPerlin1((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
+                0.5000f * ChunkGenerator::GetPerlin2((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
+                0.2500f * ChunkGenerator::GetPerlin4((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
+                0.1250f * ChunkGenerator::GetPerlin8((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
+                0.0625f * ChunkGenerator::GetPerlin16((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
             height *= 20.0f;
             height += 40.0f;
             y = static_cast<int>(height);
