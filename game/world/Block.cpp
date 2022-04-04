@@ -1,6 +1,6 @@
 #include "Block.h"
 
-Block::Block(unsigned __int8 id)
+Block::Block(unsigned char id)
     : m_ID(id)
 {
 }
@@ -9,7 +9,7 @@ Block::~Block()
 {
 }
 
-unsigned __int8 Block::GetID()
+unsigned char Block::GetID()
 {
     return m_ID;
 }

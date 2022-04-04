@@ -10,7 +10,7 @@
 
 #include <stb_image.h>
 
-#include "../comet/handlers/WindowHandler.h"
+#include "../handlers/WindowHandler.h"
 
 #include "containers/Mesh.h"
 #include "containers/Shader.h"

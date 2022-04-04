@@ -1,11 +1,10 @@
 #include "Chunk.h"
 
-#include "glm/gtc/random.hpp"
-
-#include "Renderer.h"
-#include "containers/Vertex.h"
 #include "FastNoiseLite.h"
-#include "TextureMap.h"
+
+#include "render/Renderer.h"
+#include "render/containers/Vertex.h"
+#include "render/TextureMap.h"
 
 #include "World.h"
 #include "Timer.h"

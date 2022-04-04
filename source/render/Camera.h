@@ -1,12 +1,12 @@
 #pragma once
 
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "../comet/Engine.h"
-#include "../comet/handlers/WindowHandler.h"
-#include "../comet/handlers/MouseHandler.h"
+#include "../Engine.h"
+#include "../handlers/WindowHandler.h"
+#include "../handlers/MouseHandler.h"
 
 class Camera
 {

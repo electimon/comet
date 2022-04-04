@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
+set(CMAKE_CXX_STANDARD 23)
+
 project(${PROJECT_NAME})
 
 if(${CMAKE_CL_64})
@@ -10,9 +12,8 @@ endif(${CMAKE_CL_64})
 set(CMAKE_DEBUG_POSTFIX -debug)
 
 include_directories(
+    game
     source
-    source/comet
-    source/render
 
     libraries/glad/include
     libraries/glfw/include
@@ -21,7 +22,6 @@ include_directories(
     libraries/stb_image/include
     libraries/FastNoiseLite/include
 
-    game
 )
 
 # Added so that glad would shut the fuck up
@@ -57,9 +57,9 @@ add_executable(
     libraries/stb_image/source/stb_image.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} 
-    PUBLIC glfw3 
+target_link_libraries(${PROJECT_NAME}
+    glfw3.a
 )
 
 # Added to that OpenGL context does not start terminal
-set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup /SUBSYSTEM:WINDOWS")
+# set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup /SUBSYSTEM:WINDOWS")

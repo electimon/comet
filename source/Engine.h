@@ -11,12 +11,12 @@
 #include "handlers/ErrorHandler.h"
 #include "handlers/EntityHandler.h"
 
-#include "../render/Renderer.h"
-#include "../render/Camera.h"
-#include "../render/DebugInfoUI.h"
-#include "../render/Texture.h"
-#include "../render/TextureMap.h"
-#include "../render/containers/Shader.h"
+#include "render/Renderer.h"
+#include "render/Camera.h"
+#include "render/DebugInfoUI.h"
+#include "render/Texture.h"
+#include "render/TextureMap.h"
+#include "render/containers/Shader.h"
 
 #include "Timer.h"
 

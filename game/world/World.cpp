@@ -19,6 +19,7 @@ World::World()
 World::~World()
 {
     m_Thread.join();
+
     std::cout << "World::~World()" << std::endl;
 }
 
