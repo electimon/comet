@@ -12,7 +12,7 @@ int main(void)
 
     // Shader Setup
     Shader blockShader("../game/shaders/block.vert",
-                 "../game/shaders/block.frag");
+                       "../game/shaders/block.frag");
 
     Texture texture("../game/textures/terrain.png");
 
@@ -21,7 +21,7 @@ int main(void)
     World world;
     world.SetShader(blockShader);
 
-    Player player(glm::vec3(0.0f, 100.0f, 0.0f));
+    Player player(glm::vec3(0.0f, 60.0f, 0.0f));
     player.SetWorld(&world);
 
     Engine::MainThread();

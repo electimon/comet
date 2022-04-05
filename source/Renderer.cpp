@@ -57,6 +57,7 @@ void Renderer::DrawMeshQueue()
         mesh.second.Bind();
 
         // Uniforms
+        glUniform3iv(glGetUniformLocation(shaderID, "u_Index"), 1, &mesh.first[0]);
         glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.second.GetTransparency());
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.second.GetModelMatrix()[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
