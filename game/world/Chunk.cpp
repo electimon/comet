@@ -32,10 +32,10 @@ Chunk::Chunk(glm::ivec3 id)
         char block;
         std::ifstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
 
-        for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i++)
+        for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i += 4)
         {
-            blockDataFile >> block;
-            m_BlockData[i] = block;
+            blockDataFile >> m_BlockData[i] >> m_BlockData[i+1] >> m_BlockData[i+2] >> m_BlockData[i+3];
+            // m_BlockData[i] = block;
         }
     }
     else
@@ -61,10 +61,12 @@ Chunk::~Chunk()
 
     std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
 
-    for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i++)
-    {
-        blockDataFile << m_BlockData[i] << "\n";
-    }
+    std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, "\n"));
+
+    // for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i++)
+    // {
+    //     blockDataFile << m_BlockData[i] << "\n";
+    // }
 
     blockDataFile.close();
 }
