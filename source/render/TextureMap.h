@@ -42,11 +42,11 @@ public:
 private:
     TextureMap() {}
     TextureMap(TextureMap const &);
-    void operator=(TextureMap const &);
+    void operator=(TextureMap const &) {}
 
-    unsigned int m_Width;      // horizontal pixel count
-    unsigned int m_Height;     // vertical pixel count
-    unsigned int m_Resolution; // resolution of each texture
+    unsigned int m_Width = 0;      // horizontal pixel count
+    unsigned int m_Height = 0;     // vertical pixel count
+    unsigned int m_Resolution = 0; // resolution of each texture
 
     // vector of 4x1 vectors (left, right, bottom, top coordinates)
     std::vector<std::vector<float>> m_Coords;

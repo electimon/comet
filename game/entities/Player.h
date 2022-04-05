@@ -34,10 +34,10 @@ public:
         while (glm::length(direction) < 5.0f)
         {
             direction += direction * step;
-            if(p_World->GetBlock(position + direction) != 0)
+            if (p_World->GetBlock(position + direction) != 0)
             {
                 p_World->SetBlock(position + direction, 0);
-                return; 
+                return;
             }
         }
     }

@@ -89,18 +89,18 @@ public:
 private:
     MouseHandler() {}
     MouseHandler(MouseHandler const &);
-    void operator=(MouseHandler const &);
+    void operator=(MouseHandler const &) {}
 
-    GLFWwindow *p_GLFWwindow;
+    GLFWwindow *p_GLFWwindow = nullptr;
 
     void ScrollCallback(double xoffset, double yoffset);
     void MouseButtonCallback(int button, int action, int mods);
     void CursorPosCallback(double xpos, double ypos);
 
-    std::array<double, 2> m_MovementSinceLastFrame;
-    bool m_CursorCaptured;
-    bool m_LeftClick;
-    bool m_LeftHold;
-    bool m_RightClick;
-    bool m_RightHold;
+    std::array<double, 2> m_MovementSinceLastFrame = {0.0, 0.0};
+    bool m_CursorCaptured = false;
+    bool m_LeftClick = false;
+    bool m_LeftHold = false;
+    bool m_RightClick = false;
+    bool m_RightHold = false;
 };

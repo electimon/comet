@@ -10,6 +10,7 @@ public:
         static ChunkGenerator s_Instance;
         return s_Instance;
     }
+
     static void Initialize()
     {
         GetInstance().m_MediumNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);

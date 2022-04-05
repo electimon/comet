@@ -49,7 +49,7 @@ void Renderer::DrawMeshQueue()
 
     for (auto &mesh : GetInstance().m_MeshMap)
     {
-        shaderID = mesh.second.GetShader().GetID();
+        shaderID = mesh.second.GetShader()->GetID();
 
         mesh.second.Update();
 
@@ -65,8 +65,7 @@ void Renderer::DrawMeshQueue()
         glUniform1i(glGetUniformLocation(shaderID, "u_Texture"), 0);
 
         // Drawing mesh
-        unsigned int count = mesh.second.GetCount();
-        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void *)0);
+        glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
     }
 }
 

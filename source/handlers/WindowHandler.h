@@ -25,10 +25,10 @@ public:
 private:
     WindowHandler() {}
     WindowHandler(WindowHandler const &);
-    void operator=(WindowHandler const &);
+    void operator=(WindowHandler const &) {}
 
     void WindowSizeCallback(int width, int height);
     void FramebufferSizeCallback(int width, int height);
 
-    GLFWwindow *p_GLFWwindow;
+    GLFWwindow *p_GLFWwindow = nullptr;
 };

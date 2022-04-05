@@ -20,6 +20,8 @@ struct Chunk
     void GenerateTrees();
     void GenerateBedrock();
     void GenerateCaves();
+    void GenerateWater();
+    void GenerateSand();
 
     void GenerateMesh();
 
@@ -61,8 +63,8 @@ private:
     std::vector<unsigned char> m_BlockData; // testing new data format
     std::vector<int> m_HeightData;          // only used during generation, not needed when saving chunk
 
-    glm::ivec3 m_Chunk;
-
     std::vector<Vertex> m_Vertices;
     std::vector<unsigned int> m_Indices;
+
+    glm::ivec3 m_Chunk = {0, 0, 0};
 };

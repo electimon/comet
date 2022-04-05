@@ -4,7 +4,7 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, const Shader &shader)
+Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, Shader *shader)
     : p_Vertices(vertices),
       p_Indices(indices),
       m_Shader(shader),
@@ -21,7 +21,7 @@ Mesh::~Mesh()
 
 void Mesh::Bind()
 {
-    glUseProgram(m_Shader.GetID());
+    glUseProgram(m_Shader->GetID());
     glBindVertexArray(m_VAO);
 }
 
@@ -40,11 +40,11 @@ void Mesh::Initialize()
     glBindVertexArray(m_VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, 500000 * sizeof(Vertex), (void *)0, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 2 * p_Vertices->size() * sizeof(Vertex), (void *)0, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, p_Vertices->size() * sizeof(Vertex), p_Vertices->data());
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 500000 * sizeof(unsigned int), (void *)0, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * p_Indices->size() * sizeof(unsigned int), (void *)0, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, p_Indices->size() * sizeof(unsigned int), p_Indices->data());
 
     glEnableVertexAttribArray(0);
@@ -59,6 +59,11 @@ void Mesh::Initialize()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     m_PushedToGPU = true;
+
+    p_Vertices->clear();
+    p_Vertices->shrink_to_fit();
+    p_Indices->clear();
+    p_Indices->shrink_to_fit();
 }
 
 void Mesh::Update()

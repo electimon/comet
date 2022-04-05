@@ -40,29 +40,32 @@ public:
 private:
     Camera() {}
     Camera(Camera const &);
-    void operator=(Camera const &);
+    void operator=(Camera const &) {}
 
-    void InitializeFunc();
-    void CalcViewMatrixFunc();
-    void CalcProjMatrixFunc();
+    float m_FOV = 0.0f;
+    float m_Aspect = 0.0f;
+    float m_Near = 0.0f;
+    float m_Far = 0.0f;
+    float m_Sensitivity = 0.0f;
+    float m_Yaw = 0.0f;
+    float m_Pitch = 0.0f;
+    float m_Roll = 0.0f;
+    float m_MovementSensitivity = 0.0f;
+    float m_RotationSensitivity = 0.0f;
 
-    float m_FOV, m_Aspect, m_Near, m_Far, m_Sensitivity;
-    float m_Yaw, m_Pitch, m_Roll;
-    float m_MovementSensitivity, m_RotationSensitivity;
+    glm::vec3 m_Position = {0.0f, 0.0f, 0.0f};
+    glm::vec3 m_Direction = {0.0f, 0.0f, 0.0f};
 
-    glm::vec3 m_Position;
-    glm::vec3 m_Direction;
+    glm::vec3 m_RightVector = {0.0f, 0.0f, 0.0f};
+    glm::vec3 m_UpVector = {0.0f, 0.0f, 0.0f};
+    glm::vec3 m_ForwardVector = {0.0f, 0.0f, 0.0f};
 
-    glm::vec3 m_RightVector;
-    glm::vec3 m_UpVector;
-    glm::vec3 m_ForwardVector;
-
-    glm::mat4 m_ViewMatrix;
-    glm::mat4 m_ProjMatrix;
+    glm::mat4 m_ViewMatrix = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    glm::mat4 m_ProjMatrix = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
     /* World Variables */
-    glm::vec3 POSITIVE_X = glm::vec3(1.0f, 0.0f, 0.0f);
-    glm::vec3 POSITIVE_Y = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 POSITIVE_Z = glm::vec3(0.0f, 0.0f, 1.0f);
-    glm::vec3 WORLD_ORIGIN = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 POSITIVE_X = {1.0f, 0.0f, 0.0f};
+    glm::vec3 POSITIVE_Y = {0.0f, 1.0f, 0.0f};
+    glm::vec3 POSITIVE_Z = {0.0f, 0.0f, 1.0f};
+    glm::vec3 WORLD_ORIGIN = {0.0f, 0.0f, 0.0f};
 };

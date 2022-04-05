@@ -6,10 +6,12 @@
 #include "BlockLibrary.h"
 
 #include <thread>
+#include <filesystem>
 
 World::World()
 {
     std::cout << "World::World()" << std::endl;
+    std::filesystem::create_directory("world");
     m_Thread = std::thread(&World::WorldThread, this);
 
     ChunkGenerator::Initialize();
@@ -18,9 +20,98 @@ World::World()
 
 World::~World()
 {
+    std::cout << "Saving currently loaded chunks..." << std::endl;
+
+    for (auto &chunk : m_ChunkDataMap)
+    {
+        chunk.second->~Chunk();
+    }
+
     m_Thread.join();
 
     std::cout << "World::~World()" << std::endl;
+}
+
+unsigned char World::GetBlock(const glm::vec3 &worldPos)
+{
+    glm::ivec3 index = GetChunkIndexFromWorldCoord(worldPos);
+    glm::ivec3 chunkCoord = GetChunkCoordFromWorldCoord(worldPos);
+
+    if (m_ChunkDataMap.find(index) != m_ChunkDataMap.end())
+    {
+        return m_ChunkDataMap.at(index)->GetBlock(chunkCoord);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void World::SetBlock(const glm::vec3 &worldPos, unsigned char blockID)
+{
+    if (worldPos.y > CHUNK_HEIGHT)
+        return;
+
+    glm::ivec3 index = GetChunkIndexFromWorldCoord(worldPos);
+    glm::ivec3 chunkCoord = GetChunkCoordFromWorldCoord(worldPos);
+
+    if (m_ChunkDataMap.find(index) != m_ChunkDataMap.end())
+    {
+        Chunk *chunk = m_ChunkDataMap.at(index);
+
+        chunk->SetBlock(chunkCoord.x, chunkCoord.y, chunkCoord.z, blockID);
+        chunk->GenerateMesh();
+
+        Renderer::UpdateMeshInQueue(index);
+
+        return;
+    }
+    else
+    {
+        return;
+    }
+}
+
+glm::ivec3 World::GetChunkCoordFromWorldCoord(const glm::vec3 &worldPos)
+{
+    glm::ivec3 chunkIndex = GetChunkIndexFromWorldCoord(worldPos);
+    glm::ivec3 chunkPos(0, 0, 0);
+
+    chunkPos.x = static_cast<int>(worldPos.x + 0.5f) - CHUNK_WIDTH * chunkIndex.x;
+    chunkPos.y = static_cast<int>(worldPos.y + 0.5f);
+    chunkPos.z = static_cast<int>(worldPos.z + 0.5f) - CHUNK_WIDTH * chunkIndex.z;
+
+    if (chunkIndex.x < 0)
+        chunkPos.x -= 1;
+    if (chunkIndex.z < 0)
+        chunkPos.z -= 1;
+
+    return chunkPos;
+}
+
+glm::ivec3 World::GetChunkIndexFromWorldCoord(const glm::vec3 &worldPos)
+{
+    glm::ivec3 chunkIndex(0, 0, 0);
+
+    if (worldPos.x + 0.5f < 0.0f)
+    {
+        chunkIndex.x = (worldPos.x - CHUNK_WIDTH) / CHUNK_WIDTH;
+    }
+    else
+    {
+        chunkIndex.x = worldPos.x / CHUNK_WIDTH;
+    }
+
+    if (worldPos.z + 0.5f < 0.0f)
+    {
+        chunkIndex.z = (worldPos.z - CHUNK_WIDTH) / CHUNK_WIDTH;
+    }
+    else
+    {
+        chunkIndex.z = worldPos.z / CHUNK_WIDTH;
+    }
+
+    return chunkIndex;
 }
 
 void World::GenerateChunk(const glm::ivec3 &index)
@@ -68,9 +159,7 @@ void World::WorldThread()
 {
     while (!Engine::ShouldClose())
     {
-
-        // SetBlock(0, 100 + i, 0, 1);
-        // i++;
+        m_ChunkDataMap.reserve(m_ChunksToCreate.size());
 
         // Create new chunks
         for (const glm::ivec3 &index : m_ChunksToCreate)
@@ -80,7 +169,7 @@ void World::WorldThread()
             m_ChunkDataMap.insert_or_assign(index, chunk);
 
             // add mesh to renderer
-            Mesh mesh = Mesh(m_ChunkDataMap.at(index)->GetVertices(), m_ChunkDataMap.at(index)->GetIndices(), m_Shader);
+            Mesh mesh = Mesh(m_ChunkDataMap.at(index)->GetVertices(), m_ChunkDataMap.at(index)->GetIndices(), &m_Shader);
             Renderer::AddMeshToQueue(index, mesh);
         }
         m_ChunksToCreate.clear();

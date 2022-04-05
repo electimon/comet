@@ -10,22 +10,44 @@
 #include "Timer.h"
 #include "ChunkGenerator.h"
 
+#include <fstream>
+#include <iterator>
+#include <string>
+#include <vector>
+#include <filesystem>
+
 Chunk::Chunk(glm::ivec3 id)
     : m_Chunk(id)
 {
     // New data structure
     m_BlockData.resize(CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT); // "3D" array of block id values
     m_HeightData.resize(CHUNK_WIDTH * CHUNK_WIDTH);               // "2D" array of height values
-
     m_Vertices.reserve(100000);
     m_Indices.reserve(100000);
 
-    GenerateSurface();
+    if (std::filesystem::exists(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk"))
+    {
+        std::cout << "Loading chunk, reading chunk from disk..." << std::endl;
 
-    GenerateBedrock();
-    // GenerateCaves();
-    GenerateTrees();
-    // GenerateCaves();
+        char block;
+        std::ifstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
+
+        for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i++)
+        {
+            blockDataFile >> block;
+            m_BlockData[i] = block;
+        }
+    }
+    else
+    {
+        // World Generation
+        GenerateSurface();
+        GenerateBedrock();
+        // GenerateCaves();
+        GenerateTrees();
+        GenerateSand();
+        GenerateWater();
+    }
 
     GenerateMesh();
 
@@ -35,11 +57,22 @@ Chunk::Chunk(glm::ivec3 id)
 
 Chunk::~Chunk()
 {
+    std::cout << "Unloading chunk, saving chunk to disk..." << std::endl;
+
+    std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
+
+    for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i++)
+    {
+        blockDataFile << m_BlockData[i] << "\n";
+    }
+
+    blockDataFile.close();
 }
 
 void Chunk::GenerateSurface()
 {
     float height = 0.0f;
+    float noise1, noise2, noise3, noise4, noise5;
     int y = 0;
 
     for (int x = 0; x < CHUNK_WIDTH; x++)
@@ -47,14 +80,14 @@ void Chunk::GenerateSurface()
         for (int z = 0; z < CHUNK_WIDTH; z++)
         {
             // Calculating a surface height with the noise
-            height =
-                1.0000f * ChunkGenerator::GetPerlin1((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
-                0.5000f * ChunkGenerator::GetPerlin2((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
-                0.2500f * ChunkGenerator::GetPerlin4((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
-                0.1250f * ChunkGenerator::GetPerlin8((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z) +
-                0.0625f * ChunkGenerator::GetPerlin16((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
-            height *= 20.0f;
-            height += 40.0f;
+
+            noise1 = ChunkGenerator::GetPerlin1((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            noise2 = ChunkGenerator::GetPerlin2((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            noise3 = ChunkGenerator::GetPerlin4((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            noise4 = ChunkGenerator::GetPerlin8((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            noise5 = ChunkGenerator::GetPerlin16((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+
+            height = 50.0f + (40.0f * noise1 * noise1 * noise1) + 2.0f * noise2 + noise3 + noise4 + noise5;
             y = static_cast<int>(height);
 
             SetHeight(x, z, height);
@@ -78,6 +111,8 @@ void Chunk::GenerateTrees()
     float noise1;
     float noise2;
     int y;
+    int water_height = 30;
+    int mountain_height = 70;
 
     for (int x = 2; x < CHUNK_WIDTH - 2; x++)
     {
@@ -85,13 +120,16 @@ void Chunk::GenerateTrees()
         {
             y = GetHeight(x, z);
 
+            if (y < water_height + 3 || water_height > mountain_height)
+                continue;
+
             if (GetBlock(x, y - 1, z) == 0)
                 continue;
 
             noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
             noise2 = ChunkGenerator::GetMediumNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
 
-            if (noise1 > 0.9f && noise2 > 0.5f)
+            if (noise1 > 0.9f && noise2 > 0.1f)
             {
                 SetBlock(x, y + 1, z, 5);
                 SetBlock(x, y + 2, z, 5);
@@ -228,6 +266,52 @@ void Chunk::GenerateCaves()
     }
 }
 
+void Chunk::GenerateWater()
+{
+    int y;
+    for (int x = 0; x < CHUNK_WIDTH; x++)
+    {
+        for (int z = 0; z < CHUNK_WIDTH; z++)
+        {
+            y = GetHeight(x, z);
+            if (y < WATER_HEIGHT + 1)
+            {
+                for (unsigned int i = y + 1; i < WATER_HEIGHT + 1; i++)
+                {
+                    SetBlock(x, i, z, 4);
+                }
+            }
+        }
+    }
+}
+
+void Chunk::GenerateSand()
+{
+    int y;
+    float noise;
+    for (int x = 0; x < CHUNK_WIDTH; x++)
+    {
+        for (int z = 0; z < CHUNK_WIDTH; z++)
+        {
+            y = GetHeight(x, z);
+            noise = ChunkGenerator::GetBiomeNoise(x, z);
+            if (y < WATER_HEIGHT + 4)
+            {
+                SetBlock(x, y, z, 7);
+                SetBlock(x, y - 1, z, 7);
+                SetBlock(x, y - 2, z, 7);
+            }
+
+            if (y == WATER_HEIGHT + 4 && noise > 0.5f)
+            {
+                SetBlock(x, y, z, 7);
+                SetBlock(x, y - 1, z, 7);
+                SetBlock(x, y - 2, z, 7);
+            }
+        }
+    }
+}
+
 void Chunk::GenerateMesh()
 {
     m_Vertices.clear();
@@ -257,15 +341,15 @@ void Chunk::GenerateMesh()
                 pz = GetBlock(x, y, z + 1) == 0;
                 nz = GetBlock(x, y, z - 1) == 0;
 
-                if (blockID == 6)
-                {
-                    px = true;
-                    nx = true;
-                    py = true;
-                    ny = true;
-                    pz = true;
-                    nz = true;
-                }
+                // if (blockID == 6)
+                //{
+                //     px = true;
+                //     nx = true;
+                //     py = true;
+                //     ny = true;
+                //     pz = true;
+                //     nz = true;
+                // }
 
                 // +X Quad
                 if (px)
