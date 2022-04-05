@@ -2,8 +2,8 @@
 
 #include "FastNoiseLite.h"
 
-#include "render/Renderer.h"
-#include "render/containers/Vertex.h"
+#include "Renderer.h"
+#include "render/Vertex.h"
 #include "render/TextureMap.h"
 
 #include "World.h"

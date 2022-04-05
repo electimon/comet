@@ -10,10 +10,10 @@
 
 #include <stb_image.h>
 
-#include "../handlers/WindowHandler.h"
+#include "handlers/WindowHandler.h"
 
-#include "containers/Mesh.h"
-#include "containers/Shader.h"
+#include "render/Mesh.h"
+#include "render/Shader.h"
 
 #include "Camera.h"
 

@@ -6,9 +6,9 @@
 #include "glm/glm.hpp"
 #include "glm/gtx/hash.hpp"
 
-#include "render/containers/Shader.h"
+#include "render/Shader.h"
 
-#include "render/Renderer.h"
+#include "Renderer.h"
 #include "Chunk.h"
 
 class World

@@ -58,7 +58,7 @@ add_executable(
 )
 
 target_link_libraries(${PROJECT_NAME}
-    glfw3.a
+    glfw3
 )
 
 # Added to that OpenGL context does not start terminal

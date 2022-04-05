@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtx/hash.hpp"
 
-#include "render/containers/Mesh.h"
+#include "render/Mesh.h"
 
 #include "Block.h"
 #include "BlockLibrary.h"
