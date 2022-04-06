@@ -59,12 +59,17 @@ struct Chunk
         return m_HeightData[CHUNK_WIDTH * x + z];
     }
 
+    void MakeModified() { m_Modified = true; }
+
 private:
     std::vector<unsigned char> m_BlockData; // testing new data format
     std::vector<int> m_HeightData;          // only used during generation, not needed when saving chunk
 
     std::vector<Vertex> m_Vertices;
     std::vector<unsigned int> m_Indices;
+
+    // Flag to check if the chunk needs to be saved to disk or not
+    bool m_Modified = false;
 
     glm::ivec3 m_Chunk = {0, 0, 0};
 };

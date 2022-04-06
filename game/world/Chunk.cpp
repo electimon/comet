@@ -34,7 +34,7 @@ Chunk::Chunk(glm::ivec3 id)
 
         for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i += 4)
         {
-            blockDataFile >> m_BlockData[i] >> m_BlockData[i+1] >> m_BlockData[i+2] >> m_BlockData[i+3];
+            blockDataFile >> m_BlockData[i] >> m_BlockData[i + 1] >> m_BlockData[i + 2] >> m_BlockData[i + 3];
             // m_BlockData[i] = block;
         }
     }
@@ -57,18 +57,17 @@ Chunk::Chunk(glm::ivec3 id)
 
 Chunk::~Chunk()
 {
-    std::cout << "Unloading chunk, saving chunk to disk..." << std::endl;
-
-    std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
-
-    std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, "\n"));
-
-    // for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i++)
-    // {
-    //     blockDataFile << m_BlockData[i] << "\n";
-    // }
-
-    blockDataFile.close();
+    if (m_Modified)
+    {
+        std::cout << "Unloading chunk, chunk was modified, saving chunk to disk..." << std::endl;
+        std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
+        std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, "\n"));
+        blockDataFile.close();
+    }
+    else
+    {
+        std::cout << "Unloading chunk, chunk was not modified." << std::endl;
+    }
 }
 
 void Chunk::GenerateSurface()

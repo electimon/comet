@@ -30,11 +30,10 @@ public:
     }
 
     static void Initialize();
-    static void Terminate();
+    static void Finalize();
+
     static void MainThread();
-
     static double GetTimeDelta() { return GetInstance().m_TimeDelta; }
-
     static bool ShouldClose() { return GetInstance().m_ShouldClose; }
     static void CloseWindow() { GetInstance().m_ShouldClose = true; }
 
