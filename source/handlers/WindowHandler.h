@@ -14,6 +14,7 @@ public:
         return s_Instance;
     }
 
+    static void Initialize();
     static void CenterWindow();
     static void SetupCallbacks();
 

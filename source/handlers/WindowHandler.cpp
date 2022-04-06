@@ -1,5 +1,10 @@
 #include "WindowHandler.h"
 
+void WindowHandler::Initialize()
+{
+    GetInstance().CreateWindow();
+}
+
 int WindowHandler::CreateWindow()
 {
     // Initialize the library
