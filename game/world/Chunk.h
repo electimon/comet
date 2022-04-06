@@ -47,6 +47,12 @@ struct Chunk
             return;
 
         m_BlockData[(x * CHUNK_HEIGHT * CHUNK_WIDTH) + (y * CHUNK_WIDTH) + (z)] = input;
+
+        if (m_Generated)
+        {
+            m_Modified = true;
+            m_Generated = false;
+        }
     }
 
     void SetHeight(int x, int z, int y)
@@ -70,6 +76,7 @@ private:
 
     // Flag to check if the chunk needs to be saved to disk or not
     bool m_Modified = false;
+    bool m_Generated = false;
 
     glm::ivec3 m_Chunk = {0, 0, 0};
 };

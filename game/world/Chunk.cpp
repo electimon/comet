@@ -47,6 +47,8 @@ Chunk::Chunk(glm::ivec3 id)
         GenerateTrees();
         GenerateSand();
         GenerateWater();
+
+        m_Generated = true;
     }
 
     GenerateMesh();
