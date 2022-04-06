@@ -14,6 +14,7 @@
 #include <iterator>
 #include <string>
 #include <vector>
+#include <cstring>
 #include <filesystem>
 
 Chunk::Chunk(glm::ivec3 id)
@@ -29,14 +30,15 @@ Chunk::Chunk(glm::ivec3 id)
     {
         std::cout << "Loading chunk, reading chunk from disk..." << std::endl;
 
-        char block;
-        std::ifstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
+        std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk";
+        std::basic_ifstream<unsigned char> blockDataFile(filename.c_str());
 
-        for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i += 4)
-        {
-            blockDataFile >> m_BlockData[i] >> m_BlockData[i + 1] >> m_BlockData[i + 2] >> m_BlockData[i + 3];
-            // m_BlockData[i] = block;
-        }
+        // for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i += 4)
+        // {
+        //     blockDataFile >> m_BlockData[i] >> m_BlockData[i + 1] >> m_BlockData[i + 2] >> m_BlockData[i + 3];
+        // }
+
+        m_BlockData = std::vector<unsigned char>((std::istreambuf_iterator<unsigned char>(blockDataFile)), std::istreambuf_iterator<unsigned char>());
     }
     else
     {
@@ -47,9 +49,9 @@ Chunk::Chunk(glm::ivec3 id)
         GenerateTrees();
         GenerateSand();
         GenerateWater();
-
-        m_Generated = true;
     }
+
+    m_Generated = true;
 
     GenerateMesh();
 
@@ -63,7 +65,7 @@ Chunk::~Chunk()
     {
         std::cout << "Unloading chunk, chunk was modified, saving chunk to disk..." << std::endl;
         std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
-        std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, "\n"));
+        std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, ""));
         blockDataFile.close();
     }
     else

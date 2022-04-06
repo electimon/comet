@@ -70,11 +70,11 @@ void Mesh::Update()
 {
     m_TimeDelta = glfwGetTime() - m_TimeCreated;
 
-    if (m_TimeDelta < 1.0)
+    if (m_TimeDelta < 0.5)
     {
         m_ModelMatrix = glm::translate(
-            glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f)),
-            glm::vec3(0.0f, static_cast<float>(50.0 * glm::sin(3.141592653589 / 2 * m_TimeDelta)), 0.0f));
+            glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -10.0f, 0.0f)),
+            glm::vec3(0.0f, static_cast<float>(10.0 * glm::sin(3.141592653589 * m_TimeDelta)), 0.0f));
         m_Transparency = m_TimeDelta;
     }
     else

@@ -109,10 +109,30 @@ public:
         // move all chunk generation into here eventually
     }
 
+    static void SetSeed(int seed)
+    {
+        GetInstance().m_Seed = seed;
+        GetInstance().m_MediumNoise.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_SlowNoise.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_CellularNoise.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_FastNoise.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_MediumChaotic.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_BiomeNoise.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_CaveNoise.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_OpenSimplex2_1f.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_OpenSimplex2_2f.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_OpenSimplex2_4f.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_OpenSimplex2_8f.SetSeed(GetInstance().m_Seed);
+        GetInstance().m_OpenSimplex2_16f.SetSeed(GetInstance().m_Seed);
+    }
+
+
 private:
     ChunkGenerator() {}
     ChunkGenerator(ChunkGenerator const &);
     void operator=(ChunkGenerator const &);
+
+    int m_Seed;
 
     FastNoiseLite m_MediumNoise;
     FastNoiseLite m_SlowNoise;

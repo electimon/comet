@@ -10,6 +10,7 @@
 
 #include "Renderer.h"
 #include "Chunk.h"
+#include "ChunkGenerator.h"
 
 class World
 {
@@ -31,6 +32,7 @@ public:
     // Shader Functions
     const Shader &GetShader() { return m_Shader; }
     void SetShader(const Shader &shader) { m_Shader = shader; }
+    void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
 
 private:
     // This will be a temporary cache of the loaded chunks.
@@ -41,6 +43,7 @@ private:
     std::unordered_set<glm::ivec3> m_ChunksToCreate;
 
     Shader m_Shader;
+    int m_Seed;
 
     std::thread m_Thread;
     void WorldThread();
