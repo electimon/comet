@@ -9,7 +9,7 @@ public:
         return s_Instance;
     }
 
-    static void Initialize() { GetInstance().InitializeFunc(); }
+    static void Initialize();
     static void SetupCallbacks();
 
 private:
@@ -17,6 +17,5 @@ private:
     ErrorHandler(ErrorHandler const &);
     void operator=(ErrorHandler const &);
 
-    void InitializeFunc();
     void ErrorCallback(int error_code, const char *description);
 };
