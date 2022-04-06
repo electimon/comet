@@ -33,7 +33,7 @@ public:
 
         while (glm::length(direction) < 5.0f)
         {
-            direction += step;
+            direction += glm::normalize(direction) * step;
             if (p_World->GetBlock(position + direction) != 0)
             {
                 p_World->SetBlock(position + direction, 0);
