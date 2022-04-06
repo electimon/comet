@@ -10,12 +10,12 @@ void Engine::Initialize()
     KeyboardHandler::GetInstance();
     MouseHandler::GetInstance();
     ErrorHandler::GetInstance();
+    EntityHandler::GetInstance();
 
     TextureMap::GetInstance();
     Renderer::GetInstance();
     Camera::GetInstance();
 
-    EntityHandler::Initialize();
 
     Camera::Initialize();
     Renderer::Initialize();
@@ -30,8 +30,6 @@ void Engine::Initialize()
 void Engine::Finalize()
 {
     // Finalizing systems with threads
-    EntityHandler::Finalize();
-
     glfwTerminate();
 }
 
@@ -52,7 +50,7 @@ void Engine::MainThread()
 
         // Updates entities with an update function
         // Moved to separate thread since it is unreleated to rendering
-        // EntityHandler::UpdateEntities();
+        EntityHandler::UpdateEntities();
 
         // ALL DRAWING SHOULD HAPPEN AFTER ANY ENTITY MOVEMENT
 
