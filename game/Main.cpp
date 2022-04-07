@@ -1,30 +1,29 @@
 #include "Engine.h"
 
-#include "world/World.h"
-#include "world/Chunk.h"
-#include "world/Block.h"
-
 #include "entities/Player.h"
 
-int main(void)
-{
-    Engine::Initialize();
+#include "world/Block.h"
+#include "world/Chunk.h"
+#include "world/World.h"
 
-    // Shader Setup
-    Shader blockShader("../game/shaders/block.vert",
-                       "../game/shaders/block.frag");
+int main(void) {
+  Engine::Initialize();
 
-    Texture texture("../game/textures/terrain.png");
+  // Shader Setup
+  Shader blockShader("../game/shaders/block.vert",
+                     "../game/shaders/block.frag");
 
-    TextureMap::Configure(texture.GetWidth(), texture.GetHeight(), 16);
+  Texture texture("../game/textures/terrain.png");
 
-    World::Initialize();
-    World::SetSeed(1);
-    World::SetShader(blockShader);
+  TextureMap::Configure(texture.GetWidth(), texture.GetHeight(), 16);
 
-    Player player(glm::vec3(0.0f, 60.0f, 0.0f));
+  World::Initialize();
+  World::SetSeed(1);
+  World::SetShader(blockShader);
 
-    Engine::MainThread();
+  Player player(glm::vec3(0.0f, 60.0f, 0.0f));
 
-    return 0;
+  Engine::MainThread();
+
+  return 0;
 }
