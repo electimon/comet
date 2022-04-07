@@ -1,18 +1,11 @@
 #pragma once
 
-class Entity
-{
+class Entity {
 public:
-    Entity()
-    {
-    }
-    ~Entity()
-    {
-    }
+  Entity() {}
+  ~Entity() {}
 
-    virtual void Update()
-    {
-    }
+  virtual void Update() {}
 
 private:
 };
