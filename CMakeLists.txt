@@ -62,4 +62,4 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 # Added to that OpenGL context does not start terminal
-set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup /SUBSYSTEM:WINDOWS")
+# set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup /SUBSYSTEM:WINDOWS")
