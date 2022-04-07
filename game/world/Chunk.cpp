@@ -9,6 +9,7 @@
 #include "ChunkGenerator.h"
 #include "Timer.h"
 #include "World.h"
+#include "world/WorldConfig.h"
 
 #include <cstring>
 #include <filesystem>
@@ -329,6 +330,31 @@ void Chunk::GenerateMesh() {
         ny = GetBlock(x, y - 1, z) == 0;
         pz = GetBlock(x, y, z + 1) == 0;
         nz = GetBlock(x, y, z - 1) == 0;
+
+        if (x == 0) {
+          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y,
+                               z + m_Chunk.z * CHUNK_WIDTH}) != 0) {
+            nx = false;
+          }
+        }
+        if (z == 0) {
+          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
+                               z + m_Chunk.z * CHUNK_WIDTH - 1}) != 0) {
+            nz = false;
+          }
+        }
+        if (x == CHUNK_WIDTH - 1) {
+          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y,
+                               z + m_Chunk.z * CHUNK_WIDTH}) != 0) {
+            px = false;
+          }
+        }
+        if (z == CHUNK_WIDTH - 1) {
+          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
+                               z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0) {
+            pz = false;
+          }
+        }
 
         // if (blockID == 6)
         //{

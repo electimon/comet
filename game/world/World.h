@@ -14,26 +14,33 @@
 
 class World {
 public:
-  World();
-  ~World();
+  static World &GetInstance() {
+    static World s_Instance;
+    return s_Instance;
+  }
 
-  unsigned char GetBlock(const glm::vec3 &worldPos);
+  static void Initialize();
+  static void Finalize();
 
-  void SetBlock(const glm::vec3 &worldPos, unsigned char blockID);
-
+  static unsigned char GetBlock(const glm::vec3 &worldPos);
+  static void SetBlock(const glm::vec3 &worldPos, unsigned char blockID);
+  static void SetShader(const Shader &shader) { GetInstance().m_Shader = shader; }
+  static void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
   static glm::ivec3 GetChunkCoordFromWorldCoord(const glm::vec3 &worldPos);
   static glm::ivec3 GetChunkIndexFromWorldCoord(const glm::vec3 &worldPos);
+  static void ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &chunks);
+
 
   void GenerateChunk(const glm::ivec3 &index);
-
-  void ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &chunks);
-
   // Shader Functions
   const Shader &GetShader() { return m_Shader; }
-  void SetShader(const Shader &shader) { m_Shader = shader; }
-  void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
+  static void WorldThread();
 
 private:
+  World() {}
+  World(World const &);
+  void operator=(World const &) {}
+
   // This will be a temporary cache of the loaded chunks.
   // Functionallity to check for saved data on disk will eventually be
   // implemented.
@@ -46,5 +53,4 @@ private:
   int m_Seed;
 
   std::thread m_Thread;
-  void WorldThread();
 };

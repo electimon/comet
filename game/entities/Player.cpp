@@ -47,5 +47,5 @@ void Player::UpdateRequestedChunks() {
     }
   }
 
-  p_World->ProcessRequestedChunks(m_RequestedChunks);
+  World::ProcessRequestedChunks(m_RequestedChunks);
 }

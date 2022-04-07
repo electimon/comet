@@ -22,8 +22,6 @@ public:
   glm::vec3 GetPosition() { return m_Position; }
   void UpdateRequestedChunks();
 
-  void SetWorld(World *world) { p_World = world; }
-
   void BreakBlock() {
     float step = 1.0f / 16.0f;
     glm::vec3 direction = Camera::GetDirection();
@@ -31,8 +29,8 @@ public:
 
     while (glm::length(direction) < 5.0f) {
       direction += glm::normalize(direction) * step;
-      if (p_World->GetBlock(position + direction) != 0) {
-        p_World->SetBlock(position + direction, 0);
+      if (World::GetBlock(position + direction) != 0) {
+        World::SetBlock(position + direction, 0);
         return;
       }
     }
@@ -43,6 +41,4 @@ private:
   glm::ivec3 m_ChunkIndex;
   std::unordered_set<glm::ivec3> m_RequestedChunks;
   int m_RenderDistance;
-
-  World *p_World;
 };

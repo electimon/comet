@@ -18,12 +18,11 @@ int main(void)
 
     TextureMap::Configure(texture.GetWidth(), texture.GetHeight(), 16);
 
-    World world;
-    world.SetSeed(1);
-    world.SetShader(blockShader);
+    World::Initialize();
+    World::SetSeed(1);
+    World::SetShader(blockShader);
 
     Player player(glm::vec3(0.0f, 60.0f, 0.0f));
-    player.SetWorld(&world);
 
     Engine::MainThread();
 
