@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include <GLFW/glfw3.h>
+#include <glfw/glfw3.h>
 
 struct Timer
 {
