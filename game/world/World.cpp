@@ -28,7 +28,7 @@ void World::Finalize() {
   std::cout << "World::~World()" << std::endl;
 }
 
-unsigned char World::GetBlock(const glm::vec3 &worldPos) {
+unsigned int World::GetBlock(const glm::vec3 &worldPos) {
   glm::ivec3 index = GetChunkIndexFromWorldCoord(worldPos);
   glm::ivec3 chunkCoord = GetChunkCoordFromWorldCoord(worldPos);
 
@@ -40,7 +40,7 @@ unsigned char World::GetBlock(const glm::vec3 &worldPos) {
   }
 }
 
-void World::SetBlock(const glm::vec3 &worldPos, unsigned char blockID) {
+void World::SetBlock(const glm::vec3 &worldPos, unsigned int blockID) {
   if (worldPos.y > CHUNK_HEIGHT) {
     return;
   }

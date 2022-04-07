@@ -34,7 +34,7 @@ Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {
     std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " +
                            std::to_string(m_Chunk.y) + " " +
                            std::to_string(m_Chunk.z) + ".chunk";
-    std::basic_ifstream<unsigned char> blockDataFile(filename.c_str());
+    std::basic_ifstream<unsigned int> blockDataFile(filename.c_str());
 
     // for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i
     // += 4)
@@ -43,9 +43,9 @@ Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {
     //     m_BlockData[i + 2] >> m_BlockData[i + 3];
     // }
 
-    m_BlockData = std::vector<unsigned char>(
-        (std::istreambuf_iterator<unsigned char>(blockDataFile)),
-        std::istreambuf_iterator<unsigned char>());
+    m_BlockData = std::vector<unsigned int>(
+        (std::istreambuf_iterator<unsigned int>(blockDataFile)),
+        std::istreambuf_iterator<unsigned int>());
   } else {
     // World Generation
     GenerateSurface();
@@ -72,7 +72,7 @@ Chunk::~Chunk() {
                                 std::to_string(m_Chunk.y) + " " +
                                 std::to_string(m_Chunk.z) + ".chunk");
     std::copy(m_BlockData.begin(), m_BlockData.end(),
-              std::ostream_iterator<unsigned char>(blockDataFile, ""));
+              std::ostream_iterator<unsigned int>(blockDataFile, ""));
     blockDataFile.close();
   } else {
     std::cout << "Unloading chunk, chunk was not modified." << std::endl;
@@ -310,7 +310,7 @@ void Chunk::GenerateMesh() {
   m_Indices.clear();
   unsigned int offset = 0;
 
-  unsigned char blockID;
+  unsigned int blockID;
 
   bool px, nx, py, ny, pz, nz;
 
@@ -321,7 +321,7 @@ void Chunk::GenerateMesh() {
           continue;
 
         blockID = GetBlock(x, y, z);
-        std::vector<unsigned char> blockIndices =
+        std::vector<unsigned int> blockIndices =
             BlockLibrary::GetIndices(blockID);
 
         px = GetBlock(x + 1, y, z) == 0;

@@ -27,10 +27,10 @@ struct Chunk {
   std::vector<Vertex> *GetVertices() { return &m_Vertices; }
   std::vector<unsigned int> *GetIndices() { return &m_Indices; }
 
-  unsigned char GetBlock(glm::ivec3 chunkPos) {
+  unsigned int GetBlock(glm::ivec3 chunkPos) {
     return GetBlock(chunkPos.x, chunkPos.y, chunkPos.z);
   }
-  unsigned char GetBlock(int x, int y, int z) {
+  unsigned int GetBlock(int x, int y, int z) {
     if (x < 0 || y < 0 || z < 0)
       return 0;
     if (x == CHUNK_WIDTH || y == CHUNK_HEIGHT || z == CHUNK_WIDTH)
@@ -40,7 +40,7 @@ struct Chunk {
                        (z)];
   }
 
-  void SetBlock(int x, int y, int z, unsigned char input) {
+  void SetBlock(int x, int y, int z, unsigned int input) {
     if (x < 0 || y < 0 || z < 0)
       return;
     if (x == CHUNK_WIDTH || y == CHUNK_HEIGHT || z == CHUNK_WIDTH)
@@ -62,7 +62,7 @@ struct Chunk {
   void MakeModified() { m_Modified = true; }
 
 private:
-  std::vector<unsigned char> m_BlockData; // testing new data format
+  std::vector<unsigned int> m_BlockData; // testing new data format
   std::vector<int>
       m_HeightData; // only used during generation, not needed when saving chunk
 

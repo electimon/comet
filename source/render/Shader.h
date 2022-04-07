@@ -1,30 +1,29 @@
 #pragma once
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 
 #include <glad/gl.h>
 
-class Shader
-{
+class Shader {
 public:
-    Shader();
-    Shader(const char *vertFile, const char *fragFile);
-    ~Shader();
+  Shader();
+  Shader(const char *vertFile, const char *fragFile);
+  ~Shader();
 
-    void Bind();
-    void Unbind();
+  void Bind();
+  void Unbind();
 
-    void Create(const char *vertFile, const char *fragFile);
-    void Delete();
+  void Create(const char *vertFile, const char *fragFile);
+  void Delete();
 
-    unsigned int GetID();
+  unsigned int GetID();
 
-    int GetUniformLocation(const std::string &name);
+  int GetUniformLocation(const std::string &name);
 
 private:
-    unsigned int m_ID;
-    std::unordered_map<std::string, int> m_UniformMap;
+  unsigned int m_ID;
+  std::unordered_map<std::string, int> m_UniformMap;
 };
