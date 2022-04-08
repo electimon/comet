@@ -2,7 +2,7 @@
 
 void KeyboardHandler::SetupCallbacks() {
   glfwSetWindowUserPointer(glfwGetCurrentContext(),
-                           &KeyboardHandler::GetInstance());
+                           &KeyboardHandler::Get());
 
   auto KeyCallbackWrapper = [](GLFWwindow *window, int key, int scancode,
                                int action, int mods) {

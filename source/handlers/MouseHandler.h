@@ -8,7 +8,7 @@
 
 class MouseHandler {
 public:
-  static MouseHandler &GetInstance() {
+  static MouseHandler &Get() {
     static MouseHandler s_Instance;
     return s_Instance;
   }
@@ -16,67 +16,67 @@ public:
   static void UpdateStates() {
     if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(),
                            GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-      if (!GetInstance().m_LeftClick && !GetInstance().m_LeftHold) {
-        GetInstance().m_LeftClick = true;
+      if (!Get().m_LeftClick && !Get().m_LeftHold) {
+        Get().m_LeftClick = true;
       } else {
-        GetInstance().m_LeftClick = false;
-        GetInstance().m_LeftHold = true;
+        Get().m_LeftClick = false;
+        Get().m_LeftHold = true;
       }
     } else {
-      GetInstance().m_LeftClick = false;
-      GetInstance().m_LeftHold = false;
+      Get().m_LeftClick = false;
+      Get().m_LeftHold = false;
     }
 
     if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(),
                            GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-      if (!GetInstance().m_RightClick && !GetInstance().m_RightHold) {
-        GetInstance().m_RightClick = true;
+      if (!Get().m_RightClick && !Get().m_RightHold) {
+        Get().m_RightClick = true;
       } else {
-        GetInstance().m_RightClick = false;
-        GetInstance().m_RightHold = true;
+        Get().m_RightClick = false;
+        Get().m_RightHold = true;
       }
     } else {
-      GetInstance().m_RightClick = false;
-      GetInstance().m_RightHold = false;
+      Get().m_RightClick = false;
+      Get().m_RightHold = false;
     }
   }
 
   static void ResetStates() {
-    GetInstance().m_LeftClick = false;
-    GetInstance().m_LeftHold = false;
-    GetInstance().m_RightClick = false;
-    GetInstance().m_RightHold = false;
+    Get().m_LeftClick = false;
+    Get().m_LeftHold = false;
+    Get().m_RightClick = false;
+    Get().m_RightHold = false;
   }
 
   static void SetupCallbacks();
   static void ResetMovement() {
-    GetInstance().m_MovementSinceLastFrame = {0.0, 0.0};
+    Get().m_MovementSinceLastFrame = {0.0, 0.0};
   }
 
   // +x is moving the mouse right
   // +y is moving the mouse forward
   static double GetDeltaX() {
-    return GetInstance().m_MovementSinceLastFrame[0];
+    return Get().m_MovementSinceLastFrame[0];
   }
   static double GetDeltaY() {
-    return GetInstance().m_MovementSinceLastFrame[1];
+    return Get().m_MovementSinceLastFrame[1];
   }
 
   static void CaptureCursor() {
     glfwSetInputMode(WindowHandler::GetInstance().GetGLFWWindow(), GLFW_CURSOR,
                      GLFW_CURSOR_DISABLED);
-    GetInstance().m_CursorCaptured = true;
+    Get().m_CursorCaptured = true;
   }
   static void ReleaseCursor() {
     glfwSetInputMode(WindowHandler::GetInstance().GetGLFWWindow(), GLFW_CURSOR,
                      GLFW_CURSOR_NORMAL);
-    GetInstance().m_CursorCaptured = false;
+    Get().m_CursorCaptured = false;
   }
 
-  static bool GetLeftClick() { return GetInstance().m_LeftClick; };
-  static bool GetLeftHold() { return GetInstance().m_LeftHold; };
-  static bool GetRightClick() { return GetInstance().m_RightClick; };
-  static bool GetRightHold() { return GetInstance().m_RightHold; };
+  static bool GetLeftClick() { return Get().m_LeftClick; };
+  static bool GetLeftHold() { return Get().m_LeftHold; };
+  static bool GetRightClick() { return Get().m_RightClick; };
+  static bool GetRightHold() { return Get().m_RightHold; };
 
 private:
   MouseHandler() {}

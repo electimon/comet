@@ -1,44 +1,27 @@
 #include "Camera.h"
 
 void Camera::Initialize() {
-  Camera &camera = GetInstance();
-
-  camera.m_Position = {0.0f, 0.0f, 0.0f};
-  camera.m_RightVector = {1.0f, 0.0f, 0.0f};
-  camera.m_UpVector = {0.0f, 1.0f, 0.0f};
-  camera.m_ForwardVector = {0.0f, 0.0f, -1.0f};
-
-  camera.m_FOV = glm::radians(85.0f);
-  camera.m_Aspect = 16.0f / 9.0f;
-  camera.m_Near = 0.1f;
-  camera.m_Far = 1000.0f;
-
-  camera.m_Yaw = glm::radians(0.0f);
-  camera.m_Pitch = glm::radians(0.0f);
-  camera.m_Roll = glm::radians(0.0f);
-
-  camera.m_MovementSensitivity = 10.0f;
-  camera.m_RotationSensitivity = 1.5f;
+  Camera &camera = Get();
 
   CalcViewMatrix();
   CalcProjMatrix();
 }
 
 void Camera::CalcViewMatrix() {
-  Camera &camera = GetInstance();
+  Camera &camera = Get();
   camera.m_ViewMatrix =
       glm::lookAt(camera.m_Position, camera.m_Position + camera.m_ForwardVector,
                   camera.POSITIVE_Y);
 }
 
 void Camera::CalcProjMatrix() {
-  Camera &camera = GetInstance();
+  Camera &camera = Get();
   camera.m_ProjMatrix = glm::perspective(camera.m_FOV, camera.m_Aspect,
                                          camera.m_Near, camera.m_Far);
 }
 
 void Camera::Move() {
-  Camera &camera = GetInstance();
+  Camera &camera = Get();
 
   float magnitude = camera.m_MovementSensitivity * Engine::GetTimeDelta();
   glm::vec3 movementDirection = {0.0f, 0.0f, 0.0f};
@@ -86,7 +69,7 @@ void Camera::Move() {
 }
 
 void Camera::Rotate() {
-  Camera &camera = GetInstance();
+  Camera &camera = Get();
 
   // This no longer requires a delta time variable.
   // The delta x and delta y variables from the mouse handler are an

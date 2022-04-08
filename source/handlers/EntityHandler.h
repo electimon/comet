@@ -7,7 +7,7 @@
 
 class EntityHandler {
 public:
-  static EntityHandler &GetInstance() {
+  static EntityHandler &Get() {
     static EntityHandler s_Instance;
     return s_Instance;
   }

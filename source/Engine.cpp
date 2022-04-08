@@ -5,15 +5,15 @@ void Engine::Initialize() {
 
   WindowHandler::Initialize();
 
-  EventHandler::GetInstance();
-  KeyboardHandler::GetInstance();
-  MouseHandler::GetInstance();
-  ErrorHandler::GetInstance();
-  EntityHandler::GetInstance();
+  EventHandler::Get();
+  KeyboardHandler::Get();
+  MouseHandler::Get();
+  ErrorHandler::Get();
+  EntityHandler::Get();
 
-  TextureMap::GetInstance();
-  Renderer::GetInstance();
-  Camera::GetInstance();
+  TextureMap::Get();
+  Renderer::Get();
+  Camera::Get();
 
   Camera::Initialize();
   Renderer::Initialize();

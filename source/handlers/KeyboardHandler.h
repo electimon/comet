@@ -5,7 +5,7 @@
 
 class KeyboardHandler {
 public:
-  static KeyboardHandler &GetInstance() {
+  static KeyboardHandler &Get() {
     static KeyboardHandler s_Instance;
     return s_Instance;
   }

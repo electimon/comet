@@ -1,7 +1,7 @@
 #include "TextureMap.h"
 
 void TextureMap::Configure(int width, int height, int resolution) {
-  TextureMap &map = GetInstance();
+  TextureMap &map = Get();
 
   map.m_Width = width;
   map.m_Height = height;

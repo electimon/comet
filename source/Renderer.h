@@ -19,7 +19,7 @@
 
 class Renderer {
 public:
-  static Renderer &GetInstance() {
+  static Renderer &Get() {
     static Renderer s_Instance;
     return s_Instance;
   }

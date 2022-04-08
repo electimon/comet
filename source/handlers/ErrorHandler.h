@@ -2,7 +2,7 @@
 
 class ErrorHandler {
 public:
-  static ErrorHandler &GetInstance() {
+  static ErrorHandler &Get() {
     static ErrorHandler s_Instance;
     return s_Instance;
   }

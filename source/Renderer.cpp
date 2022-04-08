@@ -41,7 +41,7 @@ void Renderer::DrawMeshQueue() {
   // Binding the texture map
   glBindTexture(GL_TEXTURE_2D, 1);
 
-  for (auto &mesh : GetInstance().m_MeshMap) {
+  for (auto &mesh : Get().m_MeshMap) {
     shaderID = mesh.second.GetShader()->GetID();
 
     mesh.second.Update();
@@ -69,43 +69,43 @@ void Renderer::DrawMeshQueue() {
 
 void Renderer::ProcessMeshQueues() {
   {
-    std::lock_guard<std::mutex> locked(GetInstance().m_AddMeshQueueLock);
-    for (auto &mesh : GetInstance().m_MeshesToAdd) {
-      GetInstance().m_MeshMap.insert_or_assign(mesh.first, mesh.second);
-      GetInstance().m_MeshMap.at(mesh.first).Initialize();
+    std::lock_guard<std::mutex> locked(Get().m_AddMeshQueueLock);
+    for (auto &mesh : Get().m_MeshesToAdd) {
+      Get().m_MeshMap.insert_or_assign(mesh.first, mesh.second);
+      Get().m_MeshMap.at(mesh.first).Initialize();
     }
-    GetInstance().m_MeshesToAdd.clear();
+    Get().m_MeshesToAdd.clear();
   }
 
   {
-    std::lock_guard<std::mutex> locked(GetInstance().m_UpdateMeshQueueLock);
-    for (auto &mesh : GetInstance().m_MeshesToUpdate) {
-      GetInstance().m_MeshMap.at(mesh).UpdateGeometry();
+    std::lock_guard<std::mutex> locked(Get().m_UpdateMeshQueueLock);
+    for (auto &mesh : Get().m_MeshesToUpdate) {
+      Get().m_MeshMap.at(mesh).UpdateGeometry();
     }
-    GetInstance().m_MeshesToUpdate.clear();
+    Get().m_MeshesToUpdate.clear();
   }
 
   {
-    std::lock_guard<std::mutex> locked(GetInstance().m_DeleteMeshQueueLock);
-    for (auto &mesh : GetInstance().m_MeshesToDelete) {
-      GetInstance().m_MeshMap.at(mesh).Finalize();
-      GetInstance().m_MeshMap.erase(mesh);
+    std::lock_guard<std::mutex> locked(Get().m_DeleteMeshQueueLock);
+    for (auto &mesh : Get().m_MeshesToDelete) {
+      Get().m_MeshMap.at(mesh).Finalize();
+      Get().m_MeshMap.erase(mesh);
     }
-    GetInstance().m_MeshesToDelete.clear();
+    Get().m_MeshesToDelete.clear();
   }
 }
 
 void Renderer::AddMeshToQueue(const glm::ivec3 &index, const Mesh &mesh) {
-  std::lock_guard<std::mutex> locked(GetInstance().m_AddMeshQueueLock);
-  GetInstance().m_MeshesToAdd.insert_or_assign(index, mesh);
+  std::lock_guard<std::mutex> locked(Get().m_AddMeshQueueLock);
+  Get().m_MeshesToAdd.insert_or_assign(index, mesh);
 }
 
 void Renderer::UpdateMeshInQueue(const glm::ivec3 &index) {
-  std::lock_guard<std::mutex> locked(GetInstance().m_UpdateMeshQueueLock);
-  GetInstance().m_MeshesToUpdate.insert(index);
+  std::lock_guard<std::mutex> locked(Get().m_UpdateMeshQueueLock);
+  Get().m_MeshesToUpdate.insert(index);
 }
 
 void Renderer::DeleteMeshFromQueue(const glm::ivec3 &index) {
-  std::lock_guard<std::mutex> locked(GetInstance().m_DeleteMeshQueueLock);
-  GetInstance().m_MeshesToDelete.insert(index);
+  std::lock_guard<std::mutex> locked(Get().m_DeleteMeshQueueLock);
+  Get().m_MeshesToDelete.insert(index);
 }

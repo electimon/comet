@@ -4,7 +4,7 @@
 
 class EventHandler {
 public:
-  static EventHandler &GetInstance() {
+  static EventHandler &Get() {
     static EventHandler s_Instance;
     return s_Instance;
   }
