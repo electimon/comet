@@ -328,10 +328,8 @@ void Chunk::GenerateMesh() {
         nz = GetBlock(x, y, z - 1) == 0;
 
         if (x == 0) {
-          unsigned char block =
-              World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y,
-                               z + m_Chunk.z * CHUNK_WIDTH});
-          if (block != 0) {
+          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y,
+                               z + m_Chunk.z * CHUNK_WIDTH}) != 0) {
             nx = false;
           }
         }
@@ -341,18 +339,18 @@ void Chunk::GenerateMesh() {
             px = false;
           }
         }
-        // if (z == 0) {
-        //   if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
-        //                        z + m_Chunk.z * CHUNK_WIDTH - 1}) != 0) {
-        //     nz = false;
-        //   }
-        // }
-        // if (z == CHUNK_WIDTH) {
-        //   if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
-        //                        z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0) {
-        //     pz = false;
-        //   }
-        // }
+        if (z == 0) {
+          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
+                               z + m_Chunk.z * CHUNK_WIDTH - 1}) != 0) {
+            nz = false;
+          }
+        }
+        if (z == CHUNK_WIDTH) {
+          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
+                               z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0) {
+            pz = false;
+          }
+        }
 
         // if (blockID == 6)
         //{

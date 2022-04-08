@@ -82,17 +82,17 @@ glm::ivec3 World::GetChunkCoord(const glm::ivec3 &worldPos) {
 glm::ivec3 World::GetChunkIndex(const glm::ivec3 &worldPos) {
   glm::ivec3 chunkIndex(0, 0, 0);
 
-  // if (worldPos.x < 0) {
-  //   chunkIndex.x = (worldPos.x - CHUNK_WIDTH) / CHUNK_WIDTH;
-  // } else {
+  if (worldPos.x < 0) {
+    chunkIndex.x = (worldPos.x - CHUNK_WIDTH) / CHUNK_WIDTH;
+  } else {
     chunkIndex.x = worldPos.x / CHUNK_WIDTH;
-  // }
+  }
 
-  // if (worldPos.z < 0) {
-  //   chunkIndex.z = (worldPos.z - CHUNK_WIDTH) / CHUNK_WIDTH;
-  // } else {
+  if (worldPos.z < 0) {
+    chunkIndex.z = (worldPos.z - CHUNK_WIDTH) / CHUNK_WIDTH;
+  } else {
     chunkIndex.z = worldPos.z / CHUNK_WIDTH;
-  // }
+  }
 
   return chunkIndex;
 }
