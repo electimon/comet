@@ -14,6 +14,8 @@ Player::~Player() {}
 void Player::Update() {
   if (MouseHandler::GetLeftClick()) {
     Player::BreakBlock();
+  } else if (MouseHandler::GetRightClick()) {
+    Player::PlaceBlock();
   }
 
   if (glfwGetKey(WindowHandler::GetGLFWWindow(), GLFW_KEY_HOME)) {
