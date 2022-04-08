@@ -34,18 +34,13 @@ Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {
     std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " +
                            std::to_string(m_Chunk.y) + " " +
                            std::to_string(m_Chunk.z) + ".chunk";
-    std::basic_ifstream<unsigned int> blockDataFile(filename.c_str());
+    std::basic_ifstream<char> blockDataFile(filename.c_str());
 
-    // for (unsigned int i = 0; i < CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT; i
-    // += 4)
-    // {
-    //     blockDataFile >> m_BlockData[i] >> m_BlockData[i + 1] >>
-    //     m_BlockData[i + 2] >> m_BlockData[i + 3];
-    // }
-
-    m_BlockData = std::vector<unsigned int>(
-        (std::istreambuf_iterator<unsigned int>(blockDataFile)),
-        std::istreambuf_iterator<unsigned int>());
+    // This will need to be redone once a more optimized method of
+    // saving chunks is made.
+    m_BlockData = std::vector<unsigned char>(
+        (std::istreambuf_iterator<char>(blockDataFile)),
+        std::istreambuf_iterator<char>());
   } else {
     // World Generation
     GenerateSurface();
@@ -66,16 +61,17 @@ Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {
 
 Chunk::~Chunk() {
   if (m_Modified) {
-    std::cout << "Unloading chunk, chunk was modified, saving chunk to disk..."
-              << std::endl;
+    // std::cout << "Unloading chunk, chunk was modified, saving chunk to
+    // disk..."
+    //           << std::endl;
     std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " +
                                 std::to_string(m_Chunk.y) + " " +
                                 std::to_string(m_Chunk.z) + ".chunk");
     std::copy(m_BlockData.begin(), m_BlockData.end(),
-              std::ostream_iterator<unsigned int>(blockDataFile, ""));
+              std::ostream_iterator<unsigned char>(blockDataFile, ""));
     blockDataFile.close();
   } else {
-    std::cout << "Unloading chunk, chunk was not modified." << std::endl;
+    // std::cout << "Unloading chunk, chunk was not modified." << std::endl;
   }
 }
 
@@ -310,7 +306,7 @@ void Chunk::GenerateMesh() {
   m_Indices.clear();
   unsigned int offset = 0;
 
-  unsigned int blockID;
+  unsigned char blockID;
 
   bool px, nx, py, ny, pz, nz;
 
@@ -321,7 +317,7 @@ void Chunk::GenerateMesh() {
           continue;
 
         blockID = GetBlock(x, y, z);
-        std::vector<unsigned int> blockIndices =
+        std::vector<unsigned char> blockIndices =
             BlockLibrary::GetIndices(blockID);
 
         px = GetBlock(x + 1, y, z) == 0;
@@ -332,29 +328,31 @@ void Chunk::GenerateMesh() {
         nz = GetBlock(x, y, z - 1) == 0;
 
         if (x == 0) {
-          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y,
-                               z + m_Chunk.z * CHUNK_WIDTH}) != 0) {
+          unsigned char block =
+              World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y,
+                               z + m_Chunk.z * CHUNK_WIDTH});
+          if (block != 0) {
             nx = false;
           }
         }
-        if (z == 0) {
-          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
-                               z + m_Chunk.z * CHUNK_WIDTH - 1}) != 0) {
-            nz = false;
-          }
-        }
-        if (x == CHUNK_WIDTH - 1) {
+        if (x == CHUNK_WIDTH) {
           if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y,
                                z + m_Chunk.z * CHUNK_WIDTH}) != 0) {
             px = false;
           }
         }
-        if (z == CHUNK_WIDTH - 1) {
-          if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
-                               z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0) {
-            pz = false;
-          }
-        }
+        // if (z == 0) {
+        //   if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
+        //                        z + m_Chunk.z * CHUNK_WIDTH - 1}) != 0) {
+        //     nz = false;
+        //   }
+        // }
+        // if (z == CHUNK_WIDTH) {
+        //   if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
+        //                        z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0) {
+        //     pz = false;
+        //   }
+        // }
 
         // if (blockID == 6)
         //{

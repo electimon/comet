@@ -2,11 +2,11 @@
 
 class Block {
 public:
-  Block(unsigned int id);
+  Block(unsigned char id);
   ~Block();
 
-  unsigned int GetID();
+  unsigned char GetID();
 
 private:
-  unsigned int m_ID;
+  unsigned char m_ID;
 };

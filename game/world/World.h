@@ -14,7 +14,7 @@
 
 class World {
 public:
-  static World &GetInstance() {
+  static World &Get() {
     static World s_Instance;
     return s_Instance;
   }
@@ -22,14 +22,13 @@ public:
   static void Initialize();
   static void Finalize();
 
-  static unsigned int GetBlock(const glm::vec3 &worldPos);
-  static void SetBlock(const glm::vec3 &worldPos, unsigned int blockID);
-  static void SetShader(const Shader &shader) {
-    GetInstance().m_Shader = shader;
-  }
+  static unsigned char GetBlock(const glm::ivec3 &worldPos);
+  static void SetBlock(const glm::ivec3 &worldPos, unsigned char blockID);
+  static glm::ivec3 GetChunkCoord(const glm::ivec3 &worldPos);
+  static glm::ivec3 GetChunkIndex(const glm::ivec3 &worldPos);
+
+  static void SetShader(const Shader &shader) { Get().m_Shader = shader; }
   static void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
-  static glm::ivec3 GetChunkCoordFromWorldCoord(const glm::vec3 &worldPos);
-  static glm::ivec3 GetChunkIndexFromWorldCoord(const glm::vec3 &worldPos);
   static void
   ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &chunks);
 

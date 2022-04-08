@@ -10,9 +10,9 @@ int main(void) {
   Engine::Initialize();
 
   // Shader Setup
-  Shader blockShader("./game/shaders/block.vert", "./game/shaders/block.frag");
+  Shader blockShader("../game/shaders/block.vert", "../game/shaders/block.frag");
 
-  Texture texture("./game/textures/terrain.png");
+  Texture texture("../game/textures/terrain.png");
 
   TextureMap::Configure(texture.GetWidth(), texture.GetHeight(), 16);
 

@@ -27,27 +27,23 @@ struct Chunk {
   std::vector<Vertex> *GetVertices() { return &m_Vertices; }
   std::vector<unsigned int> *GetIndices() { return &m_Indices; }
 
-  unsigned int GetBlock(glm::ivec3 chunkPos) {
+  unsigned char GetBlock(glm::ivec3 chunkPos) {
     return GetBlock(chunkPos.x, chunkPos.y, chunkPos.z);
   }
-  unsigned int GetBlock(int x, int y, int z) {
+  unsigned char GetBlock(int x, int y, int z) {
     if (x < 0 || y < 0 || z < 0)
       return 0;
     if (x == CHUNK_WIDTH || y == CHUNK_HEIGHT || z == CHUNK_WIDTH)
       return 0;
 
-    return m_BlockData[(x * CHUNK_HEIGHT * CHUNK_WIDTH) + (y * CHUNK_WIDTH) +
-                       (z)];
+    return m_BlockData.at(x * CHUNK_HEIGHT * CHUNK_WIDTH + y * CHUNK_WIDTH + z);
   }
-
-  void SetBlock(int x, int y, int z, unsigned int input) {
-    if (x < 0 || y < 0 || z < 0)
-      return;
-    if (x == CHUNK_WIDTH || y == CHUNK_HEIGHT || z == CHUNK_WIDTH)
-      return;
-
-    m_BlockData[(x * CHUNK_HEIGHT * CHUNK_WIDTH) + (y * CHUNK_WIDTH) + (z)] =
-        input;
+  void SetBlock(const glm::ivec3 &chunkPos, unsigned char blockID) {
+    SetBlock(chunkPos.x, chunkPos.y, chunkPos.z, blockID);
+  }
+  void SetBlock(int x, int y, int z, unsigned char blockID) {
+    m_BlockData.at(x * CHUNK_HEIGHT * CHUNK_WIDTH + y * CHUNK_WIDTH + z) =
+        blockID;
 
     if (m_Generated) {
       m_Modified = true;
@@ -62,9 +58,10 @@ struct Chunk {
   void MakeModified() { m_Modified = true; }
 
 private:
-  std::vector<unsigned int> m_BlockData; // testing new data format
-  std::vector<int>
-      m_HeightData; // only used during generation, not needed when saving chunk
+  // testing new data format
+  std::vector<unsigned char> m_BlockData;
+  // only used during generation, not needed when saving chunk
+  std::vector<int> m_HeightData;
 
   std::vector<Vertex> m_Vertices;
   std::vector<unsigned int> m_Indices;

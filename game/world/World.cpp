@@ -3,14 +3,14 @@
 #include "BlockLibrary.h"
 #include "ChunkGenerator.h"
 #include "Engine.h"
+#include "world/WorldConfig.h"
 
 #include <filesystem>
 #include <thread>
 
 void World::Initialize() {
-  std::cout << "World::World()" << std::endl;
   std::filesystem::create_directory("world");
-  GetInstance().m_Thread = std::thread(&World::WorldThread);
+  Get().m_Thread = std::thread(&World::WorldThread);
 
   ChunkGenerator::Initialize();
   BlockLibrary::Initialize();
@@ -19,38 +19,34 @@ void World::Initialize() {
 void World::Finalize() {
   std::cout << "Saving currently loaded chunks..." << std::endl;
 
-  for (auto &chunk : GetInstance().m_ChunkDataMap) {
+  for (auto &chunk : Get().m_ChunkDataMap) {
     chunk.second->~Chunk();
   }
 
-  GetInstance().m_Thread.join();
-
-  std::cout << "World::~World()" << std::endl;
+  Get().m_Thread.join();
 }
 
-unsigned int World::GetBlock(const glm::vec3 &worldPos) {
-  glm::ivec3 index = GetChunkIndexFromWorldCoord(worldPos);
-  glm::ivec3 chunkCoord = GetChunkCoordFromWorldCoord(worldPos);
+unsigned char World::GetBlock(const glm::ivec3 &worldPos) {
+  glm::ivec3 index = GetChunkIndex(worldPos);
+  glm::ivec3 chunkCoord = GetChunkCoord(worldPos);
 
-  if (GetInstance().m_ChunkDataMap.find(index) !=
-      GetInstance().m_ChunkDataMap.end()) {
-    return GetInstance().m_ChunkDataMap.at(index)->GetBlock(chunkCoord);
+  if (Get().m_ChunkDataMap.find(index) != Get().m_ChunkDataMap.end()) {
+    return Get().m_ChunkDataMap.at(index)->GetBlock(chunkCoord);
   } else {
     return 0;
   }
 }
 
-void World::SetBlock(const glm::vec3 &worldPos, unsigned int blockID) {
+void World::SetBlock(const glm::ivec3 &worldPos, unsigned char blockID) {
   if (worldPos.y > CHUNK_HEIGHT) {
     return;
   }
 
-  glm::ivec3 index = GetChunkIndexFromWorldCoord(worldPos);
-  glm::ivec3 chunkCoord = GetChunkCoordFromWorldCoord(worldPos);
+  glm::ivec3 index = GetChunkIndex(worldPos);
+  glm::ivec3 chunkCoord = GetChunkCoord(worldPos);
 
-  if (GetInstance().m_ChunkDataMap.find(index) !=
-      GetInstance().m_ChunkDataMap.end()) {
-    Chunk *chunk = GetInstance().m_ChunkDataMap.at(index);
+  if (Get().m_ChunkDataMap.find(index) != Get().m_ChunkDataMap.end()) {
+    Chunk *chunk = Get().m_ChunkDataMap.at(index);
 
     chunk->SetBlock(chunkCoord.x, chunkCoord.y, chunkCoord.z, blockID);
     chunk->GenerateMesh();
@@ -63,36 +59,40 @@ void World::SetBlock(const glm::vec3 &worldPos, unsigned int blockID) {
   }
 }
 
-glm::ivec3 World::GetChunkCoordFromWorldCoord(const glm::vec3 &worldPos) {
-  glm::ivec3 chunkIndex = GetChunkIndexFromWorldCoord(worldPos);
-  glm::ivec3 chunkPos(0, 0, 0);
+glm::ivec3 World::GetChunkCoord(const glm::ivec3 &worldPos) {
+  glm::ivec3 chunkIndex = GetChunkIndex(worldPos);
+  glm::ivec3 chunkPos{worldPos};
 
-  chunkPos.x = static_cast<int>(worldPos.x + 0.5f) - CHUNK_WIDTH * chunkIndex.x;
-  chunkPos.y = static_cast<int>(worldPos.y + 0.5f);
-  chunkPos.z = static_cast<int>(worldPos.z + 0.5f) - CHUNK_WIDTH * chunkIndex.z;
-
-  if (chunkIndex.x < 0)
-    chunkPos.x -= 1;
-  if (chunkIndex.z < 0)
-    chunkPos.z -= 1;
+  while (chunkPos.x < 0) {
+    chunkPos.x += CHUNK_WIDTH;
+  }
+  while (chunkPos.x > CHUNK_WIDTH - 1) {
+    chunkPos.x -= CHUNK_WIDTH;
+  }
+  while (chunkPos.z < 0) {
+    chunkPos.z += CHUNK_WIDTH;
+  }
+  while (chunkPos.z > CHUNK_WIDTH - 1) {
+    chunkPos.z -= CHUNK_WIDTH;
+  }
 
   return chunkPos;
 }
 
-glm::ivec3 World::GetChunkIndexFromWorldCoord(const glm::vec3 &worldPos) {
+glm::ivec3 World::GetChunkIndex(const glm::ivec3 &worldPos) {
   glm::ivec3 chunkIndex(0, 0, 0);
 
-  if (worldPos.x + 0.5f < 0.0f) {
-    chunkIndex.x = (worldPos.x - CHUNK_WIDTH) / CHUNK_WIDTH;
-  } else {
+  // if (worldPos.x < 0) {
+  //   chunkIndex.x = (worldPos.x - CHUNK_WIDTH) / CHUNK_WIDTH;
+  // } else {
     chunkIndex.x = worldPos.x / CHUNK_WIDTH;
-  }
+  // }
 
-  if (worldPos.z + 0.5f < 0.0f) {
-    chunkIndex.z = (worldPos.z - CHUNK_WIDTH) / CHUNK_WIDTH;
-  } else {
+  // if (worldPos.z < 0) {
+  //   chunkIndex.z = (worldPos.z - CHUNK_WIDTH) / CHUNK_WIDTH;
+  // } else {
     chunkIndex.z = worldPos.z / CHUNK_WIDTH;
-  }
+  // }
 
   return chunkIndex;
 }
@@ -109,24 +109,23 @@ void World::ProcessRequestedChunks(
   // Removes from the rendering mesh queue as well. Removing from the map
   // while looping over it is bad.
   for (const std::pair<const glm::ivec3, Chunk *> &oldChunk :
-       GetInstance().m_ChunkDataMap) {
+       Get().m_ChunkDataMap) {
     if (requestedChunks.find(oldChunk.first) == requestedChunks.end()) {
-      GetInstance().m_ChunksToDelete.insert(oldChunk.first);
+      Get().m_ChunksToDelete.insert(oldChunk.first);
     }
   }
 
   for (const glm::ivec3 &newChunk : requestedChunks) {
-    if (GetInstance().m_ChunkDataMap.find(newChunk) ==
-        GetInstance().m_ChunkDataMap.end()) {
-      GetInstance().m_ChunksToCreate.insert(newChunk);
+    if (Get().m_ChunkDataMap.find(newChunk) == Get().m_ChunkDataMap.end()) {
+      Get().m_ChunksToCreate.insert(newChunk);
     }
   }
 
   // Perform full loop through chunks if there is a desync with loaded chunks
-  if (GetInstance().m_ChunkDataMap.size() != requestedChunks.size()) {
-    for (auto &chunk : GetInstance().m_ChunkDataMap) {
+  if (Get().m_ChunkDataMap.size() != requestedChunks.size()) {
+    for (auto &chunk : Get().m_ChunkDataMap) {
       if (requestedChunks.find(chunk.first) == requestedChunks.end()) {
-        GetInstance().m_ChunksToDelete.insert(chunk.first);
+        Get().m_ChunksToDelete.insert(chunk.first);
       }
     }
   }
@@ -134,32 +133,32 @@ void World::ProcessRequestedChunks(
 
 void World::WorldThread() {
   while (!Engine::ShouldClose()) {
-    GetInstance().m_ChunkDataMap.reserve(GetInstance().m_ChunksToCreate.size());
+    Get().m_ChunkDataMap.reserve(Get().m_ChunksToCreate.size());
 
     // Create new chunks
-    for (const glm::ivec3 &index : GetInstance().m_ChunksToCreate) {
+    for (const glm::ivec3 &index : Get().m_ChunksToCreate) {
       // add chunk to data
       Chunk *chunk = new Chunk(index); // heap allocation
-      GetInstance().m_ChunkDataMap.insert_or_assign(index, chunk);
+      Get().m_ChunkDataMap.insert_or_assign(index, chunk);
 
       // add mesh to renderer
-      Mesh mesh = Mesh(GetInstance().m_ChunkDataMap.at(index)->GetVertices(),
-                       GetInstance().m_ChunkDataMap.at(index)->GetIndices(),
-                       &GetInstance().m_Shader);
+      Mesh mesh =
+          Mesh(Get().m_ChunkDataMap.at(index)->GetVertices(),
+               Get().m_ChunkDataMap.at(index)->GetIndices(), &Get().m_Shader);
       Renderer::AddMeshToQueue(index, mesh);
     }
-    GetInstance().m_ChunksToCreate.clear();
+    Get().m_ChunksToCreate.clear();
 
     // Delete old chunks
-    for (const glm::ivec3 &index : GetInstance().m_ChunksToDelete) {
+    for (const glm::ivec3 &index : Get().m_ChunksToDelete) {
       // remove chunk from data
-      delete GetInstance().m_ChunkDataMap.at(index); // heap deletion
-      GetInstance().m_ChunkDataMap.erase(index);
+      delete Get().m_ChunkDataMap.at(index); // heap deletion
+      Get().m_ChunkDataMap.erase(index);
 
       // remove mesh from renderer
       Renderer::DeleteMeshFromQueue(index);
     }
-    GetInstance().m_ChunksToDelete.clear();
+    Get().m_ChunksToDelete.clear();
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }

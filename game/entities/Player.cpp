@@ -6,7 +6,7 @@ Player::Player(glm::vec3 position) : m_Position(position) {
   Camera::SetPosition(position);
   EntityHandler::AddEntityToQueue(this);
 
-  m_RenderDistance = 16;
+  m_RenderDistance = 5;
 }
 
 Player::~Player() {}
@@ -22,7 +22,7 @@ void Player::Update() {
 
   m_Position = Camera::GetPosition();
 
-  glm::ivec3 newChunkIndex = World::GetChunkIndexFromWorldCoord(m_Position);
+  glm::ivec3 newChunkIndex = World::GetChunkIndex(m_Position);
 
   if (newChunkIndex != m_ChunkIndex) {
     // Update requested chunks if the chunk index changes

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <unordered_set>
+#include <cmath>
 
 #include "glm/glm.hpp"
 
@@ -29,8 +30,8 @@ public:
 
     while (glm::length(direction) < 5.0f) {
       direction += glm::normalize(direction) * step;
-      if (World::GetBlock(position + direction) != 0) {
-        World::SetBlock(position + direction, 0);
+      if (World::GetBlock(round(position + direction)) != 0) {
+        World::SetBlock(round(position + direction), 0);
         return;
       }
     }
