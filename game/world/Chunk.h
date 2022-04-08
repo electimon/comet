@@ -15,6 +15,10 @@ struct Chunk {
   Chunk(glm::ivec3 id);
   ~Chunk();
 
+  // For use by world manager
+  void Generate();
+  void GenerateGeometry();
+
   void GenerateSurface();
   void GenerateTrees();
   void GenerateBedrock();

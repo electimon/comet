@@ -25,7 +25,21 @@ Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {
   m_HeightData.resize(CHUNK_WIDTH * CHUNK_WIDTH); // "2D" array of height values
   m_Vertices.reserve(100000);
   m_Indices.reserve(100000);
+}
 
+Chunk::~Chunk() {
+  if (m_Modified) {
+    std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " +
+                                std::to_string(m_Chunk.y) + " " +
+                                std::to_string(m_Chunk.z) + ".chunk");
+    std::copy(m_BlockData.begin(), m_BlockData.end(),
+              std::ostream_iterator<unsigned char>(blockDataFile, ""));
+    blockDataFile.close();
+  } else {
+  }
+}
+
+void Chunk::Generate() {
   if (std::filesystem::exists(".\\world\\" + std::to_string(m_Chunk.x) + " " +
                               std::to_string(m_Chunk.y) + " " +
                               std::to_string(m_Chunk.z) + ".chunk")) {
@@ -52,27 +66,12 @@ Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {
   }
 
   m_Generated = true;
-
+}
+void Chunk::GenerateGeometry() {
   GenerateMesh();
 
   m_HeightData.clear();
   m_HeightData.shrink_to_fit();
-}
-
-Chunk::~Chunk() {
-  if (m_Modified) {
-    // std::cout << "Unloading chunk, chunk was modified, saving chunk to
-    // disk..."
-    //           << std::endl;
-    std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " +
-                                std::to_string(m_Chunk.y) + " " +
-                                std::to_string(m_Chunk.z) + ".chunk");
-    std::copy(m_BlockData.begin(), m_BlockData.end(),
-              std::ostream_iterator<unsigned char>(blockDataFile, ""));
-    blockDataFile.close();
-  } else {
-    // std::cout << "Unloading chunk, chunk was not modified." << std::endl;
-  }
 }
 
 void Chunk::GenerateSurface() {

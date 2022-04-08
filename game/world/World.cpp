@@ -99,6 +99,10 @@ glm::ivec3 World::GetChunkIndex(const glm::ivec3 &worldPos) {
 
 void World::GenerateChunk(const glm::ivec3 &index) {
   Chunk *chunk = new Chunk(index);
+
+  chunk->Generate();
+  chunk->GenerateGeometry();
+
   m_ChunkDataMap.insert_or_assign(index, chunk);
 }
 
@@ -139,6 +143,8 @@ void World::WorldThread() {
     for (const glm::ivec3 &index : Get().m_ChunksToCreate) {
       // add chunk to data
       Chunk *chunk = new Chunk(index); // heap allocation
+      chunk->Generate();
+      chunk->GenerateGeometry();
       Get().m_ChunkDataMap.insert_or_assign(index, chunk);
 
       // add mesh to renderer
