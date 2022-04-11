@@ -4,43 +4,50 @@
 
 #include <glm/glm.hpp>
 
-class TextureMap {
+class TextureMap
+{
 public:
-  static TextureMap &Get() {
-    static TextureMap s_Instance;
-    return s_Instance;
-  }
+    static TextureMap &Get()
+    {
+        static TextureMap s_Instance;
+        return s_Instance;
+    }
 
-  // Singleton approach, assuming that if game is using a texture map
-  // then game is probably only going to be loading in a single texture.
+    // Singleton approach, assuming that if game is using a texture map
+    // then game is probably only going to be loading in a single texture.
 
-  static void Configure(int width, int height, int resolution);
+    static void Configure(int width, int height, int resolution);
 
-  static std::vector<std::vector<float>> GetTextureCoordinates() {
-    return Get().m_Coords;
-  }
-  static glm::vec2 GetTopLeft(int index) {
-    return {Get().m_Coords[index][0], Get().m_Coords[index][2]};
-  }
-  static glm::vec2 GetTopRight(int index) {
-    return {Get().m_Coords[index][1], Get().m_Coords[index][2]};
-  }
-  static glm::vec2 GetBottomLeft(int index) {
-    return {Get().m_Coords[index][0], Get().m_Coords[index][3]};
-  }
-  static glm::vec2 GetBottomRight(int index) {
-    return {Get().m_Coords[index][1], Get().m_Coords[index][3]};
-  }
+    static std::vector<std::vector<float>> GetTextureCoordinates()
+    {
+        return Get().m_Coords;
+    }
+    static glm::vec2 GetTopLeft(int index)
+    {
+        return {Get().m_Coords[index][0], Get().m_Coords[index][2]};
+    }
+    static glm::vec2 GetTopRight(int index)
+    {
+        return {Get().m_Coords[index][1], Get().m_Coords[index][2]};
+    }
+    static glm::vec2 GetBottomLeft(int index)
+    {
+        return {Get().m_Coords[index][0], Get().m_Coords[index][3]};
+    }
+    static glm::vec2 GetBottomRight(int index)
+    {
+        return {Get().m_Coords[index][1], Get().m_Coords[index][3]};
+    }
 
 private:
-  TextureMap() {}
-  TextureMap(TextureMap const &);
-  void operator=(TextureMap const &) {}
+    TextureMap() {}
+    TextureMap(TextureMap const &);
+    void operator=(TextureMap const &) {}
 
-  unsigned int m_Width = 0;      // horizontal pixel count
-  unsigned int m_Height = 0;     // vertical pixel count
-  unsigned int m_Resolution = 0; // resolution of each texture
+    unsigned int m_Width = 0;      // horizontal pixel count
+    unsigned int m_Height = 0;     // vertical pixel count
+    unsigned int m_Resolution = 0; // resolution of each texture
 
-  // vector of 4x1 vectors (left, right, bottom, top coordinates)
-  std::vector<std::vector<float>> m_Coords;
+    // vector of 4x1 vectors (left, right, bottom, top coordinates)
+    std::vector<std::vector<float>> m_Coords;
 };

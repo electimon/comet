@@ -2,16 +2,18 @@
 
 #include <glfw/glfw3.h>
 
-class EventHandler {
+class EventHandler
+{
 public:
-  static EventHandler &Get() {
-    static EventHandler s_Instance;
-    return s_Instance;
-  }
-  static void PollEvents();
+    static EventHandler &Get()
+    {
+        static EventHandler s_Instance;
+        return s_Instance;
+    }
+    static void PollEvents();
 
 private:
-  EventHandler() {}
-  EventHandler(EventHandler const &);
-  void operator=(EventHandler const &);
+    EventHandler() {}
+    EventHandler(EventHandler const &);
+    void operator=(EventHandler const &);
 };

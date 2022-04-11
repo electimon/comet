@@ -5,21 +5,23 @@
 
 #include "Entity.h"
 
-class EntityHandler {
+class EntityHandler
+{
 public:
-  static EntityHandler &Get() {
-    static EntityHandler s_Instance;
-    return s_Instance;
-  }
+    static EntityHandler &Get()
+    {
+        static EntityHandler s_Instance;
+        return s_Instance;
+    }
 
-  static void AddEntityToQueue(Entity *entity);
-  static void RemoveEntityFromQueue(Entity *entity);
-  static void UpdateEntities();
+    static void AddEntityToQueue(Entity *entity);
+    static void RemoveEntityFromQueue(Entity *entity);
+    static void UpdateEntities();
 
 private:
-  EntityHandler() {}
-  EntityHandler(EntityHandler const &);
-  void operator=(EntityHandler const &);
+    EntityHandler() {}
+    EntityHandler(EntityHandler const &);
+    void operator=(EntityHandler const &);
 
-  std::unordered_set<Entity *> m_Entities;
+    std::unordered_set<Entity *> m_Entities;
 };

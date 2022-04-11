@@ -1,12 +1,13 @@
 #pragma once
 
-class Block {
+class Block
+{
 public:
-  Block(unsigned char id);
-  ~Block();
+    Block(unsigned char id);
+    ~Block();
 
-  unsigned char GetID();
+    unsigned char GetID();
 
 private:
-  unsigned char m_ID;
+    unsigned char m_ID;
 };
