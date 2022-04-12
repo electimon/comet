@@ -7,6 +7,7 @@
 
 #include <filesystem>
 #include <thread>
+#include <cmath>
 
 void World::Initialize()
 {
@@ -74,7 +75,7 @@ void World::SetBlock(const glm::ivec3 &worldPos, unsigned char blockID)
 glm::ivec3 World::GetChunkCoord(const glm::ivec3 &worldPos)
 {
     glm::ivec3 chunkIndex = GetChunkIndex(worldPos);
-    glm::ivec3 chunkPos{worldPos};
+    glm::ivec3 chunkPos = worldPos;
 
     while (chunkPos.x < 0)
     {
@@ -100,35 +101,10 @@ glm::ivec3 World::GetChunkIndex(const glm::ivec3 &worldPos)
 {
     glm::ivec3 chunkIndex(0, 0, 0);
 
-    if (worldPos.x < 0)
-    {
-        chunkIndex.x = (worldPos.x - CHUNK_WIDTH) / CHUNK_WIDTH;
-    }
-    else
-    {
-        chunkIndex.x = worldPos.x / CHUNK_WIDTH;
-    }
-
-    if (worldPos.z < 0)
-    {
-        chunkIndex.z = (worldPos.z - CHUNK_WIDTH) / CHUNK_WIDTH;
-    }
-    else
-    {
-        chunkIndex.z = worldPos.z / CHUNK_WIDTH;
-    }
+    chunkIndex.x = std::floor(static_cast<double>(worldPos.x) / static_cast<double>(CHUNK_WIDTH));
+    chunkIndex.z = std::floor(static_cast<double>(worldPos.z) / static_cast<double>(CHUNK_WIDTH));
 
     return chunkIndex;
-}
-
-void World::GenerateChunk(const glm::ivec3 &index)
-{
-    Chunk *chunk = new Chunk(index);
-
-    chunk->Generate();
-    chunk->GenerateGeometry();
-
-    m_ChunkDataMap.insert_or_assign(index, chunk);
 }
 
 void World::ProcessRequestedChunks(
@@ -174,22 +150,47 @@ void World::WorldThread()
     {
         Get().m_ChunkDataMap.reserve(Get().m_ChunksToCreate.size());
 
-        // Create new chunks
+        std::unordered_set temp = Get().m_ChunksToCreate;
+
+        // Generate Chunk Data
         for (const glm::ivec3 &index : Get().m_ChunksToCreate)
         {
             // add chunk to data
             Chunk *chunk = new Chunk(index); // heap allocation
             chunk->Generate();
-            chunk->GenerateGeometry();
+            // chunk->GenerateGeometry();
             Get().m_ChunkDataMap.insert_or_assign(index, chunk);
+        }
 
+        Get().m_ChunksToCreate.clear();
+
+        // Generate Chunk Geometry
+        for (const glm::ivec3 &index : temp)
+        {
             // add mesh to renderer
-            Mesh mesh =
-                Mesh(Get().m_ChunkDataMap.at(index)->GetVertices(),
-                     Get().m_ChunkDataMap.at(index)->GetIndices(), &Get().m_Shader);
+            Chunk *chunk = Get().m_ChunkDataMap.at(index);
+            chunk->GenerateGeometry();
+            Mesh mesh = Mesh(chunk->GetVertices(), chunk->GetIndices(), &Get().m_Shader);
             Renderer::AddMeshToQueue(index, mesh);
         }
-        Get().m_ChunksToCreate.clear();
+
+
+
+        // Create new chunks
+        // for (const glm::ivec3 &index : Get().m_ChunksToCreate)
+        // {
+        //     // add chunk to data
+        //     Chunk *chunk = new Chunk(index); // heap allocation
+        //     chunk->Generate();
+        //     chunk->GenerateGeometry();
+        //     Get().m_ChunkDataMap.insert_or_assign(index, chunk);
+
+        //     // add mesh to renderer
+        //     Mesh mesh =
+        //         Mesh(Get().m_ChunkDataMap.at(index)->GetVertices(),
+        //              Get().m_ChunkDataMap.at(index)->GetIndices(), &Get().m_Shader);
+        //     Renderer::AddMeshToQueue(index, mesh);
+        // }
 
         // Delete old chunks
         for (const glm::ivec3 &index : Get().m_ChunksToDelete)
