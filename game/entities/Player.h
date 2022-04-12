@@ -40,12 +40,13 @@ public:
             }
         }
     }
+
     void PlaceBlock()
     {
-        float step = 1.0f / 16.0f;
+        float step{1.0f / 16.0f};
         glm::vec3 direction = Camera::GetDirection();
         glm::vec3 position = Camera::GetPosition();
-        glm::vec3 positionLast{position};
+        glm::vec3 positionLast = position;
 
         while (glm::length(direction) < 5.0f)
         {
