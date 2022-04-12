@@ -7,7 +7,7 @@ Player::Player(glm::vec3 position) : m_Position(position)
     Camera::SetPosition(position);
     EntityHandler::AddEntityToQueue(this);
 
-    m_RenderDistance = 3;
+    m_RenderDistance = 8;
 }
 
 Player::~Player() {}
