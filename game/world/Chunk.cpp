@@ -353,11 +353,12 @@ void Chunk::GenerateMesh()
             for (int z = 0; z < CHUNK_WIDTH; z++)
             {
                 if (GetBlock(x, y, z) == 0)
+                {
                     continue;
+                }
 
                 blockID = GetBlock(x, y, z);
-                std::vector<unsigned char> blockIndices =
-                    BlockLibrary::GetIndices(blockID);
+                std::vector<unsigned char> blockIndices = BlockLibrary::GetIndices(blockID);
 
                 px = GetBlock(x + 1, y, z) == 0;
                 nx = GetBlock(x - 1, y, z) == 0;
@@ -368,32 +369,28 @@ void Chunk::GenerateMesh()
 
                 if (x == 0)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y,
-                                         z + m_Chunk.z * CHUNK_WIDTH}) != 0)
+                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y, z + m_Chunk.z * CHUNK_WIDTH}) != 0)
                     {
                         nx = false;
                     }
                 }
                 if (x == CHUNK_WIDTH)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y,
-                                         z + m_Chunk.z * CHUNK_WIDTH}) != 0)
+                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y, z + m_Chunk.z * CHUNK_WIDTH}) != 0)
                     {
                         px = false;
                     }
                 }
                 if (z == 0)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
-                                         z + m_Chunk.z * CHUNK_WIDTH - 1}) != 0)
+                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH - 1}) != 0)
                     {
                         nz = false;
                     }
                 }
                 if (z == CHUNK_WIDTH)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y,
-                                         z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0)
+                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0)
                     {
                         pz = false;
                     }
@@ -412,24 +409,14 @@ void Chunk::GenerateMesh()
                 // +X Quad
                 if (px)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset,
-                                      3 + offset, 0 + offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
-                                   TextureMap::GetTopRight(blockIndices[0]),
-                                   {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
-                                   TextureMap::GetBottomRight(blockIndices[0]),
-                                   {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
-                                   TextureMap::GetBottomLeft(blockIndices[0]),
-                                   {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
-                                   TextureMap::GetTopLeft(blockIndices[0]),
-                                   {+1.0f, 0.0f, 0.0f}),
+                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
                         });
                     offset += 4;
                 }
@@ -437,24 +424,14 @@ void Chunk::GenerateMesh()
                 // -X Quad
                 if (nx)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset,
-                                      3 + offset, 0 + offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
-                                   TextureMap::GetTopRight(blockIndices[1]),
-                                   {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
-                                   TextureMap::GetTopLeft(blockIndices[1]),
-                                   {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
-                                   TextureMap::GetBottomLeft(blockIndices[1]),
-                                   {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
-                                   TextureMap::GetBottomRight(blockIndices[1]),
-                                   {-1.0f, 0.0f, 0.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
                         });
                     offset += 4;
                 }
@@ -462,24 +439,14 @@ void Chunk::GenerateMesh()
                 // +Y Quad
                 if (py)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset,
-                                      3 + offset, 0 + offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
-                                   TextureMap::GetTopLeft(blockIndices[2]),
-                                   {0.0f, +1.0f, 0.0f}),
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
-                                   TextureMap::GetTopRight(blockIndices[2]),
-                                   {0.0f, +1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
-                                   TextureMap::GetBottomRight(blockIndices[2]),
-                                   {0.0f, +1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
-                                   TextureMap::GetBottomLeft(blockIndices[2]),
-                                   {0.0f, +1.0f, 0.0f}),
+                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetBottomRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetBottomLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
                         });
                     offset += 4;
                 }
@@ -487,24 +454,14 @@ void Chunk::GenerateMesh()
                 // -Y Quad
                 if (ny)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset,
-                                      3 + offset, 0 + offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
-                                   TextureMap::GetTopRight(blockIndices[3]),
-                                   {0.0f, -1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
-                                   TextureMap::GetBottomRight(blockIndices[3]),
-                                   {0.0f, -1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
-                                   TextureMap::GetBottomLeft(blockIndices[3]),
-                                   {0.0f, -1.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
-                                   TextureMap::GetTopLeft(blockIndices[3]),
-                                   {0.0f, -1.0f, 0.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
                         });
                     offset += 4;
                 }
@@ -512,24 +469,14 @@ void Chunk::GenerateMesh()
                 // +Z Quad
                 if (pz)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset,
-                                      3 + offset, 0 + offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
-                                   TextureMap::GetTopRight(blockIndices[4]),
-                                   {0.0f, 0.0f, +1.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
-                                   TextureMap::GetTopLeft(blockIndices[4]),
-                                   {0.0f, 0.0f, +1.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
-                                   TextureMap::GetBottomLeft(blockIndices[4]),
-                                   {0.0f, 0.0f, +1.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
-                                   TextureMap::GetBottomRight(blockIndices[4]),
-                                   {0.0f, 0.0f, +1.0f}),
+                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
                         });
                     offset += 4;
                 }
@@ -537,28 +484,23 @@ void Chunk::GenerateMesh()
                 // -Z Quad
                 if (nz)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset,
-                                      3 + offset, 0 + offset});
+                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
                     m_Vertices.insert(
                         m_Vertices.end(),
                         {
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
-                                   TextureMap::GetTopRight(blockIndices[5]),
-                                   {0.0f, 0.0f, -1.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
-                                   TextureMap::GetBottomRight(blockIndices[5]),
-                                   {0.0f, 0.0f, -1.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
-                                   TextureMap::GetBottomLeft(blockIndices[5]),
-                                   {0.0f, 0.0f, -1.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
-                                   TextureMap::GetTopLeft(blockIndices[5]),
-                                   {0.0f, 0.0f, -1.0f}),
+                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
                         });
                     offset += 4;
                 }
             }
         }
     }
+}
+
+void Chunk::GenerateMesh2()
+{
+
 }

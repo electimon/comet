@@ -34,7 +34,6 @@ public:
     static void
     ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &chunks);
 
-    void GenerateChunk(const glm::ivec3 &index);
     // Shader Functions
     const Shader &GetShader() { return m_Shader; }
     static void WorldThread();
