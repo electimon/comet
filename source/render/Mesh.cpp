@@ -56,10 +56,10 @@ void Mesh::Initialize()
 
     m_PushedToGPU = true;
 
-    p_Vertices->clear();
-    p_Vertices->shrink_to_fit();
-    p_Indices->clear();
-    p_Indices->shrink_to_fit();
+    // p_Vertices->clear();
+    // p_Vertices->shrink_to_fit();
+    // p_Indices->clear();
+    // p_Indices->shrink_to_fit();
 }
 
 void Mesh::Update()
@@ -88,10 +88,8 @@ void Mesh::UpdateGeometry()
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, p_Vertices->size() * sizeof(Vertex),
-                    p_Vertices->data());
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0,
-                    p_Indices->size() * sizeof(unsigned int), p_Indices->data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, p_Vertices->size() * sizeof(Vertex), p_Vertices->data());
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, p_Indices->size() * sizeof(unsigned int), p_Indices->data());
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
