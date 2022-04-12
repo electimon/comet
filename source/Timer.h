@@ -1,8 +1,7 @@
+// #include <comet.pch>
 #pragma once
 
-#include <iostream>
-#include <string>
-
+#include <comet.pch>
 #include <glfw/glfw3.h>
 
 struct Timer
