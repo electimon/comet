@@ -114,16 +114,15 @@ void World::ProcessRequestedChunks(
     // present in the requested chunks. If not, added to the chunksToDelete set.
     // Removes from the rendering mesh queue as well. Removing from the map
     // while looping over it is bad.
-    for (const std::pair<const glm::ivec3, Chunk *> &oldChunk :
-         Get().m_ChunkDataMap)
+    for (const auto &[index, chunk] : Get().m_ChunkDataMap)
     {
-        if (requestedChunks.find(oldChunk.first) == requestedChunks.end())
+        if (requestedChunks.find(index) == requestedChunks.end())
         {
-            Get().m_ChunksToDelete.insert(oldChunk.first);
+            Get().m_ChunksToDelete.insert(index);
         }
     }
 
-    for (const glm::ivec3 &newChunk : requestedChunks)
+    for (const auto &newChunk : requestedChunks)
     {
         if (Get().m_ChunkDataMap.find(newChunk) == Get().m_ChunkDataMap.end())
         {
@@ -152,48 +151,29 @@ void World::WorldThread()
 
         std::unordered_set temp = Get().m_ChunksToCreate;
 
-        // Generate Chunk Data
-        for (const glm::ivec3 &index : Get().m_ChunksToCreate)
+        for (const auto &index : Get().m_ChunksToCreate)
         {
-            // add chunk to data
+            // Generate Chunk Data
             Chunk *chunk = new Chunk(index); // heap allocation
             chunk->Generate();
-            // chunk->GenerateGeometry();
             Get().m_ChunkDataMap.insert_or_assign(index, chunk);
         }
 
         Get().m_ChunksToCreate.clear();
 
-        // Generate Chunk Geometry
-        for (const glm::ivec3 &index : temp)
+        for (const auto &index : temp)
         {
-            // add mesh to renderer
+            // Generate Chunk Geometry
             Chunk *chunk = Get().m_ChunkDataMap.at(index);
             chunk->GenerateGeometry();
             Mesh mesh = Mesh(chunk->GetVertices(), chunk->GetIndices(), &Get().m_Shader);
+
+            // Adding to Renderer
             Renderer::AddMeshToQueue(index, mesh);
         }
 
-
-
-        // Create new chunks
-        // for (const glm::ivec3 &index : Get().m_ChunksToCreate)
-        // {
-        //     // add chunk to data
-        //     Chunk *chunk = new Chunk(index); // heap allocation
-        //     chunk->Generate();
-        //     chunk->GenerateGeometry();
-        //     Get().m_ChunkDataMap.insert_or_assign(index, chunk);
-
-        //     // add mesh to renderer
-        //     Mesh mesh =
-        //         Mesh(Get().m_ChunkDataMap.at(index)->GetVertices(),
-        //              Get().m_ChunkDataMap.at(index)->GetIndices(), &Get().m_Shader);
-        //     Renderer::AddMeshToQueue(index, mesh);
-        // }
-
         // Delete old chunks
-        for (const glm::ivec3 &index : Get().m_ChunksToDelete)
+        for (const auto &index : Get().m_ChunksToDelete)
         {
             // remove chunk from data
             delete Get().m_ChunkDataMap.at(index); // heap deletion
