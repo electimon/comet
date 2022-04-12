@@ -21,7 +21,7 @@ int main(void)
     World::SetSeed(1);
     World::SetShader(blockShader);
 
-    Player player(glm::vec3(0.0f, 60.0f, 0.0f));
+    Player player(glm::vec3(-1.0f, 55.0f, -1.0f));
 
     Engine::MainThread();
 
