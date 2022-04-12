@@ -32,13 +32,14 @@ link_directories(
     libraries/glfw/lib
 )
 
+# Game files
 file(GLOB_RECURSE GAME_CPP_FILES game/*.cpp)
 file(GLOB_RECURSE GAME_H_FILES game/*.h)
 
+# Engine files
 file(GLOB_RECURSE ENGINE_CPP_FILES source/*.cpp)
 file(GLOB_RECURSE ENGINE_C_FILES source/*.c)
 file(GLOB_RECURSE ENGINE_H_FILES source/*.h)
-
 file(GLOB_RECURSE IMGUI_CPP_FILES libraries/imgui/source/*.cpp)
 
 add_executable(
@@ -56,6 +57,8 @@ add_executable(
     libraries/glad/source/gl.c
     libraries/stb_image/source/stb_image.cpp
 )
+
+target_precompile_headers(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANGUAGE:CXX>:comet.pch>")
 
 target_link_libraries(${PROJECT_NAME}
     glfw3
