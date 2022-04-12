@@ -374,7 +374,7 @@ void Chunk::GenerateMesh()
                         nx = false;
                     }
                 }
-                if (x == CHUNK_WIDTH)
+                if (x == CHUNK_WIDTH - 1)
                 {
                     if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y, z + m_Chunk.z * CHUNK_WIDTH}) != 0)
                     {
@@ -388,7 +388,7 @@ void Chunk::GenerateMesh()
                         nz = false;
                     }
                 }
-                if (z == CHUNK_WIDTH)
+                if (z == CHUNK_WIDTH - 1)
                 {
                     if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0)
                     {
