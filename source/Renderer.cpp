@@ -73,31 +73,31 @@ void Renderer::ProcessMeshQueues()
 {
     {
         std::lock_guard<std::mutex> locked(Get().m_AddMeshQueueLock);
-        for (auto &mesh : Get().m_MeshesToAdd)
+        for (const auto &[index, mesh] : Get().m_MeshesToAdd)
         {
-            Get().m_MeshMap.insert_or_assign(mesh.first, mesh.second);
-            Get().m_MeshMap.at(mesh.first).Initialize();
+            Get().m_MeshMap.insert_or_assign(index, mesh);
+            Get().m_MeshMap.at(index).Initialize();
         }
         Get().m_MeshesToAdd.clear();
     }
 
     {
         std::lock_guard<std::mutex> locked(Get().m_UpdateMeshQueueLock);
-        for (auto &mesh : Get().m_MeshesToUpdate)
+        for (const auto &index : Get().m_MeshesToUpdate)
         {
-            Get().m_MeshMap.at(mesh).UpdateGeometry();
+            Get().m_MeshMap.at(index).UpdateGeometry();
         }
         Get().m_MeshesToUpdate.clear();
     }
 
     {
         std::lock_guard<std::mutex> locked(Get().m_DeleteMeshQueueLock);
-        for (auto &mesh : Get().m_MeshesToDelete)
+        for (const auto &index : Get().m_MeshesToDelete)
         {
-            if (Get().m_MeshMap.find(mesh) != Get().m_MeshMap.end())
+            if (Get().m_MeshMap.find(index) != Get().m_MeshMap.end())
             {
-                Get().m_MeshMap.at(mesh).Finalize();
-                Get().m_MeshMap.erase(mesh);
+                Get().m_MeshMap.at(index).Finalize();
+                Get().m_MeshMap.erase(index);
             }
         }
         Get().m_MeshesToDelete.clear();
