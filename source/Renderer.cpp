@@ -94,8 +94,11 @@ void Renderer::ProcessMeshQueues()
         std::lock_guard<std::mutex> locked(Get().m_DeleteMeshQueueLock);
         for (auto &mesh : Get().m_MeshesToDelete)
         {
-            Get().m_MeshMap.at(mesh).Finalize();
-            Get().m_MeshMap.erase(mesh);
+            if (Get().m_MeshMap.find(mesh) != Get().m_MeshMap.end())
+            {
+                Get().m_MeshMap.at(mesh).Finalize();
+                Get().m_MeshMap.erase(mesh);
+            }
         }
         Get().m_MeshesToDelete.clear();
     }
