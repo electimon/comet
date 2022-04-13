@@ -20,7 +20,7 @@ void World::Initialize()
 
 void World::Finalize()
 {
-    std::cout << "Saving currently loaded chunks..." << std::endl;
+    std::cout << "Saving currently loaded chunks...\n";
 
     for (auto &chunk : Get().m_ChunkDataMap)
     {

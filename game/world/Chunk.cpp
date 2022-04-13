@@ -50,7 +50,7 @@ void Chunk::Generate()
                                 std::to_string(m_Chunk.y) + " " +
                                 std::to_string(m_Chunk.z) + ".chunk"))
     {
-        std::cout << "Loading chunk, reading chunk from disk..." << std::endl;
+        std::cout << "Loading chunk, reading chunk from disk...\n";
 
         std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " +
                                std::to_string(m_Chunk.y) + " " +

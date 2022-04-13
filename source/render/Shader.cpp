@@ -100,7 +100,7 @@ int Shader::GetUniformLocation(const std::string &name)
 
     if (location == -1)
     {
-        std::cout << "Uniform " << name << " not found. Ignoring..." << std::endl;
+        std::cout << "Uniform " << name << " not found. Ignoring...\n";
     }
 
     m_UniformMap[name] = location;

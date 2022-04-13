@@ -11,5 +11,5 @@ Timer::Timer(const std::string &scope)
 
 Timer::~Timer()
 {
-    std::cout << m_ScopeName << "took " << glfwGetTime() - m_StartTime << " seconds." << std::endl;
+    std::cout << m_ScopeName << "took " << glfwGetTime() - m_StartTime << " seconds.\n";
 }

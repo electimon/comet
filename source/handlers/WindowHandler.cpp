@@ -1,13 +1,13 @@
 #include "WindowHandler.h"
 
-void WindowHandler::Initialize() { GetInstance().CreateWindow(); }
+void WindowHandler::Initialize() { Get().CreateWindow(); }
 
 int WindowHandler::CreateWindow()
 {
     // Initialize the library
     if (!glfwInit())
     {
-        std::cout << "[Error] Failed to initialize GLFW." << std::endl;
+        std::cout << "[Error] Failed to initialize GLFW.\n";
         return -1;
     }
 
@@ -20,7 +20,7 @@ int WindowHandler::CreateWindow()
     p_GLFWwindow = glfwCreateWindow(1, 1, "Comet (OpenGL 4.6)", NULL, NULL);
     if (!p_GLFWwindow)
     {
-        std::cout << "[Error] Failed to create OpenGL window." << std::endl;
+        std::cout << "[Error] Failed to create OpenGL window.\n";
         glfwTerminate();
         return -1;
     }
@@ -31,7 +31,7 @@ int WindowHandler::CreateWindow()
     int version = gladLoadGL(glfwGetProcAddress);
     if (version == 0)
     {
-        std::cout << "[Error] Failed to initialize OpenGL context." << std::endl;
+        std::cout << "[Error] Failed to initialize OpenGL context.\n";
         return -1;
     }
 
@@ -67,30 +67,36 @@ void WindowHandler::CenterWindow()
 
 void WindowHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(),
-                             &WindowHandler::GetInstance());
+    glfwSetWindowUserPointer(glfwGetCurrentContext(), &WindowHandler::Get());
 
-    auto WindowSizeCallbackWrapper = [](GLFWwindow *window, int width,
-                                        int height)
+    auto WindowSizeCallbackWrapper = [](GLFWwindow *window, int width, int height)
     {
-        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))
-            ->WindowSizeCallback(width, height);
+        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window)) ->WindowSizeCallback(width, height);
     };
-    auto FrameBufferCallbackWrapper = [](GLFWwindow *window, int width,
-                                         int height)
+    auto FrameBufferCallbackWrapper = [](GLFWwindow *window, int width, int height)
     {
-        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))
-            ->FramebufferSizeCallback(width, height);
+        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window)) ->FramebufferSizeCallback(width, height);
     };
 
     glfwSetWindowSizeCallback(glfwGetCurrentContext(), WindowSizeCallbackWrapper);
-    glfwSetFramebufferSizeCallback(glfwGetCurrentContext(),
-                                   FrameBufferCallbackWrapper);
+    glfwSetFramebufferSizeCallback(glfwGetCurrentContext(), FrameBufferCallbackWrapper);
 }
 
-void WindowHandler::WindowSizeCallback(int width, int height) {}
+void WindowHandler::WindowSizeCallback(int width, int height)
+{
+}
 
 void WindowHandler::FramebufferSizeCallback(int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+bool WindowHandler::ShouldWindowClose()
+{
+    return glfwWindowShouldClose(Get().p_GLFWwindow);
+}
+
+GLFWwindow *WindowHandler::GetGLFWWindow()
+{
+    return Get().p_GLFWwindow;
 }
