@@ -52,30 +52,24 @@ struct Chunk
         return m_BlockData.at(x * CHUNK_HEIGHT * CHUNK_WIDTH + y * CHUNK_WIDTH + z);
     }
 
-    void SetBlock(const glm::ivec3 &chunkPos, unsigned char blockID)
+    inline void SetBlock(const glm::ivec3 &chunkPos, unsigned char blockID)
     {
-        SetBlock(chunkPos.x, chunkPos.y, chunkPos.z, blockID);
+        m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH + chunkPos.y * CHUNK_WIDTH + chunkPos.z) = blockID;
     }
 
-    void SetBlock(int x, int y, int z, unsigned char blockID)
+    inline void SetBlock(int x, int y, int z, unsigned char blockID)
     {
         m_BlockData.at(x * CHUNK_HEIGHT * CHUNK_WIDTH + y * CHUNK_WIDTH + z) = blockID;
-
-        if (m_Generated)
-        {
-            m_Modified = true;
-            m_Generated = false;
-        }
     }
 
-    void SetHeight(int x, int z, int y)
+    inline void SetHeight(int x, int z, int y)
     {
-        m_HeightData[CHUNK_WIDTH * x + z] = y;
+        m_HeightData.at(CHUNK_WIDTH * x + z) = y;
     }
 
     float GetHeight(int x, int z)
     {
-        return m_HeightData[CHUNK_WIDTH * x + z];
+        return m_HeightData.at(CHUNK_WIDTH * x + z);
     }
 
     void MakeModified()
