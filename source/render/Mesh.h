@@ -27,7 +27,7 @@ public:
     void Finalize();
 
     bool IsPushedToGPU() { return m_PushedToGPU; }
-    float GetTransparency() { return m_TimeDelta; }
+    float GetTransparency() { return m_Transparency; }
     double GetTimeDelta() { return m_TimeDelta; }
     Shader *GetShader() { return m_Shader; }
     unsigned int GetCount() { return m_Count; }
