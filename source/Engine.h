@@ -12,7 +12,7 @@
 #include "handlers/MouseHandler.h"
 
 #include "Camera.h"
-#include "DebugInfoUI.h"
+#include "DebugInfo.h"
 #include "Renderer.h"
 #include "render/Shader.h"
 #include "render/Texture.h"

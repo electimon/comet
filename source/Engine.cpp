@@ -18,7 +18,7 @@ void Engine::Initialize()
 
     Camera::Initialize();
     Renderer::Initialize();
-    DebugInfoUI::Initialize();
+    DebugInfo::Initialize();
 
     WindowHandler::SetupCallbacks();
     KeyboardHandler::SetupCallbacks();
@@ -56,7 +56,7 @@ void Engine::MainThread()
         // Drawing the mesh render queue
         Renderer::DrawMeshQueue();
         // Draw UI after everything else
-        DebugInfoUI::DrawFrame();
+        DebugInfo::DrawFrame();
 
         // Swaps buffers to display new drawn frame
         Renderer::SwapBuffers();
