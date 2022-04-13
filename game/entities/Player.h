@@ -22,7 +22,6 @@ public:
     void Update();
 
     glm::vec3 GetPosition() { return m_Position; }
-    void UpdateRequestedChunks();
 
     void BreakBlock()
     {
@@ -63,6 +62,5 @@ public:
 private:
     glm::vec3 m_Position;
     glm::ivec3 m_ChunkIndex;
-    std::unordered_set<glm::ivec3> m_RequestedChunks;
     int m_RenderDistance;
 };

@@ -15,7 +15,7 @@
 class World
 {
 public:
-    static World &Get()
+    static World &Instance()
     {
         static World s_Instance;
         return s_Instance;
@@ -29,10 +29,9 @@ public:
     static glm::ivec3 GetChunkCoord(const glm::ivec3 &worldPos);
     static glm::ivec3 GetChunkIndex(const glm::ivec3 &worldPos);
 
-    static void SetShader(const Shader &shader) { Get().m_Shader = shader; }
+    static void SetShader(const Shader &shader) { Instance().m_Shader = shader; }
     static void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
-    static void
-    ProcessRequestedChunks(const std::unordered_set<glm::ivec3> &chunks);
+    static void ProcessRequestedChunks(int renderDistance, const glm::ivec3& centerChunkIndex);
 
     // Shader Functions
     const Shader &GetShader() { return m_Shader; }
@@ -47,9 +46,13 @@ private:
     // Functionallity to check for saved data on disk will eventually be
     // implemented.
     std::unordered_map<glm::ivec3, Chunk *> m_ChunkDataMap;
+    std::unordered_map<glm::ivec3, Chunk *> m_ChunkRenderMap;
 
     std::unordered_set<glm::ivec3> m_ChunksToDelete;
-    std::unordered_set<glm::ivec3> m_ChunksToCreate;
+    std::unordered_set<glm::ivec3> m_ChunksToGenerate;
+
+    std::unordered_set<glm::ivec3> m_ChunksToRender;
+    std::unordered_set<glm::ivec3> m_ChunksToUnrender;
 
     Shader m_Shader;
     int m_Seed;
