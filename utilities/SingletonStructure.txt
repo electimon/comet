@@ -3,7 +3,7 @@
 class SingletonClass
 {
 public:
-    static SingletonClass &GetInstance()
+    static SingletonClass &Instance()
     {
         static SingletonClass s_Instance;
         return s_Instance;
