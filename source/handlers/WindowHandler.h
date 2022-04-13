@@ -8,7 +8,7 @@
 class WindowHandler
 {
 public:
-    static WindowHandler &GetInstance()
+    static WindowHandler &Get()
     {
         static WindowHandler s_Instance;
         return s_Instance;
@@ -18,13 +18,10 @@ public:
     static void CenterWindow();
     static void SetupCallbacks();
 
-    static bool ShouldWindowClose()
-    {
-        return glfwWindowShouldClose(GetInstance().p_GLFWwindow);
-    }
+    static bool ShouldWindowClose();
+    static GLFWwindow *GetGLFWWindow();
 
     int CreateWindow();
-    static GLFWwindow *GetGLFWWindow() { return GetInstance().p_GLFWwindow; }
 
 private:
     WindowHandler() {}

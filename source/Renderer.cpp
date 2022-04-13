@@ -35,7 +35,7 @@ void Renderer::NewFrame()
 
 void Renderer::SwapBuffers()
 {
-    glfwSwapBuffers(WindowHandler::GetInstance().GetGLFWWindow());
+    glfwSwapBuffers(WindowHandler::GetGLFWWindow());
 }
 
 void Renderer::DrawMeshQueue()
