@@ -32,36 +32,24 @@ Chunk::~Chunk()
 {
     if (m_Modified)
     {
-        std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " +
-                                    std::to_string(m_Chunk.y) + " " +
-                                    std::to_string(m_Chunk.z) + ".chunk");
-        std::copy(m_BlockData.begin(), m_BlockData.end(),
-                  std::ostream_iterator<unsigned char>(blockDataFile, ""));
+        std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
+        std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, ""));
         blockDataFile.close();
-    }
-    else
-    {
     }
 }
 
 void Chunk::Generate()
 {
-    if (std::filesystem::exists(".\\world\\" + std::to_string(m_Chunk.x) + " " +
-                                std::to_string(m_Chunk.y) + " " +
-                                std::to_string(m_Chunk.z) + ".chunk"))
+    if (std::filesystem::exists(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk"))
     {
         std::cout << "Loading chunk, reading chunk from disk...\n";
 
-        std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " +
-                               std::to_string(m_Chunk.y) + " " +
-                               std::to_string(m_Chunk.z) + ".chunk";
+        std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk";
         std::basic_ifstream<char> blockDataFile(filename.c_str());
 
         // This will need to be redone once a more optimized method of
         // saving chunks is made.
-        m_BlockData = std::vector<unsigned char>(
-            (std::istreambuf_iterator<char>(blockDataFile)),
-            std::istreambuf_iterator<char>());
+        m_BlockData = std::vector<unsigned char>( (std::istreambuf_iterator<char>(blockDataFile)), std::istreambuf_iterator<char>());
     }
     else
     {
@@ -99,10 +87,10 @@ void Chunk::GenerateSurface()
             noise1 = ChunkGenerator::GetPerlin1((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
             noise2 = ChunkGenerator::GetPerlin2((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
             noise3 = ChunkGenerator::GetPerlin4((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
-            // noise4 = ChunkGenerator::GetPerlin8((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            noise4 = ChunkGenerator::GetPerlin8((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
             // noise5 = ChunkGenerator::GetPerlin16((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
 
-            height = 80.0f + (40.0f * noise1) + (20.0f * noise2) + (10.0f * noise3);
+            height = 40.0f + (20.0f * noise1) + (10.0f * noise2) + (5.0f * noise3) + (2.5f * noise4);
             y = static_cast<int>(height);
 
             SetHeight(x, z, height);
