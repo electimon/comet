@@ -1,8 +1,13 @@
 #include "MouseHandler.h"
 
+void MouseHandler::Initialize()
+{
+    Instance().SetupCallbacks();
+}
+
 void MouseHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), &MouseHandler::Get());
+    glfwSetWindowUserPointer(glfwGetCurrentContext(), &MouseHandler::Instance());
 
     auto ScrollCallbackWrapper = [](GLFWwindow *window, double xoffset, double yoffset)
     {
@@ -22,7 +27,9 @@ void MouseHandler::SetupCallbacks()
     glfwSetCursorPosCallback(glfwGetCurrentContext(), CursorPosCallbackWrapper);
 }
 
-void MouseHandler::ScrollCallback(double xoffset, double yoffset) {}
+void MouseHandler::ScrollCallback(double xoffset, double yoffset)
+{
+}
 
 void MouseHandler::MouseButtonCallback(int button, int action, int mods)
 {
@@ -66,91 +73,90 @@ void MouseHandler::UpdateStates()
     if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(),
                            GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        if (!Get().m_LeftClick && !Get().m_LeftHold)
+        if (!Instance().m_LeftClick && !Instance().m_LeftHold)
         {
-            Get().m_LeftClick = true;
+            Instance().m_LeftClick = true;
         }
         else
         {
-            Get().m_LeftClick = false;
-            Get().m_LeftHold = true;
+            Instance().m_LeftClick = false;
+            Instance().m_LeftHold = true;
         }
     }
     else
     {
-        Get().m_LeftClick = false;
-        Get().m_LeftHold = false;
+        Instance().m_LeftClick = false;
+        Instance().m_LeftHold = false;
     }
 
-    if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(),
-                           GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+    if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
-        if (!Get().m_RightClick && !Get().m_RightHold)
+        if (!Instance().m_RightClick && !Instance().m_RightHold)
         {
-            Get().m_RightClick = true;
+            Instance().m_RightClick = true;
         }
         else
         {
-            Get().m_RightClick = false;
-            Get().m_RightHold = true;
+            Instance().m_RightClick = false;
+            Instance().m_RightHold = true;
         }
     }
     else
     {
-        Get().m_RightClick = false;
-        Get().m_RightHold = false;
+        Instance().m_RightClick = false;
+        Instance().m_RightHold = false;
     }
 }
 
 void MouseHandler::ResetStates()
 {
-    Get().m_LeftClick = false;
-    Get().m_LeftHold = false;
-    Get().m_RightClick = false;
-    Get().m_RightHold = false;
+    Instance().m_LeftClick = false;
+    Instance().m_LeftHold = false;
+    Instance().m_RightClick = false;
+    Instance().m_RightHold = false;
 }
 
 void MouseHandler::CaptureCursor()
 {
     glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    Get().m_CursorCaptured = true;
+    Instance().m_CursorCaptured = true;
 }
 void MouseHandler::ReleaseCursor()
 {
     glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    Get().m_CursorCaptured = false;
+    Instance().m_CursorCaptured = false;
 }
 
 double MouseHandler::GetDeltaX()
 {
-    return Get().m_MovementSinceLastFrame[0];
+    return Instance().m_MovementSinceLastFrame[0];
 }
 double MouseHandler::GetDeltaY()
 {
-    return Get().m_MovementSinceLastFrame[1];
+    return Instance().m_MovementSinceLastFrame[1];
 }
 
 bool MouseHandler::GetLeftClick()
 {
-    return Get().m_LeftClick;
+    return Instance().m_LeftClick;
 }
 
 bool MouseHandler::GetLeftHold()
 {
-    return Get().m_LeftHold;
+    return Instance().m_LeftHold;
 }
 
 bool MouseHandler::GetRightClick()
 {
-    return Get().m_RightClick;
+    return Instance().m_RightClick;
 }
 
 bool MouseHandler::GetRightHold()
 {
-    return Get().m_RightHold;
+    return Instance().m_RightHold;
 }
 
 void MouseHandler::ResetMovement()
 {
-    Get().m_MovementSinceLastFrame = {0.0, 0.0};
+    Instance().m_MovementSinceLastFrame = {0.0, 0.0};
 }

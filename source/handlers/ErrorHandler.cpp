@@ -1,6 +1,9 @@
 #include "ErrorHandler.h"
 
-void ErrorHandler::Initialize() {}
+void ErrorHandler::Initialize()
+{
+    Instance();
+}
 
 void ErrorHandler::SetupCallbacks()
 {

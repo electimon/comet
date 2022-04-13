@@ -7,7 +7,7 @@
 class TextureMap
 {
 public:
-    static TextureMap &Get()
+    static TextureMap &Instance()
     {
         static TextureMap s_Instance;
         return s_Instance;
@@ -16,28 +16,13 @@ public:
     // Singleton approach, assuming that if game is using a texture map
     // then game is probably only going to be loading in a single texture.
 
+    static void Initialize();
     static void Configure(int width, int height, int resolution);
-
-    static std::vector<std::vector<float>> GetTextureCoordinates()
-    {
-        return Get().m_Coords;
-    }
-    static glm::vec2 GetTopLeft(int index)
-    {
-        return {Get().m_Coords[index][0], Get().m_Coords[index][2]};
-    }
-    static glm::vec2 GetTopRight(int index)
-    {
-        return {Get().m_Coords[index][1], Get().m_Coords[index][2]};
-    }
-    static glm::vec2 GetBottomLeft(int index)
-    {
-        return {Get().m_Coords[index][0], Get().m_Coords[index][3]};
-    }
-    static glm::vec2 GetBottomRight(int index)
-    {
-        return {Get().m_Coords[index][1], Get().m_Coords[index][3]};
-    }
+    static std::vector<std::vector<float>> GetTextureCoordinates();
+    static glm::vec2 GetTopLeft(int index);
+    static glm::vec2 GetTopRight(int index);
+    static glm::vec2 GetBottomLeft(int index);
+    static glm::vec2 GetBottomRight(int index);
 
 private:
     TextureMap() {}

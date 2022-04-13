@@ -6,12 +6,13 @@
 class KeyboardHandler
 {
 public:
-    static KeyboardHandler &Get()
+    static KeyboardHandler &Instance()
     {
         static KeyboardHandler s_Instance;
         return s_Instance;
     }
 
+    static void Initialize();
     static void SetupCallbacks();
 
 private:

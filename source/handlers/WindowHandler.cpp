@@ -1,6 +1,10 @@
 #include "WindowHandler.h"
 
-void WindowHandler::Initialize() { Get().CreateWindow(); }
+void WindowHandler::Initialize()
+{
+    Instance().CreateWindow();
+    Instance().SetupCallbacks();
+}
 
 int WindowHandler::CreateWindow()
 {
@@ -67,15 +71,15 @@ void WindowHandler::CenterWindow()
 
 void WindowHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), &WindowHandler::Get());
+    glfwSetWindowUserPointer(glfwGetCurrentContext(), &WindowHandler::Instance());
 
     auto WindowSizeCallbackWrapper = [](GLFWwindow *window, int width, int height)
     {
-        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window)) ->WindowSizeCallback(width, height);
+        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))->WindowSizeCallback(width, height);
     };
     auto FrameBufferCallbackWrapper = [](GLFWwindow *window, int width, int height)
     {
-        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window)) ->FramebufferSizeCallback(width, height);
+        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))->FramebufferSizeCallback(width, height);
     };
 
     glfwSetWindowSizeCallback(glfwGetCurrentContext(), WindowSizeCallbackWrapper);
@@ -93,10 +97,10 @@ void WindowHandler::FramebufferSizeCallback(int width, int height)
 
 bool WindowHandler::ShouldWindowClose()
 {
-    return glfwWindowShouldClose(Get().p_GLFWwindow);
+    return glfwWindowShouldClose(Instance().p_GLFWwindow);
 }
 
 GLFWwindow *WindowHandler::GetGLFWWindow()
 {
-    return Get().p_GLFWwindow;
+    return Instance().p_GLFWwindow;
 }

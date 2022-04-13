@@ -1,8 +1,13 @@
 #include "TextureMap.h"
 
+void TextureMap::Initialize()
+{
+    Instance();
+}
+
 void TextureMap::Configure(int width, int height, int resolution)
 {
-    TextureMap &map = Get();
+    TextureMap &map = Instance();
 
     map.m_Width = width;
     map.m_Height = height;
@@ -26,4 +31,29 @@ void TextureMap::Configure(int width, int height, int resolution)
             map.m_Coords.push_back({left, right, bottom, top});
         }
     }
+}
+
+std::vector<std::vector<float>> TextureMap::GetTextureCoordinates()
+{
+    return Instance().m_Coords;
+}
+
+glm::vec2 TextureMap::GetTopLeft(int index)
+{
+    return {Instance().m_Coords[index][0], Instance().m_Coords[index][2]};
+}
+
+glm::vec2 TextureMap::GetTopRight(int index)
+{
+    return {Instance().m_Coords[index][1], Instance().m_Coords[index][2]};
+}
+
+glm::vec2 TextureMap::GetBottomLeft(int index)
+{
+    return {Instance().m_Coords[index][0], Instance().m_Coords[index][3]};
+}
+
+glm::vec2 TextureMap::GetBottomRight(int index)
+{
+    return {Instance().m_Coords[index][1], Instance().m_Coords[index][3]};
 }

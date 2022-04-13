@@ -8,7 +8,7 @@
 class WindowHandler
 {
 public:
-    static WindowHandler &Get()
+    static WindowHandler &Instance()
     {
         static WindowHandler s_Instance;
         return s_Instance;

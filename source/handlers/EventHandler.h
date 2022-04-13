@@ -5,11 +5,13 @@
 class EventHandler
 {
 public:
-    static EventHandler &Get()
+    static EventHandler &Instance()
     {
         static EventHandler s_Instance;
         return s_Instance;
     }
+
+    static void Initialize();
     static void PollEvents();
 
 private:

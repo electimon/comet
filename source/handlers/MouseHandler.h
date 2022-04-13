@@ -9,12 +9,13 @@
 class MouseHandler
 {
 public:
-    static MouseHandler &Get()
+    static MouseHandler &Instance()
     {
         static MouseHandler s_Instance;
         return s_Instance;
     }
 
+    static void Initialize();
     static void UpdateStates();
     static void ResetStates();
     static void SetupCallbacks();

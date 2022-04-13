@@ -1,18 +1,23 @@
 #include "EntityHandler.h"
 
+void EntityHandler::Initialize()
+{
+    Instance();
+}
+
 void EntityHandler::AddEntityToQueue(Entity *entity)
 {
-    Get().m_Entities.insert(entity);
+    Instance().m_Entities.insert(entity);
 }
 
 void EntityHandler::RemoveEntityFromQueue(Entity *entity)
 {
-    Get().m_Entities.erase(entity);
+    Instance().m_Entities.erase(entity);
 }
 
 void EntityHandler::UpdateEntities()
 {
-    for (const auto &entity : Get().m_Entities)
+    for (const auto &entity : Instance().m_Entities)
     {
         entity->Update();
     }
