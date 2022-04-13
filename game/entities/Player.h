@@ -47,15 +47,23 @@ public:
         glm::vec3 position = Camera::GetPosition();
         glm::vec3 positionLast = position;
 
+        bool first = false;
+
         while (glm::length(direction) < 5.0f)
         {
             direction += glm::normalize(direction) * step;
             if (World::GetBlock(round(position + direction)) != 0)
             {
+                if (first)
+                {
+                    return;
+                }
+
                 World::SetBlock(round(positionLast), 1);
                 return;
             }
             positionLast = position + direction;
+            first = false;
         }
     }
 
