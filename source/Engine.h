@@ -23,7 +23,7 @@
 class Engine
 {
 public:
-    static Engine &GetInstance()
+    static Engine &Instance()
     {
         static Engine s_Instance;
         return s_Instance;
@@ -33,9 +33,9 @@ public:
     static void Finalize();
 
     static void MainThread();
-    static double GetTimeDelta() { return GetInstance().m_TimeDelta; }
-    static bool ShouldClose() { return GetInstance().m_ShouldClose; }
-    static void CloseWindow() { GetInstance().m_ShouldClose = true; }
+    static double GetTimeDelta() { return Instance().m_TimeDelta; }
+    static bool ShouldClose() { return Instance().m_ShouldClose; }
+    static void CloseWindow() { Instance().m_ShouldClose = true; }
 
 private:
     Engine() {}

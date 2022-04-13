@@ -2,28 +2,21 @@
 
 void Engine::Initialize()
 {
-    GetInstance().m_TimeDelta = 0.0;
+    Instance().m_TimeDelta = 0.0;
 
+    // Engine Components
     WindowHandler::Initialize();
+    EventHandler::Initialize();
+    KeyboardHandler::Initialize();
+    MouseHandler::Initialize();
+    ErrorHandler::Initialize();
+    EntityHandler::Initialize();
 
-    EventHandler::Get();
-    KeyboardHandler::Get();
-    MouseHandler::Get();
-    ErrorHandler::Get();
-    EntityHandler::Get();
-
-    TextureMap::Get();
-    Renderer::Get();
-    Camera::Get();
-
-    Camera::Initialize();
+    // Rendering Components
+    TextureMap::Initialize();
     Renderer::Initialize();
+    Camera::Initialize();
     DebugInfo::Initialize();
-
-    WindowHandler::SetupCallbacks();
-    KeyboardHandler::SetupCallbacks();
-    MouseHandler::SetupCallbacks();
-    ErrorHandler::SetupCallbacks();
 }
 
 void Engine::Finalize()
@@ -63,8 +56,8 @@ void Engine::MainThread()
         // Poll events for next frame
         EventHandler::PollEvents();
 
-        GetInstance().m_TimeDelta = glfwGetTime() - GetInstance().m_TimeLast;
-        GetInstance().m_TimeLast = glfwGetTime();
+        Instance().m_TimeDelta = glfwGetTime() - Instance().m_TimeLast;
+        Instance().m_TimeLast = glfwGetTime();
     }
 
     Engine::CloseWindow();
