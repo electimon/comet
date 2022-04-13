@@ -2,6 +2,8 @@
 
 void Renderer::Initialize()
 {
+    Instance();
+
     // Enables culling of the back faces
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -47,7 +49,7 @@ void Renderer::DrawMeshQueue()
     // Binding the texture map
     glBindTexture(GL_TEXTURE_2D, 1);
 
-    for (auto &mesh : Get().m_MeshMap)
+    for (auto &mesh : Instance().m_MeshMap)
     {
         shaderID = mesh.second.GetShader()->GetID();
 
@@ -72,52 +74,52 @@ void Renderer::DrawMeshQueue()
 void Renderer::ProcessMeshQueues()
 {
     {
-        std::lock_guard<std::mutex> locked(Get().m_AddMeshQueueLock);
-        for (const auto &[index, mesh] : Get().m_MeshesToAdd)
+        std::lock_guard<std::mutex> locked(Instance().m_AddMeshQueueLock);
+        for (const auto &[index, mesh] : Instance().m_MeshesToAdd)
         {
-            Get().m_MeshMap.insert_or_assign(index, mesh);
-            Get().m_MeshMap.at(index).Initialize();
+            Instance().m_MeshMap.insert_or_assign(index, mesh);
+            Instance().m_MeshMap.at(index).Initialize();
         }
-        Get().m_MeshesToAdd.clear();
+        Instance().m_MeshesToAdd.clear();
     }
 
     {
-        std::lock_guard<std::mutex> locked(Get().m_UpdateMeshQueueLock);
-        for (const auto &index : Get().m_MeshesToUpdate)
+        std::lock_guard<std::mutex> locked(Instance().m_UpdateMeshQueueLock);
+        for (const auto &index : Instance().m_MeshesToUpdate)
         {
-            Get().m_MeshMap.at(index).UpdateGeometry();
+            Instance().m_MeshMap.at(index).UpdateGeometry();
         }
-        Get().m_MeshesToUpdate.clear();
+        Instance().m_MeshesToUpdate.clear();
     }
 
     {
-        std::lock_guard<std::mutex> locked(Get().m_DeleteMeshQueueLock);
-        for (const auto &index : Get().m_MeshesToDelete)
+        std::lock_guard<std::mutex> locked(Instance().m_DeleteMeshQueueLock);
+        for (const auto &index : Instance().m_MeshesToDelete)
         {
-            if (Get().m_MeshMap.find(index) != Get().m_MeshMap.end())
+            if (Instance().m_MeshMap.find(index) != Instance().m_MeshMap.end())
             {
-                Get().m_MeshMap.at(index).Finalize();
-                Get().m_MeshMap.erase(index);
+                Instance().m_MeshMap.at(index).Finalize();
+                Instance().m_MeshMap.erase(index);
             }
         }
-        Get().m_MeshesToDelete.clear();
+        Instance().m_MeshesToDelete.clear();
     }
 }
 
 void Renderer::AddMeshToQueue(const glm::ivec3 &index, const Mesh &mesh)
 {
-    std::lock_guard<std::mutex> locked(Get().m_AddMeshQueueLock);
-    Get().m_MeshesToAdd.insert_or_assign(index, mesh);
+    std::lock_guard<std::mutex> locked(Instance().m_AddMeshQueueLock);
+    Instance().m_MeshesToAdd.insert_or_assign(index, mesh);
 }
 
 void Renderer::UpdateMeshInQueue(const glm::ivec3 &index)
 {
-    std::lock_guard<std::mutex> locked(Get().m_UpdateMeshQueueLock);
-    Get().m_MeshesToUpdate.insert(index);
+    std::lock_guard<std::mutex> locked(Instance().m_UpdateMeshQueueLock);
+    Instance().m_MeshesToUpdate.insert(index);
 }
 
 void Renderer::DeleteMeshFromQueue(const glm::ivec3 &index)
 {
-    std::lock_guard<std::mutex> locked(Get().m_DeleteMeshQueueLock);
-    Get().m_MeshesToDelete.insert(index);
+    std::lock_guard<std::mutex> locked(Instance().m_DeleteMeshQueueLock);
+    Instance().m_MeshesToDelete.insert(index);
 }

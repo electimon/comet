@@ -11,7 +11,7 @@
 class Camera
 {
 public:
-    static Camera &Get()
+    static Camera &Instance()
     {
         static Camera s_Instance;
         return s_Instance;
@@ -25,17 +25,17 @@ public:
     static void Move();
     static void Rotate();
 
-    static void SetFOV(float fov) { Get().m_FOV = fov; }
-    static void SetYaw(float yaw) { Get().m_Yaw = yaw; }
-    static void SetPitch(float pitch) { Get().m_Pitch = pitch; }
-    static void SetRoll(float roll) { Get().m_Roll = roll; }
-    static void SetPosition(const glm::vec3 &position) { Get().m_Position = position; }
+    static void SetFOV(float fov) { Instance().m_FOV = fov; }
+    static void SetYaw(float yaw) { Instance().m_Yaw = yaw; }
+    static void SetPitch(float pitch) { Instance().m_Pitch = pitch; }
+    static void SetRoll(float roll) { Instance().m_Roll = roll; }
+    static void SetPosition(const glm::vec3 &position) { Instance().m_Position = position; }
 
-    static glm::mat4 GetViewMatrix() { return Get().m_ViewMatrix; }
-    static glm::mat4 GetProjMatrix() { return Get().m_ProjMatrix; }
-    static glm::vec3 GetForwardVector() { return Get().m_ForwardVector; }
-    static glm::vec3 GetDirection() { return Get().m_Direction; }
-    static glm::vec3 GetPosition() { return Get().m_Position; }
+    static glm::mat4 GetViewMatrix() { return Instance().m_ViewMatrix; }
+    static glm::mat4 GetProjMatrix() { return Instance().m_ProjMatrix; }
+    static glm::vec3 GetForwardVector() { return Instance().m_ForwardVector; }
+    static glm::vec3 GetDirection() { return Instance().m_Direction; }
+    static glm::vec3 GetPosition() { return Instance().m_Position; }
 
 private:
     Camera() {}

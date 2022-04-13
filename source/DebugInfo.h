@@ -12,7 +12,7 @@
 class DebugInfo
 {
 public:
-    static DebugInfo &GetInstance()
+    static DebugInfo &Instance()
     {
         static DebugInfo s_Instance;
         return s_Instance;
