@@ -3,7 +3,7 @@
 #include "BlockLibrary.h"
 #include "ChunkGenerator.h"
 #include "Engine.h"
-#include "world/WorldConfig.h"
+#include "WorldConfig.h"
 
 #include <filesystem>
 #include <thread>
