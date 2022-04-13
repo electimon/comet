@@ -7,7 +7,10 @@ Texture::Texture(const char *filepath)
     Create(filepath);
 }
 
-Texture::~Texture() {}
+Texture::~Texture()
+{
+
+}
 
 void Texture::Bind()
 {
