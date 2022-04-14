@@ -15,10 +15,10 @@
 class World
 {
 public:
-    static World &Instance()
+    inline static auto &Instance()
     {
-        static World s_Instance;
-        return s_Instance;
+        static World instance;
+        return instance;
     }
 
     static void Initialize();

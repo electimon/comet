@@ -11,10 +11,10 @@
 class Camera
 {
 public:
-    static Camera &Instance()
+    inline static auto &Instance()
     {
-        static Camera s_Instance;
-        return s_Instance;
+        static Camera instance;
+        return instance;
     }
 
     static void Initialize();

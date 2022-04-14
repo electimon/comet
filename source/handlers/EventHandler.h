@@ -5,10 +5,10 @@
 class EventHandler
 {
 public:
-    static EventHandler &Instance()
+    inline static auto &Instance()
     {
-        static EventHandler s_Instance;
-        return s_Instance;
+        static EventHandler instance;
+        return instance;
     }
 
     static void Initialize();

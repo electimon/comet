@@ -9,10 +9,10 @@
 class MouseHandler
 {
 public:
-    static MouseHandler &Instance()
+    inline static auto &Instance()
     {
-        static MouseHandler s_Instance;
-        return s_Instance;
+        static MouseHandler instance;
+        return instance;
     }
 
     static void Initialize();

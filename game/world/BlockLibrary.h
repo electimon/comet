@@ -6,10 +6,10 @@
 class BlockLibrary
 {
 public:
-    static BlockLibrary &Instance()
+    inline static auto &Instance()
     {
-        static BlockLibrary s_Instance;
-        return s_Instance;
+        static BlockLibrary instance;
+        return instance;
     }
 
     static void Initialize()

@@ -6,10 +6,10 @@
 class KeyboardHandler
 {
 public:
-    static KeyboardHandler &Instance()
+    inline static auto &Instance()
     {
-        static KeyboardHandler s_Instance;
-        return s_Instance;
+        static KeyboardHandler instance;
+        return instance;
     }
 
     static void Initialize();

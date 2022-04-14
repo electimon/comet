@@ -8,10 +8,10 @@
 class EntityHandler
 {
 public:
-    static EntityHandler &Instance()
+    inline static auto &Instance()
     {
-        static EntityHandler s_Instance;
-        return s_Instance;
+        static EntityHandler instance;
+        return instance;
     }
 
     static void Initialize();

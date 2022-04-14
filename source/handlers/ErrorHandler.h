@@ -3,10 +3,10 @@
 class ErrorHandler
 {
 public:
-    static ErrorHandler &Instance()
+    inline static auto &Instance()
     {
-        static ErrorHandler s_Instance;
-        return s_Instance;
+        static ErrorHandler instance;
+        return instance;
     }
 
     static void Initialize();

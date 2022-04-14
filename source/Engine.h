@@ -23,10 +23,10 @@
 class Engine
 {
 public:
-    static Engine &Instance()
+    inline static auto &Instance()
     {
-        static Engine s_Instance;
-        return s_Instance;
+        static Engine instance;
+        return instance;
     }
 
     static void Initialize();

@@ -8,10 +8,10 @@
 class WindowHandler
 {
 public:
-    static WindowHandler &Instance()
+    inline static auto &Instance()
     {
-        static WindowHandler s_Instance;
-        return s_Instance;
+        static WindowHandler instance;
+        return instance;
     }
 
     static void Initialize();

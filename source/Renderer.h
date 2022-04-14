@@ -20,10 +20,10 @@
 class Renderer
 {
 public:
-    static Renderer &Instance()
+    inline static auto &Instance()
     {
-        static Renderer s_Instance;
-        return s_Instance;
+        static Renderer instance;
+        return instance;
     }
 
     static void Initialize();

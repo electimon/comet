@@ -12,10 +12,10 @@
 class DebugInfo
 {
 public:
-    static DebugInfo &Instance()
+    inline static auto &Instance()
     {
-        static DebugInfo s_Instance;
-        return s_Instance;
+        static DebugInfo instance;
+        return instance;
     }
 
     static void Initialize();
