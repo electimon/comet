@@ -31,7 +31,7 @@ public:
 
     static void SetShader(const Shader &shader) { Instance().m_Shader = shader; }
     static void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
-    static void ProcessRequestedChunks(int renderDistance, const glm::ivec3& centerChunkIndex);
+    static void ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerChunkIndex);
 
     // Shader Functions
     const Shader &GetShader() { return m_Shader; }
@@ -45,8 +45,8 @@ private:
     // This will be a temporary cache of the loaded chunks.
     // Functionallity to check for saved data on disk will eventually be
     // implemented.
-    std::unordered_map<glm::ivec3, Chunk *> m_ChunkDataMap;
-    std::unordered_map<glm::ivec3, Chunk *> m_ChunkRenderMap;
+    std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_ChunkDataMap;
+    std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_ChunkRenderMap;
 
     std::unordered_set<glm::ivec3> m_ChunksToDelete;
     std::unordered_set<glm::ivec3> m_ChunksToGenerate;

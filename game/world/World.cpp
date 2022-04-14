@@ -57,7 +57,7 @@ void World::SetBlock(const glm::ivec3 &worldPos, unsigned char blockID)
 
     if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
     {
-        Chunk *chunk = Instance().m_ChunkDataMap.at(index);
+        std::shared_ptr<Chunk> chunk = Instance().m_ChunkDataMap.at(index);
 
         chunk->SetBlock(chunkCoord.x, chunkCoord.y, chunkCoord.z, blockID);
         chunk->GenerateMesh();
@@ -177,7 +177,7 @@ void World::WorldThread()
         for (const auto &index : Instance().m_ChunksToGenerate)
         {
             // Generates chunk data
-            Chunk *chunk = new Chunk(index); // heap allocation
+            std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(Chunk(index));
             chunk->Generate();
             Instance().m_ChunkDataMap.insert_or_assign(index, chunk);
         }
@@ -190,7 +190,7 @@ void World::WorldThread()
             if (Instance().m_ChunkDataMap.find(index) == Instance().m_ChunkDataMap.end())
                 return;
 
-            Chunk *chunk = Instance().m_ChunkDataMap.at(index);
+            std::shared_ptr<Chunk> chunk = Instance().m_ChunkDataMap.at(index);
             chunk->GenerateGeometry();
             Instance().m_ChunkRenderMap.insert_or_assign(index, chunk);
             Mesh mesh = Mesh(chunk->GetVertices(), chunk->GetIndices(), &Instance().m_Shader);
@@ -204,7 +204,6 @@ void World::WorldThread()
         for (const auto &index : Instance().m_ChunksToDelete)
         {
             // remove chunk from data
-            delete Instance().m_ChunkDataMap.at(index); // heap deletion
             Instance().m_ChunkDataMap.erase(index);
         }
         Instance().m_ChunksToDelete.clear();
@@ -214,9 +213,10 @@ void World::WorldThread()
         {
             // remove mesh from renderer
             Renderer::DeleteMeshFromQueue(index);
+            Instance().m_ChunkRenderMap.erase(index);
         }
         Instance().m_ChunksToUnrender.clear();
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
