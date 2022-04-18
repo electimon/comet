@@ -79,9 +79,9 @@ struct Chunk
 
 private:
     // testing new data format
-    std::vector<unsigned char> m_BlockData;
+    std::array<unsigned char, CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT> m_BlockData;
     // only used during generation, not needed when saving chunk
-    std::vector<int> m_HeightData;
+    std::array<int, CHUNK_WIDTH * CHUNK_WIDTH> m_HeightData;
 
     std::vector<Vertex> m_Vertices;
     std::vector<unsigned int> m_Indices;

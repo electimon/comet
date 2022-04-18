@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <array>
 
 class BlockLibrary
 {
@@ -14,52 +14,42 @@ public:
 
     static void Initialize()
     {
-        std::vector<unsigned char> Debug{47, 47, 47, 47, 47, 47}; // 0
-        Instance().m_BlockIndices.push_back(Debug);
+        // Assigning block textures
+        std::array<unsigned char, 6> Debug{47, 47, 47, 47, 47, 47};
+        std::array<unsigned char, 6> Stone{1, 1, 1, 1, 1, 1};
+        std::array<unsigned char, 6> Grass{3, 3, 0, 2, 3, 3};
+        std::array<unsigned char, 6> Dirt{2, 2, 2, 2, 2, 2};
+        std::array<unsigned char, 6> Water{207, 207, 207, 207, 207, 207};
+        std::array<unsigned char, 6> Log{20, 20, 21, 21, 20, 20};
+        std::array<unsigned char, 6> Leaves{53, 53, 53, 53, 53, 53};
+        std::array<unsigned char, 6> Sand{18, 18, 18, 18, 18, 18};
+        std::array<unsigned char, 6> Bedrock{17, 17, 17, 17, 17, 17};
+        std::array<unsigned char, 6> Cobblestone{16, 16, 16, 16, 16, 16};
+        std::array<unsigned char, 6> CoalOre{34, 34, 34, 34, 34, 34};
+        std::array<unsigned char, 6> IronOre{33, 33, 33, 33, 33, 33};
+        std::array<unsigned char, 6> GoldOre{32, 32, 32, 32, 32, 32};
+        std::array<unsigned char, 6> DiamondOre{66, 66, 66, 66, 66, 66};
 
-        std::vector<unsigned char> Stone{1, 1, 1, 1, 1, 1}; // 1
-        Instance().m_BlockIndices.push_back(Stone);
-
-        std::vector<unsigned char> Grass{3, 3, 0, 2, 3, 3}; // 2
-        Instance().m_BlockIndices.push_back(Grass);
-
-        std::vector<unsigned char> Dirt{2, 2, 2, 2, 2, 2}; // 3
-        Instance().m_BlockIndices.push_back(Dirt);
-
-        std::vector<unsigned char> Water{207, 207, 207, 207, 207, 207}; // 4
-        Instance().m_BlockIndices.push_back(Water);
-
-        std::vector<unsigned char> Log{20, 20, 21, 21, 20, 20}; // 5
-        Instance().m_BlockIndices.push_back(Log);
-
-        std::vector<unsigned char> Leaves{53, 53, 53, 53, 53, 53}; // 6
-        Instance().m_BlockIndices.push_back(Leaves);
-
-        std::vector<unsigned char> Sand{18, 18, 18, 18, 18, 18}; // 7
-        Instance().m_BlockIndices.push_back(Sand);
-
-        std::vector<unsigned char> Bedrock{17, 17, 17, 17, 17, 17}; // 8
-        Instance().m_BlockIndices.push_back(Bedrock);
-
-        std::vector<unsigned char> Cobblestone{16, 16, 16, 16, 16, 16}; // 9
-        Instance().m_BlockIndices.push_back(Cobblestone);
-
-        std::vector<unsigned char> CoalOre{34, 34, 34, 34, 34, 34}; // 10
-        Instance().m_BlockIndices.push_back(CoalOre);
-
-        std::vector<unsigned char> IronOre{33, 33, 33, 33, 33, 33}; // 11
-        Instance().m_BlockIndices.push_back(IronOre);
-
-        std::vector<unsigned char> GoldOre{32, 32, 32, 32, 32, 32}; // 12
-        Instance().m_BlockIndices.push_back(GoldOre);
-
-        std::vector<unsigned char> DiamondOre{66, 66, 66, 66, 66, 66}; // 13
-        Instance().m_BlockIndices.push_back(DiamondOre);
+        // Assigning block IDs
+        Instance().m_BlockIndices.at(0) = Debug;
+        Instance().m_BlockIndices.at(1) = Stone;
+        Instance().m_BlockIndices.at(2) = Grass;
+        Instance().m_BlockIndices.at(3) = Dirt;
+        Instance().m_BlockIndices.at(4) = Water;
+        Instance().m_BlockIndices.at(5) = Log;
+        Instance().m_BlockIndices.at(6) = Leaves;
+        Instance().m_BlockIndices.at(7) = Sand;
+        Instance().m_BlockIndices.at(8) = Bedrock;
+        Instance().m_BlockIndices.at(9) = Cobblestone;
+        Instance().m_BlockIndices.at(10) = CoalOre;
+        Instance().m_BlockIndices.at(11) = IronOre;
+        Instance().m_BlockIndices.at(12) = GoldOre;
+        Instance().m_BlockIndices.at(13) = DiamondOre;
     }
 
-    static std::vector<unsigned char> GetIndices(unsigned char blockID)
+    static std::array<unsigned char, 6> GetIndices(unsigned char blockID)
     {
-        return Instance().m_BlockIndices[blockID];
+        return Instance().m_BlockIndices.at(blockID);
     }
 
 private:
@@ -67,5 +57,5 @@ private:
     BlockLibrary(BlockLibrary const &);
     void operator=(BlockLibrary const &);
 
-    std::vector<std::vector<unsigned char>> m_BlockIndices;
+    std::array<std::array<unsigned char, 6>, 256> m_BlockIndices;
 };

@@ -20,10 +20,6 @@
 
 Chunk::Chunk(glm::ivec3 id) : m_Chunk(id)
 {
-    // New data structure
-    m_BlockData.resize(CHUNK_WIDTH * CHUNK_WIDTH *
-                       CHUNK_HEIGHT);               // "3D" array of block id values
-    m_HeightData.resize(CHUNK_WIDTH * CHUNK_WIDTH); // "2D" array of height values
     m_Vertices.reserve(100000);
     m_Indices.reserve(100000);
 }
@@ -49,7 +45,7 @@ void Chunk::Generate()
 
         // This will need to be redone once a more optimized method of
         // saving chunks is made.
-        m_BlockData = std::vector<unsigned char>( (std::istreambuf_iterator<char>(blockDataFile)), std::istreambuf_iterator<char>());
+        // m_BlockData = std::vector<unsigned char>( (std::istreambuf_iterator<char>(blockDataFile)), std::istreambuf_iterator<char>());
     }
     else
     {
@@ -67,9 +63,6 @@ void Chunk::Generate()
 void Chunk::GenerateGeometry()
 {
     GenerateMesh();
-
-    m_HeightData.clear();
-    m_HeightData.shrink_to_fit();
 }
 
 void Chunk::GenerateSurface()
@@ -340,7 +333,7 @@ void Chunk::GenerateMesh()
                 }
 
                 blockID = GetBlock(x, y, z);
-                std::vector<unsigned char> blockIndices = BlockLibrary::GetIndices(blockID);
+                std::array<unsigned char, 6> blockIndices = BlockLibrary::GetIndices(blockID);
 
                 px = GetBlock(x + 1, y, z) == 0;
                 nx = GetBlock(x - 1, y, z) == 0;
