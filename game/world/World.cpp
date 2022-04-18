@@ -24,7 +24,7 @@ void World::Finalize()
 
     for (auto &chunk : Instance().m_ChunkDataMap)
     {
-        chunk.second->~Chunk();
+        chunk.second.~Chunk();
     }
 
     Instance().m_Thread.join();
@@ -37,7 +37,7 @@ unsigned char World::GetBlock(const glm::ivec3 &worldPos)
 
     if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
     {
-        return Instance().m_ChunkDataMap.at(index)->GetBlock(chunkCoord);
+        return Instance().m_ChunkDataMap.at(index).GetBlock(chunkCoord);
     }
     else
     {
@@ -57,10 +57,9 @@ void World::SetBlock(const glm::ivec3 &worldPos, unsigned char blockID)
 
     if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
     {
-        std::shared_ptr<Chunk> chunk = Instance().m_ChunkDataMap.at(index);
+        Instance().m_ChunkDataMap.at(index).SetBlock(chunkCoord.x, chunkCoord.y, chunkCoord.z, blockID);
 
-        chunk->SetBlock(chunkCoord.x, chunkCoord.y, chunkCoord.z, blockID);
-        chunk->GenerateMesh();
+        Instance().m_ChunkDataMap.at(index).GenerateMesh();
 
         Renderer::UpdateMeshInQueue(index);
 
@@ -178,9 +177,8 @@ void World::WorldThread()
         for (const auto &index : Instance().m_ChunksToGenerate)
         {
             // Generates chunk data
-            std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(Chunk(index));
-            chunk->Generate();
-            world.m_ChunkDataMap.insert_or_assign(index, chunk);
+            world.m_ChunkDataMap.insert_or_assign(index, Chunk(index));
+            world.m_ChunkDataMap.at(index).Generate();
         }
         world.m_ChunksToGenerate.clear();
 
@@ -191,7 +189,7 @@ void World::WorldThread()
             if (world.m_ChunkDataMap.find(index) == world.m_ChunkDataMap.end())
                 return;
 
-            std::shared_ptr<Chunk> chunk = world.m_ChunkDataMap.at(index);
+            Chunk* chunk = &world.m_ChunkDataMap.at(index);
             chunk->GenerateGeometry();
             world.m_ChunkRenderMap.insert_or_assign(index, chunk);
             Mesh mesh = Mesh(chunk->GetVertices(), chunk->GetIndices(), &world.m_Shader);
