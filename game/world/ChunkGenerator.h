@@ -128,9 +128,7 @@ class ChunkGenerator
     }
 
   private:
-    ChunkGenerator()
-    {
-    }
+    ChunkGenerator() {}
     ChunkGenerator(ChunkGenerator const &);
     void operator=(ChunkGenerator const &);
 
