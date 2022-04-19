@@ -113,18 +113,18 @@ class ChunkGenerator
     static void SetSeed(int seed)
     {
         Instance().m_Seed = seed;
-        Instance().m_MediumNoise.SetSeed(Instance().m_Seed);
-        Instance().m_SlowNoise.SetSeed(Instance().m_Seed);
-        Instance().m_CellularNoise.SetSeed(Instance().m_Seed);
-        Instance().m_FastNoise.SetSeed(Instance().m_Seed);
-        Instance().m_MediumChaotic.SetSeed(Instance().m_Seed);
-        Instance().m_BiomeNoise.SetSeed(Instance().m_Seed);
-        Instance().m_CaveNoise.SetSeed(Instance().m_Seed);
-        Instance().m_OpenSimplex2_1f.SetSeed(Instance().m_Seed);
-        Instance().m_OpenSimplex2_2f.SetSeed(Instance().m_Seed);
-        Instance().m_OpenSimplex2_4f.SetSeed(Instance().m_Seed);
-        Instance().m_OpenSimplex2_8f.SetSeed(Instance().m_Seed);
-        Instance().m_OpenSimplex2_16f.SetSeed(Instance().m_Seed);
+        Instance().m_MediumNoise.SetSeed(seed);
+        Instance().m_SlowNoise.SetSeed(seed);
+        Instance().m_CellularNoise.SetSeed(seed);
+        Instance().m_FastNoise.SetSeed(seed);
+        Instance().m_MediumChaotic.SetSeed(seed);
+        Instance().m_BiomeNoise.SetSeed(seed);
+        Instance().m_CaveNoise.SetSeed(seed);
+        Instance().m_OpenSimplex2_1f.SetSeed(seed);
+        Instance().m_OpenSimplex2_2f.SetSeed(seed);
+        Instance().m_OpenSimplex2_4f.SetSeed(seed);
+        Instance().m_OpenSimplex2_8f.SetSeed(seed);
+        Instance().m_OpenSimplex2_16f.SetSeed(seed);
     }
 
   private:
