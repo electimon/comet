@@ -130,67 +130,67 @@ void Chunk::GenerateTrees()
             if (noise1 > 0.9f && noise2 > 0.1f)
             {
                 SetBlock({x, y, z}, Block(ID::Dirt, false));
-                SetBlock({x, y + 1, z}, Block(ID::Log, false));
-                SetBlock({x, y + 2, z}, Block(ID::Log, false));
+                SetBlock({x, y + 1, z}, Block(ID::Oak_Log, false));
+                SetBlock({x, y + 2, z}, Block(ID::Oak_Log, false));
                 if (noise1 > 0.95f)
                 {
-                    SetBlock({x, y + 3, z}, Block(ID::Log, false));
+                    SetBlock({x, y + 3, z}, Block(ID::Oak_Log, false));
                     y += 1;
                 }
-                SetBlock({x - 2, y + 3, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x - 2, y + 3, z}, Block(ID::Leaves, true));
-                SetBlock({x - 2, y + 3, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 3, z - 2}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 3, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 3, z}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 3, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 3, z + 2}, Block(ID::Leaves, true));
-                SetBlock({x, y + 3, z - 2}, Block(ID::Leaves, true));
-                SetBlock({x, y + 3, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x - 2, y + 3, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 2, y + 3, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 2, y + 3, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 3, z - 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 3, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 3, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 3, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 3, z + 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 3, z - 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 3, z - 1}, Block(ID::Oak_Leaves, true));
 
-                SetBlock({x, y + 3, z}, Block(ID::Log, false));
+                SetBlock({x, y + 3, z}, Block(ID::Oak_Log, false));
 
-                SetBlock({x, y + 3, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x, y + 3, z + 2}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 3, z - 2}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 3, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 3, z}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 3, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 3, z + 2}, Block(ID::Leaves, true));
-                SetBlock({x + 2, y + 3, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x + 2, y + 3, z}, Block(ID::Leaves, true));
-                SetBlock({x + 2, y + 3, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x - 2, y + 4, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x - 2, y + 4, z}, Block(ID::Leaves, true));
-                SetBlock({x - 2, y + 4, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 4, z - 2}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 4, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 4, z}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 4, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 4, z + 2}, Block(ID::Leaves, true));
-                SetBlock({x, y + 4, z - 2}, Block(ID::Leaves, true));
-                SetBlock({x, y + 4, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x, y + 4, z}, Block(ID::Leaves, true));
-                SetBlock({x, y + 4, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x, y + 4, z + 2}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 4, z - 2}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 4, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 4, z}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 4, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 4, z + 2}, Block(ID::Leaves, true));
-                SetBlock({x + 2, y + 4, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x + 2, y + 4, z}, Block(ID::Leaves, true));
-                SetBlock({x + 2, y + 4, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 5, z}, Block(ID::Leaves, true));
-                SetBlock({x, y + 5, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x, y + 5, z}, Block(ID::Leaves, true));
-                SetBlock({x, y + 5, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 5, z}, Block(ID::Leaves, true));
-                SetBlock({x - 1, y + 6, z}, Block(ID::Leaves, true));
-                SetBlock({x, y + 6, z - 1}, Block(ID::Leaves, true));
-                SetBlock({x, y + 6, z}, Block(ID::Leaves, true));
-                SetBlock({x, y + 6, z + 1}, Block(ID::Leaves, true));
-                SetBlock({x + 1, y + 6, z}, Block(ID::Leaves, true));
+                SetBlock({x, y + 3, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 3, z + 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 3, z - 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 3, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 3, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 3, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 3, z + 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 2, y + 3, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 2, y + 3, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 2, y + 3, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 2, y + 4, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 2, y + 4, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 2, y + 4, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 4, z - 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 4, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 4, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 4, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 4, z + 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 4, z - 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 4, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 4, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 4, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 4, z + 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 4, z - 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 4, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 4, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 4, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 4, z + 2}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 2, y + 4, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 2, y + 4, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 2, y + 4, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 5, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 5, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 5, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 5, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 5, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x - 1, y + 6, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 6, z - 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 6, z}, Block(ID::Oak_Leaves, true));
+                SetBlock({x, y + 6, z + 1}, Block(ID::Oak_Leaves, true));
+                SetBlock({x + 1, y + 6, z}, Block(ID::Oak_Leaves, true));
             }
         }
     }
@@ -381,12 +381,12 @@ void Chunk::GenerateMesh()
                 // Water rendering
                 if (currentBlock.ID() == ID::Water)
                 {
-                    px = pxBlock.ID() == ID::Water ? false : true;
-                    nx = nxBlock.ID() == ID::Water ? false : true;
-                    py = pyBlock.ID() == ID::Water ? false : true;
-                    ny = nyBlock.ID() == ID::Water ? false : true;
-                    pz = pzBlock.ID() == ID::Water ? false : true;
-                    nz = nzBlock.ID() == ID::Water ? false : true;
+                    px = pxBlock.ID() == ID::Water || !pxBlock.IsTransparent() ? false : true;
+                    nx = nxBlock.ID() == ID::Water || !nxBlock.IsTransparent() ? false : true;
+                    py = pyBlock.ID() == ID::Water || !pyBlock.IsTransparent() ? false : true;
+                    ny = nyBlock.ID() == ID::Water || !nyBlock.IsTransparent() ? false : true;
+                    pz = pzBlock.ID() == ID::Water || !pzBlock.IsTransparent() ? false : true;
+                    nz = nzBlock.ID() == ID::Water || !nzBlock.IsTransparent() ? false : true;
                 }
 
                 // +X Quad
