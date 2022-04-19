@@ -11,17 +11,19 @@ int main(void)
     Engine::Initialize();
 
     // Shader Setup
-    Shader blockShader("../game/shaders/block.vert", "../game/shaders/block.frag");
+    ShaderProgram blockShader("../game/shaders/block.vert", "../game/shaders/block.frag");
 
     Texture texture("../game/textures/terrain.png");
 
-    TextureMap::Configure(texture.GetWidth(), texture.GetHeight(), 16);
+    TextureMap::Configure(texture.Width(), texture.Height(), 16);
 
     World::Initialize();
     World::SetSeed(1);
     World::SetShader(blockShader);
 
-    Player player(glm::vec3(-1.0f, 55.0f, -1.0f));
+    Player player;
+    player.SetPosition({0.0f, 0.0f, 0.0f});
+    player.SetRenderDistance(8);
 
     Engine::MainThread();
 
