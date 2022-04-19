@@ -1,25 +1,25 @@
-#include "Shader.h"
+#include "ShaderProgram.h"
 
-Shader::Shader() {}
+ShaderProgram::ShaderProgram() {}
 
-Shader::Shader(const char *vertFile, const char *fragFile)
+ShaderProgram::ShaderProgram(const char *vertFile, const char *fragFile)
 {
     Create(vertFile, fragFile);
 }
 
-Shader::~Shader() {}
+ShaderProgram::~ShaderProgram() {}
 
-void Shader::Bind()
+void ShaderProgram::Bind()
 {
     glUseProgram(m_ID);
 }
 
-void Shader::Unbind()
+void ShaderProgram::Unbind()
 {
     glUseProgram(0);
 }
 
-void Shader::Create(const char *vertFile, const char *fragFile)
+void ShaderProgram::Create(const char *vertFile, const char *fragFile)
 {
     m_ID = glCreateProgram();
 
@@ -76,17 +76,17 @@ void Shader::Create(const char *vertFile, const char *fragFile)
     glDeleteShader(fragmentID);
 }
 
-void Shader::Delete()
+void ShaderProgram::Delete()
 {
     glDeleteProgram(m_ID);
 }
 
-unsigned int Shader::GetID()
+unsigned int ShaderProgram::GetID()
 {
     return m_ID;
 }
 
-int Shader::GetUniformLocation(const std::string &name)
+int ShaderProgram::GetUniformLocation(const std::string &name)
 {
     if (m_UniformMap.find(name) != m_UniformMap.end())
     {

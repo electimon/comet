@@ -3,12 +3,12 @@
 #include <comet.pch>
 #include <glad/gl.h>
 
-class Shader
+class ShaderProgram
 {
 public:
-    Shader();
-    Shader(const char *vertFile, const char *fragFile);
-    ~Shader();
+    ShaderProgram();
+    ShaderProgram(const char *vertFile, const char *fragFile);
+    ~ShaderProgram();
 
     void Bind();
     void Unbind();
