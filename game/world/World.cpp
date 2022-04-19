@@ -1,13 +1,16 @@
 #include "World.h"
 #include "world/BlockLibrary.h"
+#include "world/Chunk.h"
+#include "world/ChunkGenerator.h"
 
 void World::Initialize()
 {
     std::filesystem::create_directory("world");
-    Instance().m_Thread = std::thread(&World::WorldThread);
 
     ChunkGenerator::Initialize();
     BlockTextures::Initialize();
+
+    Instance().m_Thread = std::thread(&World::WorldThread);
 }
 
 void World::Finalize()
@@ -22,7 +25,7 @@ void World::Finalize()
     Instance().m_Thread.join();
 }
 
-unsigned char World::GetBlock(const glm::ivec3 &worldPos)
+Block World::GetBlock(const glm::ivec3 &worldPos)
 {
     glm::ivec3 index = GetChunkIndex(worldPos);
     glm::ivec3 chunkCoord = GetChunkCoord(worldPos);
@@ -33,11 +36,11 @@ unsigned char World::GetBlock(const glm::ivec3 &worldPos)
     }
     else
     {
-        return 0;
+        return Block();
     }
 }
 
-void World::SetBlock(const glm::ivec3 &worldPos, unsigned char blockID)
+void World::SetBlock(const glm::ivec3 &worldPos, Block block)
 {
     if (worldPos.y > CHUNK_HEIGHT)
     {
@@ -49,7 +52,7 @@ void World::SetBlock(const glm::ivec3 &worldPos, unsigned char blockID)
 
     if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
     {
-        Instance().m_ChunkDataMap.at(index).SetBlock(chunkCoord.x, chunkCoord.y, chunkCoord.z, blockID);
+        Instance().m_ChunkDataMap.at(index).SetBlock({chunkCoord.x, chunkCoord.y, chunkCoord.z}, block);
 
         Instance().m_ChunkDataMap.at(index).GenerateMesh();
 
@@ -187,10 +190,13 @@ void World::WorldThread()
             Chunk *chunk = &world.m_ChunkDataMap.at(index);
             chunk->GenerateMesh();
             world.m_ChunkRenderMap.insert_or_assign(index, chunk);
-            Mesh mesh = Mesh(chunk->GetVertices(), chunk->GetIndices(), &world.m_Shader);
+
+            Mesh solidMesh = Mesh(&chunk->SolidGeometry()->Vertices, &chunk->SolidGeometry()->Indices, &world.m_Shader);
+            Mesh transparentMesh = Mesh(&chunk->TransparentGeometry()->Vertices, &chunk->TransparentGeometry()->Indices, &world.m_Shader);
 
             // Adding to Renderer
-            Renderer::AddMeshToQueue(index, mesh);
+            Renderer::AddMeshToQueue(index, solidMesh);
+            Renderer::AddMeshToQueue({index.x, index.y + 1, index.z}, transparentMesh);
         }
         world.m_ChunksToRender.clear();
 
@@ -207,6 +213,8 @@ void World::WorldThread()
         {
             // remove mesh from renderer
             Renderer::DeleteMeshFromQueue(index);
+            Renderer::DeleteMeshFromQueue({index.x, index.y + 1, index.z});
+
             world.m_ChunkRenderMap.erase(index);
         }
         world.m_ChunksToUnrender.clear();
