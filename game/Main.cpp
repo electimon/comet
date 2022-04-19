@@ -22,7 +22,8 @@ int main(void)
     World::SetShader(blockShader);
 
     Player player;
-    player.SetPosition({0.0f, 0.0f, 0.0f});
+    player.SetPosition({0.0f, 60.0f, 0.0f});
+    Camera::SetPosition({0.0f, 60.0f, 0.0f});
     player.SetRenderDistance(8);
 
     Engine::MainThread();
