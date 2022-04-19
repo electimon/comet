@@ -12,18 +12,16 @@
 class Player : public Entity
 {
 public:
-    Player(glm::vec3 position);
+    Player();
     ~Player();
 
-    void Update();
-
-    glm::vec3 GetPosition() { return m_Position; }
+    void Update() override;
 
     void BreakBlock()
     {
         float step = 1.0f / 16.0f;
-        glm::vec3 direction = Camera::GetDirection();
-        glm::vec3 position = Camera::GetPosition();
+        glm::vec3 direction = Camera::Direction();
+        glm::vec3 position = Camera::Position();
 
         while (glm::length(direction) < 5.0f)
         {
@@ -39,8 +37,8 @@ public:
     void PlaceBlock()
     {
         float step{1.0f / 16.0f};
-        glm::vec3 direction = Camera::GetDirection();
-        glm::vec3 position = Camera::GetPosition();
+        glm::vec3 direction = Camera::Direction();
+        glm::vec3 position = Camera::Position();
         glm::vec3 positionLast = position;
 
         bool first = false;
@@ -65,8 +63,11 @@ public:
 
     void GetRequestedChunks();
 
+    int RenderDistance() const { return m_RenderDistance; }
+    void SetRenderDistance(int RenderDistance) { m_RenderDistance = RenderDistance; }
+
 private:
-    glm::vec3 m_Position;
+    // glm::vec3 m_Position;
     glm::ivec3 m_ChunkIndex;
     int m_RenderDistance;
 };

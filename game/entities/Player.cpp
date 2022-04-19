@@ -1,11 +1,9 @@
 #include "Player.h"
 
-Player::Player(glm::vec3 position) : m_Position(position)
+Player::Player()
 {
-    Camera::SetPosition(position);
+    Camera::SetPosition(m_Position);
     EntityHandler::AddEntityToQueue(this);
-
-    m_RenderDistance = 8;
 }
 
 Player::~Player()
@@ -28,7 +26,7 @@ void Player::Update()
         Camera::SetPosition({0.0f, 100.0f, 0.0f});
     }
 
-    m_Position = Camera::GetPosition();
+    m_Position = Camera::Position();
 
     GetRequestedChunks();
 }
