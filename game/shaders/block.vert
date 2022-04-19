@@ -17,7 +17,7 @@ out float v_Transparency;
 
 void main()
 {
-    vec3 pos = vec3(float(u_Index.x) * 16.0 + a_Position.x, float(u_Index.y) * 16.0 + a_Position.y, float(u_Index.z) * 16.0 + a_Position.z);
+    vec3 pos = vec3(float(u_Index.x) * 16.0 + a_Position.x, a_Position.y, float(u_Index.z) * 16.0 + a_Position.z);
     gl_Position = u_ProjMatrix * u_ViewMatrix * u_ModelMatrix * vec4(pos, 1.0);
 
     v_Position = a_Position;
