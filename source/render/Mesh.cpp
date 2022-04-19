@@ -2,9 +2,9 @@
 
 Mesh::Mesh() {}
 
-Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, Shader *shader)
-    : p_Vertices(vertices),
-      p_Indices(indices),
+Mesh::Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, ShaderProgram *shader)
+    : m_Vertices(vertices),
+      m_Indices(indices),
       m_Shader(shader),
       m_Count(static_cast<unsigned int>(indices->size())),
       m_PushedToGPU(false),
@@ -36,12 +36,12 @@ void Mesh::Initialize()
     glBindVertexArray(m_VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, 2 * p_Vertices->size() * sizeof(Vertex), (void *)0, GL_DYNAMIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, p_Vertices->size() * sizeof(Vertex), p_Vertices->data());
+    glBufferData(GL_ARRAY_BUFFER, 2 * m_Vertices->size() * sizeof(Vertex), (void *)0, GL_DYNAMIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, m_Vertices->size() * sizeof(Vertex), m_Vertices->data());
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * p_Indices->size() * sizeof(unsigned int), (void *)0, GL_DYNAMIC_DRAW);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, p_Indices->size() * sizeof(unsigned int), p_Indices->data());
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * m_Indices->size() * sizeof(unsigned int), (void *)0, GL_DYNAMIC_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_Indices->size() * sizeof(unsigned int), m_Indices->data());
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(offsetof(Vertex, m_Position)));
@@ -56,10 +56,10 @@ void Mesh::Initialize()
 
     m_PushedToGPU = true;
 
-    // p_Vertices->clear();
-    // p_Vertices->shrink_to_fit();
-    // p_Indices->clear();
-    // p_Indices->shrink_to_fit();
+    // m_Vertices->clear();
+    // m_Vertices->shrink_to_fit();
+    // m_Indices->clear();
+    // m_Indices->shrink_to_fit();
 }
 
 void Mesh::Update()
@@ -82,14 +82,14 @@ void Mesh::Update()
 
 void Mesh::UpdateGeometry()
 {
-    m_Count = static_cast<unsigned int>(p_Indices->size());
+    m_Count = static_cast<unsigned int>(m_Indices->size());
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, p_Vertices->size() * sizeof(Vertex), p_Vertices->data());
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, p_Indices->size() * sizeof(unsigned int), p_Indices->data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, m_Vertices->size() * sizeof(Vertex), m_Vertices->data());
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_Indices->size() * sizeof(unsigned int), m_Indices->data());
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
