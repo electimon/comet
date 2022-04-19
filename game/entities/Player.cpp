@@ -1,16 +1,16 @@
 #include "Player.h"
 
-#include <thread>
-
 Player::Player(glm::vec3 position) : m_Position(position)
 {
     Camera::SetPosition(position);
     EntityHandler::AddEntityToQueue(this);
 
-    m_RenderDistance = 10;
+    m_RenderDistance = 8;
 }
 
-Player::~Player() {}
+Player::~Player()
+{
+}
 
 void Player::Update()
 {
@@ -30,6 +30,11 @@ void Player::Update()
 
     m_Position = Camera::GetPosition();
 
+    GetRequestedChunks();
+}
+
+void Player::GetRequestedChunks()
+{
     glm::ivec3 newChunkIndex = World::GetChunkIndex(m_Position);
 
     if (newChunkIndex != m_ChunkIndex)

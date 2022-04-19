@@ -1,13 +1,10 @@
 #pragma once
 
-#include <vector>
-
-#include "FastNoiseLite.h"
-#include "glm/glm.hpp"
+#include <comet.pch>
 
 class ChunkGenerator
 {
-public:
+  public:
     static ChunkGenerator &Instance()
     {
         static ChunkGenerator s_Instance;
@@ -16,34 +13,35 @@ public:
 
     static void Initialize()
     {
-        Instance().m_MediumNoise.SetNoiseType( FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+        Instance().m_MediumNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
         Instance().m_MediumNoise.SetFrequency(0.01f);
 
-        Instance().m_SlowNoise.SetNoiseType( FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+        Instance().m_SlowNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
         Instance().m_SlowNoise.SetFrequency(0.001f);
 
-        Instance().m_CellularNoise.SetNoiseType( FastNoiseLite::NoiseType::NoiseType_Cellular);
+        Instance().m_CellularNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Cellular);
         Instance().m_CellularNoise.SetFrequency(0.01f);
 
-        Instance().m_FastNoise.SetNoiseType( FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+        Instance().m_FastNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
         Instance().m_FastNoise.SetFrequency(1.0f);
 
-        Instance().m_MediumChaotic.SetNoiseType( FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
-        Instance().m_MediumChaotic.SetFractalType( FastNoiseLite::FractalType::FractalType_FBm);
+        Instance().m_MediumChaotic.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+        Instance().m_MediumChaotic.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
         Instance().m_MediumChaotic.SetFractalOctaves(4);
         Instance().m_MediumChaotic.SetFractalLacunarity(2.00f);
         Instance().m_MediumChaotic.SetFrequency(0.01f);
 
-        Instance().m_BiomeNoise.SetNoiseType( FastNoiseLite::NoiseType::NoiseType_Value);
+        Instance().m_BiomeNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Value);
         Instance().m_BiomeNoise.SetFrequency(0.015f);
-        Instance().m_BiomeNoise.SetCellularDistanceFunction( FastNoiseLite::CellularDistanceFunction:: CellularDistanceFunction_Hybrid);
-        Instance().m_BiomeNoise.SetCellularReturnType( FastNoiseLite::CellularReturnType::CellularReturnType_CellValue);
-        Instance().m_BiomeNoise.SetDomainWarpType( FastNoiseLite::DomainWarpType::DomainWarpType_BasicGrid);
+        Instance().m_BiomeNoise.SetCellularDistanceFunction(
+            FastNoiseLite::CellularDistanceFunction::CellularDistanceFunction_Hybrid);
+        Instance().m_BiomeNoise.SetCellularReturnType(FastNoiseLite::CellularReturnType::CellularReturnType_CellValue);
+        Instance().m_BiomeNoise.SetDomainWarpType(FastNoiseLite::DomainWarpType::DomainWarpType_BasicGrid);
         Instance().m_BiomeNoise.SetDomainWarpAmp(50.0f);
 
         Instance().m_CaveNoise.SetFrequency(0.01f);
-        Instance().m_CaveNoise.SetNoiseType( FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
-        Instance().m_CaveNoise.SetFractalType( FastNoiseLite::FractalType::FractalType_PingPong);
+        Instance().m_CaveNoise.SetNoiseType(FastNoiseLite::NoiseType::NoiseType_OpenSimplex2);
+        Instance().m_CaveNoise.SetFractalType(FastNoiseLite::FractalType::FractalType_PingPong);
         Instance().m_CaveNoise.SetFractalOctaves(5);
         Instance().m_CaveNoise.SetFractalLacunarity(2.0f);
         Instance().m_CaveNoise.SetFractalGain(0.05f);
@@ -80,7 +78,7 @@ public:
 
     static float GetCaveNoise(int x, int y, int z)
     {
-        return Instance().m_CaveNoise.GetNoise( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+        return Instance().m_CaveNoise.GetNoise(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
     }
     static float GetBiomeNoise(int x, int z)
     {
@@ -129,8 +127,10 @@ public:
         Instance().m_OpenSimplex2_16f.SetSeed(Instance().m_Seed);
     }
 
-private:
-    ChunkGenerator() {}
+  private:
+    ChunkGenerator()
+    {
+    }
     ChunkGenerator(ChunkGenerator const &);
     void operator=(ChunkGenerator const &);
 

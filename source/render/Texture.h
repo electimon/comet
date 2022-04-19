@@ -1,7 +1,7 @@
 #pragma once
 
+#include <comet.pch>
 #include <glad/gl.h>
-#include <stb_image.h>
 
 class Texture
 {

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <string>
-#include <array>
+#include <comet.pch>
 
 class BlockLibrary
 {
-public:
+  public:
     inline static auto &Instance()
     {
         static BlockLibrary instance;
@@ -52,8 +51,10 @@ public:
         return Instance().m_BlockIndices.at(blockID);
     }
 
-private:
-    BlockLibrary() {}
+  private:
+    BlockLibrary()
+    {
+    }
     BlockLibrary(BlockLibrary const &);
     void operator=(BlockLibrary const &);
 

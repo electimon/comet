@@ -1,10 +1,5 @@
 #pragma once
 
-#include <unordered_map>
-
-#include "glm/glm.hpp"
-#include "glm/gtx/hash.hpp"
-
 #include "render/Mesh.h"
 
 #include "Block.h"
@@ -30,8 +25,14 @@ struct Chunk
     void GenerateMesh();
     void GenerateMesh2();
 
-    std::vector<Vertex> *GetVertices() { return &m_Vertices; }
-    std::vector<unsigned int> *GetIndices() { return &m_Indices; }
+    std::vector<Vertex> *GetVertices()
+    {
+        return &m_Vertices;
+    }
+    std::vector<unsigned int> *GetIndices()
+    {
+        return &m_Indices;
+    }
 
     unsigned char GetBlock(glm::ivec3 chunkPos)
     {
@@ -77,7 +78,7 @@ struct Chunk
         m_Modified = true;
     }
 
-private:
+  private:
     // testing new data format
     std::array<unsigned char, CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT> m_BlockData;
     // only used during generation, not needed when saving chunk

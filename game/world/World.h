@@ -1,20 +1,20 @@
 #pragma once
 
-#include <unordered_map>
-#include <unordered_set>
-
-#include "glm/glm.hpp"
-#include "glm/gtx/hash.hpp"
+#include <comet.pch>
 
 #include "render/Shader.h"
 
+#include "BlockLibrary.h"
 #include "Chunk.h"
 #include "ChunkGenerator.h"
+#include "Engine.h"
 #include "Renderer.h"
+#include "WorldConfig.h"
+
 
 class World
 {
-public:
+  public:
     inline static auto &Instance()
     {
         static World instance;
@@ -29,18 +29,31 @@ public:
     static glm::ivec3 GetChunkCoord(const glm::ivec3 &worldPos);
     static glm::ivec3 GetChunkIndex(const glm::ivec3 &worldPos);
 
-    static void SetShader(const Shader &shader) { Instance().m_Shader = shader; }
-    static void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
+    static void SetShader(const Shader &shader)
+    {
+        Instance().m_Shader = shader;
+    }
+    static void SetSeed(int seed)
+    {
+        ChunkGenerator::SetSeed(seed);
+    }
     static void ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerChunkIndex);
 
     // Shader Functions
-    const Shader &GetShader() { return m_Shader; }
+    const Shader &GetShader()
+    {
+        return m_Shader;
+    }
     static void WorldThread();
 
-private:
-    World() {}
+  private:
+    World()
+    {
+    }
     World(World const &);
-    void operator=(World const &) {}
+    void operator=(World const &)
+    {
+    }
 
     // This will be a temporary cache of the loaded chunks.
     // Functionallity to check for saved data on disk will eventually be
@@ -56,6 +69,8 @@ private:
 
     Shader m_Shader;
     int m_Seed;
+
+    std::mutex m_Lock;
 
     std::thread m_Thread;
 };

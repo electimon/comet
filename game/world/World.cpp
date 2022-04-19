@@ -1,14 +1,5 @@
 #include "World.h"
 
-#include "BlockLibrary.h"
-#include "ChunkGenerator.h"
-#include "Engine.h"
-#include "WorldConfig.h"
-
-#include <filesystem>
-#include <thread>
-#include <cmath>
-
 void World::Initialize()
 {
     std::filesystem::create_directory("world");
@@ -119,6 +110,8 @@ void World::ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerC
 
     const auto &world = Instance();
 
+    std::lock_guard<std::mutex> locked(Instance().m_Lock);
+
     // Add chunks to generation
     for (int x = lowerx; x < upperx; x++)
     {
@@ -172,7 +165,6 @@ void World::WorldThread()
 
     while (!Engine::ShouldClose())
     {
-
         // Generates chunks
         for (const auto &index : Instance().m_ChunksToGenerate)
         {
@@ -189,7 +181,7 @@ void World::WorldThread()
             if (world.m_ChunkDataMap.find(index) == world.m_ChunkDataMap.end())
                 return;
 
-            Chunk* chunk = &world.m_ChunkDataMap.at(index);
+            Chunk *chunk = &world.m_ChunkDataMap.at(index);
             chunk->GenerateGeometry();
             world.m_ChunkRenderMap.insert_or_assign(index, chunk);
             Mesh mesh = Mesh(chunk->GetVertices(), chunk->GetIndices(), &world.m_Shader);

@@ -1,14 +1,6 @@
 #pragma once
 
-#include <atomic>
-#include <mutex>
-#include <unordered_map>
-#include <unordered_set>
-
-#include <glm/gtc/constants.hpp>
-#include <glm/gtx/hash.hpp>
-
-#include <stb_image.h>
+#include <comet.pch>
 
 #include "handlers/WindowHandler.h"
 

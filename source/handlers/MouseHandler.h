@@ -1,8 +1,6 @@
 #pragma once
 
-#include <array>
-
-#include <glfw/glfw3.h>
+#include <comet.pch>
 
 #include "WindowHandler.h"
 

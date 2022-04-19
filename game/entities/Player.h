@@ -1,10 +1,6 @@
 #pragma once
 
-#include <iostream>
-#include <unordered_set>
-#include <cmath>
-
-#include "glm/glm.hpp"
+#include <comet.pch>
 
 #include "handlers/Entity.h"
 #include "handlers/EntityHandler.h"
@@ -66,6 +62,8 @@ public:
             first = false;
         }
     }
+
+    void GetRequestedChunks();
 
 private:
     glm::vec3 m_Position;

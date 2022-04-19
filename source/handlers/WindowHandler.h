@@ -1,9 +1,7 @@
 #pragma once
 
-#include <iostream>
-
+#include <comet.pch>
 #include <glad/gl.h>
-#include <glfw/glfw3.h>
 
 class WindowHandler
 {

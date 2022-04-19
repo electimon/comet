@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glfw/glfw3.h>
+#include <comet.pch>
 
 class EventHandler
 {

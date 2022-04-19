@@ -2,12 +2,12 @@
 
 class Block
 {
-public:
+  public:
     Block(unsigned char id);
     ~Block();
 
     unsigned char GetID();
 
-private:
+  private:
     unsigned char m_ID;
 };

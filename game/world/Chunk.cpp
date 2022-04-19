@@ -1,7 +1,5 @@
 #include "Chunk.h"
 
-#include "FastNoiseLite.h"
-
 #include "Renderer.h"
 #include "render/TextureMap.h"
 #include "render/Vertex.h"
@@ -11,15 +9,11 @@
 #include "World.h"
 #include "world/WorldConfig.h"
 
-#include <cstring>
-#include <filesystem>
-#include <fstream>
-#include <iterator>
-#include <string>
-#include <vector>
-
 Chunk::Chunk(glm::ivec3 id) : m_Chunk(id)
 {
+    m_BlockData.fill(0);
+    m_HeightData.fill(0);
+
     m_Vertices.reserve(100000);
     m_Indices.reserve(100000);
 }
@@ -28,7 +22,8 @@ Chunk::~Chunk()
 {
     if (m_Modified)
     {
-        std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk");
+        std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " +
+                                    std::to_string(m_Chunk.z) + ".chunk");
         std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, ""));
         blockDataFile.close();
     }
@@ -36,16 +31,19 @@ Chunk::~Chunk()
 
 void Chunk::Generate()
 {
-    if (std::filesystem::exists(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk"))
+    if (std::filesystem::exists(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " +
+                                std::to_string(m_Chunk.z) + ".chunk"))
     {
         std::cout << "Loading chunk, reading chunk from disk...\n";
 
-        std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " + std::to_string(m_Chunk.z) + ".chunk";
+        std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " +
+                               std::to_string(m_Chunk.z) + ".chunk";
         std::basic_ifstream<char> blockDataFile(filename.c_str());
 
         // This will need to be redone once a more optimized method of
         // saving chunks is made.
-        // m_BlockData = std::vector<unsigned char>( (std::istreambuf_iterator<char>(blockDataFile)), std::istreambuf_iterator<char>());
+        // m_BlockData = std::vector<unsigned char>( (std::istreambuf_iterator<char>(blockDataFile)),
+        // std::istreambuf_iterator<char>());
     }
     else
     {
@@ -122,10 +120,8 @@ void Chunk::GenerateTrees()
             if (GetBlock(x, y - 1, z) == 0)
                 continue;
 
-            noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * CHUNK_WIDTH) + x,
-                                                  (m_Chunk.z * CHUNK_WIDTH) + z);
-            noise2 = ChunkGenerator::GetMediumNoise((m_Chunk.x * CHUNK_WIDTH) + x,
-                                                    (m_Chunk.z * CHUNK_WIDTH) + z);
+            noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
+            noise2 = ChunkGenerator::GetMediumNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
 
             if (noise1 > 0.9f && noise2 > 0.1f)
             {
@@ -255,8 +251,7 @@ void Chunk::GenerateCaves()
                 if (GetBlock(x, y, z) != 1)
                     continue;
 
-                noise = ChunkGenerator::GetCaveNoise(x + m_Chunk.x * CHUNK_WIDTH, y,
-                                                     z + m_Chunk.z * CHUNK_WIDTH);
+                noise = ChunkGenerator::GetCaveNoise(x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH);
 
                 if (noise > 0.8f)
                     SetBlock(x, y, z, 0);
@@ -384,90 +379,114 @@ void Chunk::GenerateMesh()
                 // +X Quad
                 if (px)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(
-                        m_Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
-                        });
+                    m_Indices.insert(m_Indices.end(),
+                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    m_Vertices.insert(m_Vertices.end(),
+                                      {
+                                          Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
+                                                 TextureMap::GetTopRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                                          Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
+                                                 TextureMap::GetBottomRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                                          Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
+                                                 TextureMap::GetBottomLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                                          Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
+                                                 TextureMap::GetTopLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                                      });
                     offset += 4;
                 }
 
                 // -X Quad
                 if (nx)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(
-                        m_Vertices.end(),
-                        {
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
-                        });
+                    m_Indices.insert(m_Indices.end(),
+                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    m_Vertices.insert(m_Vertices.end(),
+                                      {
+                                          Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
+                                                 TextureMap::GetTopRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                                          Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
+                                                 TextureMap::GetTopLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                                          Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
+                                                 TextureMap::GetBottomLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                                          Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
+                                                 TextureMap::GetBottomRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                                      });
                     offset += 4;
                 }
 
                 // +Y Quad
                 if (py)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(
-                        m_Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetBottomRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetBottomLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
-                        });
+                    m_Indices.insert(m_Indices.end(),
+                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    m_Vertices.insert(m_Vertices.end(),
+                                      {
+                                          Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
+                                                 TextureMap::GetTopLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                                          Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
+                                                 TextureMap::GetTopRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                                          Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
+                                                 TextureMap::GetBottomRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                                          Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
+                                                 TextureMap::GetBottomLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                                      });
                     offset += 4;
                 }
 
                 // -Y Quad
                 if (ny)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(
-                        m_Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
-                        });
+                    m_Indices.insert(m_Indices.end(),
+                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    m_Vertices.insert(m_Vertices.end(),
+                                      {
+                                          Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
+                                                 TextureMap::GetTopRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                                          Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
+                                                 TextureMap::GetBottomRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                                          Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
+                                                 TextureMap::GetBottomLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                                          Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
+                                                 TextureMap::GetTopLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                                      });
                     offset += 4;
                 }
 
                 // +Z Quad
                 if (pz)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(
-                        m_Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
-                        });
+                    m_Indices.insert(m_Indices.end(),
+                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    m_Vertices.insert(m_Vertices.end(),
+                                      {
+                                          Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
+                                                 TextureMap::GetTopRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                                          Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
+                                                 TextureMap::GetTopLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                                          Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
+                                                 TextureMap::GetBottomLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                                          Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
+                                                 TextureMap::GetBottomRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                                      });
                     offset += 4;
                 }
 
                 // -Z Quad
                 if (nz)
                 {
-                    m_Indices.insert(m_Indices.end(), {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(
-                        m_Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
-                        });
+                    m_Indices.insert(m_Indices.end(),
+                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    m_Vertices.insert(m_Vertices.end(),
+                                      {
+                                          Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
+                                                 TextureMap::GetTopRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                                          Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
+                                                 TextureMap::GetBottomRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                                          Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
+                                                 TextureMap::GetBottomLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                                          Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
+                                                 TextureMap::GetTopLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                                      });
                     offset += 4;
                 }
             }
@@ -477,5 +496,4 @@ void Chunk::GenerateMesh()
 
 void Chunk::GenerateMesh2()
 {
-
 }
