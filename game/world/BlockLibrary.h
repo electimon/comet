@@ -2,12 +2,31 @@
 
 #include <comet.pch>
 
-class BlockLibrary
+// Enum for convenience
+enum BlockID
+{
+    Air,         // 0
+    Stone,       // 1
+    Grass,       // 2
+    Dirt,        // 3
+    Water,       // 4
+    Log,         // 5
+    Leaves,      // 6
+    Sand,        // 7
+    Bedrock,     // 8
+    Cobblestone, // 9
+    CoalOre,     // 10
+    IronOre,     // 11
+    GoldOre,     // 12
+    DiamondOre,  // 13
+};
+
+class BlockTextures
 {
   public:
     inline static auto &Instance()
     {
-        static BlockLibrary instance;
+        static BlockTextures instance;
         return instance;
     }
 
@@ -20,7 +39,7 @@ class BlockLibrary
         std::array<unsigned char, 6> Dirt{2, 2, 2, 2, 2, 2};
         std::array<unsigned char, 6> Water{207, 207, 207, 207, 207, 207};
         std::array<unsigned char, 6> Log{20, 20, 21, 21, 20, 20};
-        std::array<unsigned char, 6> Leaves{53, 53, 53, 53, 53, 53};
+        std::array<unsigned char, 6> Leaves{52, 52, 52, 52, 52, 52};
         std::array<unsigned char, 6> Sand{18, 18, 18, 18, 18, 18};
         std::array<unsigned char, 6> Bedrock{17, 17, 17, 17, 17, 17};
         std::array<unsigned char, 6> Cobblestone{16, 16, 16, 16, 16, 16};
@@ -52,11 +71,9 @@ class BlockLibrary
     }
 
   private:
-    BlockLibrary()
-    {
-    }
-    BlockLibrary(BlockLibrary const &);
-    void operator=(BlockLibrary const &);
+    BlockTextures(){};
+    BlockTextures(BlockTextures const &);
+    void operator=(BlockTextures const &);
 
     std::array<std::array<unsigned char, 6>, 256> m_BlockIndices;
 };
