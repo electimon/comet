@@ -1,9 +1,6 @@
 #include "EntityHandler.h"
 
-void EntityHandler::Initialize()
-{
-    Instance();
-}
+void EntityHandler::Initialize() { Instance(); }
 
 void EntityHandler::AddEntityToQueue(Entity *entity)
 {

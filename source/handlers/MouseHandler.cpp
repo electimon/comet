@@ -1,35 +1,35 @@
 #include "MouseHandler.h"
 
-void MouseHandler::Initialize()
-{
-    Instance().SetupCallbacks();
-}
+void MouseHandler::Initialize() { Instance().SetupCallbacks(); }
 
 void MouseHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), &MouseHandler::Instance());
+    glfwSetWindowUserPointer(glfwGetCurrentContext(),
+                             &MouseHandler::Instance());
 
-    auto ScrollCallbackWrapper = [](GLFWwindow *window, double xoffset, double yoffset)
-    {
-        static_cast<MouseHandler *>(glfwGetWindowUserPointer(window))->ScrollCallback(xoffset, yoffset);
+    auto ScrollCallbackWrapper = [](GLFWwindow *window, double xoffset,
+                                    double yoffset) {
+        static_cast<MouseHandler *>(glfwGetWindowUserPointer(window))
+            ->ScrollCallback(xoffset, yoffset);
     };
-    auto MouseButtonCallbackWrapper = [](GLFWwindow *window, int button, int action, int mods)
-    {
-        static_cast<MouseHandler *>(glfwGetWindowUserPointer(window))->MouseButtonCallback(button, action, mods);
+    auto MouseButtonCallbackWrapper = [](GLFWwindow *window, int button,
+                                         int action, int mods) {
+        static_cast<MouseHandler *>(glfwGetWindowUserPointer(window))
+            ->MouseButtonCallback(button, action, mods);
     };
-    auto CursorPosCallbackWrapper = [](GLFWwindow *window, double xpos, double ypos)
-    {
-        static_cast<MouseHandler *>(glfwGetWindowUserPointer(window))->CursorPosCallback(xpos, ypos);
+    auto CursorPosCallbackWrapper = [](GLFWwindow *window, double xpos,
+                                       double ypos) {
+        static_cast<MouseHandler *>(glfwGetWindowUserPointer(window))
+            ->CursorPosCallback(xpos, ypos);
     };
 
     glfwSetScrollCallback(glfwGetCurrentContext(), ScrollCallbackWrapper);
-    glfwSetMouseButtonCallback(glfwGetCurrentContext(), MouseButtonCallbackWrapper);
+    glfwSetMouseButtonCallback(glfwGetCurrentContext(),
+                               MouseButtonCallbackWrapper);
     glfwSetCursorPosCallback(glfwGetCurrentContext(), CursorPosCallbackWrapper);
 }
 
-void MouseHandler::ScrollCallback(double xoffset, double yoffset)
-{
-}
+void MouseHandler::ScrollCallback(double xoffset, double yoffset) {}
 
 void MouseHandler::MouseButtonCallback(int button, int action, int mods)
 {
@@ -38,7 +38,8 @@ void MouseHandler::MouseButtonCallback(int button, int action, int mods)
     {
         if (glfwRawMouseMotionSupported())
         {
-            glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+            glfwSetInputMode(WindowHandler::GetGLFWWindow(),
+                             GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         }
 
         CaptureCursor();
@@ -89,7 +90,8 @@ void MouseHandler::UpdateStates()
         Instance().m_LeftHold = false;
     }
 
-    if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+    if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(),
+                           GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
         if (!Instance().m_RightClick && !Instance().m_RightHold)
         {
@@ -118,12 +120,14 @@ void MouseHandler::ResetStates()
 
 void MouseHandler::CaptureCursor()
 {
-    glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR,
+                     GLFW_CURSOR_DISABLED);
     Instance().m_CursorCaptured = true;
 }
 void MouseHandler::ReleaseCursor()
 {
-    glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR,
+                     GLFW_CURSOR_NORMAL);
     Instance().m_CursorCaptured = false;
 }
 
@@ -136,25 +140,13 @@ double MouseHandler::GetDeltaY()
     return Instance().m_MovementSinceLastFrame[1];
 }
 
-bool MouseHandler::GetLeftClick()
-{
-    return Instance().m_LeftClick;
-}
+bool MouseHandler::GetLeftClick() { return Instance().m_LeftClick; }
 
-bool MouseHandler::GetLeftHold()
-{
-    return Instance().m_LeftHold;
-}
+bool MouseHandler::GetLeftHold() { return Instance().m_LeftHold; }
 
-bool MouseHandler::GetRightClick()
-{
-    return Instance().m_RightClick;
-}
+bool MouseHandler::GetRightClick() { return Instance().m_RightClick; }
 
-bool MouseHandler::GetRightHold()
-{
-    return Instance().m_RightHold;
-}
+bool MouseHandler::GetRightHold() { return Instance().m_RightHold; }
 
 void MouseHandler::ResetMovement()
 {

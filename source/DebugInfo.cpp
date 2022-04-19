@@ -21,9 +21,12 @@ void DebugInfo::DrawFrame()
         ImGui::SetWindowPos(ImVec2(0.0f, 0.0f));
         ImGui::SetWindowSize(ImVec2(400.0f, 100.0f));
 
-        ImGui::Text("Application average: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::Text("Application average: %.3f ms/frame (%.1f FPS)",
+                    1000.0f / ImGui::GetIO().Framerate,
+                    ImGui::GetIO().Framerate);
 
-        ImGui::Text("Camera position: %.3f, %.3f, %.3f", Camera::Position().x, Camera::Position().y, Camera::Position().z);
+        ImGui::Text("Camera position: %.3f, %.3f, %.3f", Camera::Position().x,
+                    Camera::Position().y, Camera::Position().z);
 
         ImGui::End();
     }

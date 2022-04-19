@@ -2,12 +2,13 @@
 
 #include <comet.pch>
 
-#include "handlers/WindowHandler.h"
 #include "Camera.h"
+#include "handlers/WindowHandler.h"
+
 
 class DebugInfo
 {
-public:
+  public:
     inline static auto &Instance()
     {
         static DebugInfo instance;
@@ -17,7 +18,7 @@ public:
     static void Initialize();
     static void DrawFrame();
 
-private:
+  private:
     DebugInfo() {}
     DebugInfo(DebugInfo const &);
     void operator=(DebugInfo const &);

@@ -31,7 +31,10 @@ void Renderer::NewFrame()
     glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f, 0.0f);
 }
 
-void Renderer::SwapBuffers() { glfwSwapBuffers(WindowHandler::GetGLFWWindow()); }
+void Renderer::SwapBuffers()
+{
+    glfwSwapBuffers(WindowHandler::GetGLFWWindow());
+}
 
 void Renderer::DrawMeshQueue()
 {
@@ -46,10 +49,15 @@ void Renderer::DrawMeshQueue()
     glEnable(GL_CULL_FACE);
     glDisable(GL_BLEND);
 
+    unsigned int solidMeshCount = 0;
+    unsigned int transparentMeshCount = 0;
+
     for (auto &[index, mesh] : Instance().m_MeshMap)
     {
         if (index.y == 1)
             continue;
+
+        solidMeshCount++;
 
         shaderID = mesh.Shader()->GetID();
 
@@ -60,10 +68,14 @@ void Renderer::DrawMeshQueue()
 
         // Uniforms
         glUniform3iv(glGetUniformLocation(shaderID, "u_Index"), 1, &index[0]);
-        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.Transparency());
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.ModelMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::ViewMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::ProjMatrix()[0][0]);
+        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"),
+                    mesh.Transparency());
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1,
+                           GL_FALSE, &mesh.ModelMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1,
+                           GL_FALSE, &Camera::ViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1,
+                           GL_FALSE, &Camera::ProjMatrix()[0][0]);
         glUniform1i(glGetUniformLocation(shaderID, "u_Texture"), 0);
 
         // Drawing mesh
@@ -79,6 +91,8 @@ void Renderer::DrawMeshQueue()
         if (index.y == 0)
             continue;
 
+        transparentMeshCount++;
+
         shaderID = mesh.Shader()->GetID();
 
         mesh.Update();
@@ -88,10 +102,14 @@ void Renderer::DrawMeshQueue()
 
         // Uniforms
         glUniform3iv(glGetUniformLocation(shaderID, "u_Index"), 1, &index[0]);
-        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.Transparency());
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.ModelMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::ViewMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::ProjMatrix()[0][0]);
+        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"),
+                    mesh.Transparency());
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1,
+                           GL_FALSE, &mesh.ModelMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1,
+                           GL_FALSE, &Camera::ViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1,
+                           GL_FALSE, &Camera::ProjMatrix()[0][0]);
         glUniform1i(glGetUniformLocation(shaderID, "u_Texture"), 0);
 
         // Drawing mesh

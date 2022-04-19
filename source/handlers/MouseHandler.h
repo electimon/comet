@@ -6,7 +6,7 @@
 
 class MouseHandler
 {
-public:
+  public:
     inline static auto &Instance()
     {
         static MouseHandler instance;
@@ -32,7 +32,7 @@ public:
     static bool GetRightClick();
     static bool GetRightHold();
 
-private:
+  private:
     MouseHandler() {}
     MouseHandler(MouseHandler const &);
     void operator=(MouseHandler const &) {}

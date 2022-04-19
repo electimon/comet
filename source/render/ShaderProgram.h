@@ -5,7 +5,7 @@
 
 class ShaderProgram
 {
-public:
+  public:
     ShaderProgram();
     ShaderProgram(const char *vertFile, const char *fragFile);
     ~ShaderProgram();
@@ -20,7 +20,7 @@ public:
 
     int GetUniformLocation(const std::string &name);
 
-private:
+  private:
     unsigned int m_ID;
     std::unordered_map<std::string, int> m_UniformMap;
 };

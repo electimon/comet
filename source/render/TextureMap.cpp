@@ -1,9 +1,6 @@
 #include "TextureMap.h"
 
-void TextureMap::Initialize()
-{
-    Instance();
-}
+void TextureMap::Initialize() { Instance(); }
 
 void TextureMap::Configure(int width, int height, int resolution)
 {
@@ -25,8 +22,10 @@ void TextureMap::Configure(int width, int height, int resolution)
             left = x / static_cast<float>(map.m_Width);
             bottom = y / static_cast<float>(map.m_Height);
 
-            right = (x + static_cast<float>(resolution)) / static_cast<float>(map.m_Width);
-            top = (y + static_cast<float>(resolution)) / static_cast<float>(map.m_Height);
+            right = (x + static_cast<float>(resolution)) /
+                    static_cast<float>(map.m_Width);
+            top = (y + static_cast<float>(resolution)) /
+                  static_cast<float>(map.m_Height);
 
             map.m_Coords.push_back({left, right, bottom, top});
         }

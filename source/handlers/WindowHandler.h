@@ -5,7 +5,7 @@
 
 class WindowHandler
 {
-public:
+  public:
     inline static auto &Instance()
     {
         static WindowHandler instance;
@@ -21,7 +21,7 @@ public:
 
     int CreateWindow();
 
-private:
+  private:
     WindowHandler() {}
     WindowHandler(WindowHandler const &);
     void operator=(WindowHandler const &) {}

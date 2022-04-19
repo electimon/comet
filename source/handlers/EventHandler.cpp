@@ -1,11 +1,5 @@
 #include "EventHandler.h"
 
-void EventHandler::Initialize()
-{
-    Instance();
-}
+void EventHandler::Initialize() { Instance(); }
 
-void EventHandler::PollEvents()
-{
-    glfwPollEvents();
-}
+void EventHandler::PollEvents() { glfwPollEvents(); }

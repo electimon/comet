@@ -42,11 +42,20 @@ class Engine
 
   public:
     static bool IsShouldClose() { return Instance().m_ShouldClose; }
-    static void SetShouldClose(bool ShouldClose) { Instance().m_ShouldClose = ShouldClose; }
+    static void SetShouldClose(bool ShouldClose)
+    {
+        Instance().m_ShouldClose = ShouldClose;
+    }
 
     static double TimeDelta() { return Instance().m_TimeDelta; }
-    static void SetTimeDelta(double TimeDelta) { Instance().m_TimeDelta = TimeDelta; }
+    static void SetTimeDelta(double TimeDelta)
+    {
+        Instance().m_TimeDelta = TimeDelta;
+    }
 
     static double TimeLast() { return Instance().m_TimeLast; }
-    static void SetTimeLast(double TimeLast) { Instance().m_TimeLast = TimeLast; }
+    static void SetTimeLast(double TimeLast)
+    {
+        Instance().m_TimeLast = TimeLast;
+    }
 };

@@ -11,7 +11,8 @@ int main(void)
     Engine::Initialize();
 
     // Shader Setup
-    ShaderProgram blockShader("../game/shaders/block.vert", "../game/shaders/block.frag");
+    ShaderProgram blockShader("../game/shaders/block.vert",
+                              "../game/shaders/block.frag");
 
     Texture texture("../game/textures/terrain.png");
 

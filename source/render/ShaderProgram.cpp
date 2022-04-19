@@ -9,15 +9,9 @@ ShaderProgram::ShaderProgram(const char *vertFile, const char *fragFile)
 
 ShaderProgram::~ShaderProgram() {}
 
-void ShaderProgram::Bind()
-{
-    glUseProgram(m_ID);
-}
+void ShaderProgram::Bind() { glUseProgram(m_ID); }
 
-void ShaderProgram::Unbind()
-{
-    glUseProgram(0);
-}
+void ShaderProgram::Unbind() { glUseProgram(0); }
 
 void ShaderProgram::Create(const char *vertFile, const char *fragFile)
 {
@@ -30,7 +24,8 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
     // Vertex Shader
     {
         std::ifstream file(vertFile);
-        std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        std::string contents((std::istreambuf_iterator<char>(file)),
+                             std::istreambuf_iterator<char>());
         const char *contentsChar = contents.c_str();
         vertexID = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexID, 1, &contentsChar, NULL);
@@ -41,13 +36,15 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
     if (!success)
     {
         glGetShaderInfoLog(vertexID, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << "\n";
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                  << infoLog << "\n";
     }
 
     // Fragment Shader
     {
         std::ifstream file(fragFile);
-        std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        std::string contents((std::istreambuf_iterator<char>(file)),
+                             std::istreambuf_iterator<char>());
         const char *contentsChar = contents.c_str();
         fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentID, 1, &contentsChar, NULL);
@@ -58,7 +55,8 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
     if (!success)
     {
         glGetShaderInfoLog(fragmentID, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << "\n";
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+                  << infoLog << "\n";
     }
 
     glAttachShader(m_ID, vertexID);
@@ -69,22 +67,17 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
     if (!success)
     {
         glGetProgramInfoLog(m_ID, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << "\n";
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+                  << infoLog << "\n";
     }
 
     glDeleteShader(vertexID);
     glDeleteShader(fragmentID);
 }
 
-void ShaderProgram::Delete()
-{
-    glDeleteProgram(m_ID);
-}
+void ShaderProgram::Delete() { glDeleteProgram(m_ID); }
 
-unsigned int ShaderProgram::GetID()
-{
-    return m_ID;
-}
+unsigned int ShaderProgram::GetID() { return m_ID; }
 
 int ShaderProgram::GetUniformLocation(const std::string &name)
 {

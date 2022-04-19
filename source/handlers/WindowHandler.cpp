@@ -71,24 +71,27 @@ void WindowHandler::CenterWindow()
 
 void WindowHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), &WindowHandler::Instance());
+    glfwSetWindowUserPointer(glfwGetCurrentContext(),
+                             &WindowHandler::Instance());
 
-    auto WindowSizeCallbackWrapper = [](GLFWwindow *window, int width, int height)
-    {
-        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))->WindowSizeCallback(width, height);
+    auto WindowSizeCallbackWrapper = [](GLFWwindow *window, int width,
+                                        int height) {
+        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))
+            ->WindowSizeCallback(width, height);
     };
-    auto FrameBufferCallbackWrapper = [](GLFWwindow *window, int width, int height)
-    {
-        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))->FramebufferSizeCallback(width, height);
+    auto FrameBufferCallbackWrapper = [](GLFWwindow *window, int width,
+                                         int height) {
+        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))
+            ->FramebufferSizeCallback(width, height);
     };
 
-    glfwSetWindowSizeCallback(glfwGetCurrentContext(), WindowSizeCallbackWrapper);
-    glfwSetFramebufferSizeCallback(glfwGetCurrentContext(), FrameBufferCallbackWrapper);
+    glfwSetWindowSizeCallback(glfwGetCurrentContext(),
+                              WindowSizeCallbackWrapper);
+    glfwSetFramebufferSizeCallback(glfwGetCurrentContext(),
+                                   FrameBufferCallbackWrapper);
 }
 
-void WindowHandler::WindowSizeCallback(int width, int height)
-{
-}
+void WindowHandler::WindowSizeCallback(int width, int height) {}
 
 void WindowHandler::FramebufferSizeCallback(int width, int height)
 {
@@ -100,7 +103,4 @@ bool WindowHandler::ShouldWindowClose()
     return glfwWindowShouldClose(Instance().p_GLFWwindow);
 }
 
-GLFWwindow *WindowHandler::GetGLFWWindow()
-{
-    return Instance().p_GLFWwindow;
-}
+GLFWwindow *WindowHandler::GetGLFWWindow() { return Instance().p_GLFWwindow; }

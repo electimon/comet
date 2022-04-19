@@ -36,21 +36,30 @@ struct Chunk
         {
             return Block(0, true);
         }
-        if (chunkPos.x == CHUNK_WIDTH || chunkPos.y == CHUNK_HEIGHT || chunkPos.z == CHUNK_WIDTH)
+        if (chunkPos.x == CHUNK_WIDTH || chunkPos.y == CHUNK_HEIGHT ||
+            chunkPos.z == CHUNK_WIDTH)
         {
             return Block(0, true);
         }
 
-        return m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH + chunkPos.y * CHUNK_WIDTH + chunkPos.z);
+        return m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH +
+                              chunkPos.y * CHUNK_WIDTH + chunkPos.z);
     }
 
     inline void SetBlock(const glm::ivec3 &chunkPos, Block block)
     {
-        m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH + chunkPos.y * CHUNK_WIDTH + chunkPos.z) = block;
+        m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH +
+                       chunkPos.y * CHUNK_WIDTH + chunkPos.z) = block;
     }
 
-    inline void SetHeight(int x, int z, int y) { m_HeightData.at(CHUNK_WIDTH * x + z) = y; }
-    float GetHeight(int x, int z) { return m_HeightData.at(CHUNK_WIDTH * x + z); }
+    inline void SetHeight(int x, int z, int y)
+    {
+        m_HeightData.at(CHUNK_WIDTH * x + z) = y;
+    }
+    float GetHeight(int x, int z)
+    {
+        return m_HeightData.at(CHUNK_WIDTH * x + z);
+    }
 
   private:
     // testing new data format

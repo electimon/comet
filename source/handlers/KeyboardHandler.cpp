@@ -1,17 +1,16 @@
 #include "KeyboardHandler.h"
 
-void KeyboardHandler::Initialize()
-{
-    Instance().SetupCallbacks();
-}
+void KeyboardHandler::Initialize() { Instance().SetupCallbacks(); }
 
 void KeyboardHandler::SetupCallbacks()
 {
-    glfwSetWindowUserPointer(glfwGetCurrentContext(), &KeyboardHandler::Instance());
+    glfwSetWindowUserPointer(glfwGetCurrentContext(),
+                             &KeyboardHandler::Instance());
 
-    auto KeyCallbackWrapper = [](GLFWwindow *window, int key, int scancode, int action, int mods)
-    {
-        static_cast<KeyboardHandler *>(glfwGetWindowUserPointer(window)) ->KeyCallback(key, scancode, action, mods);
+    auto KeyCallbackWrapper = [](GLFWwindow *window, int key, int scancode,
+                                 int action, int mods) {
+        static_cast<KeyboardHandler *>(glfwGetWindowUserPointer(window))
+            ->KeyCallback(key, scancode, action, mods);
     };
 
     glfwSetKeyCallback(glfwGetCurrentContext(), KeyCallbackWrapper);

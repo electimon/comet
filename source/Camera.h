@@ -71,7 +71,10 @@ class Camera
     static void SetFar(float Far) { Instance().m_Far = Far; }
 
     static float Sensitivity() { return Instance().m_Sensitivity; }
-    static void SetSensitivity(float Sensitivity) { Instance().m_Sensitivity = Sensitivity; }
+    static void SetSensitivity(float Sensitivity)
+    {
+        Instance().m_Sensitivity = Sensitivity;
+    }
 
     static float Yaw() { return Instance().m_Yaw; }
     static void SetYaw(float Yaw) { Instance().m_Yaw = Yaw; }
@@ -83,22 +86,40 @@ class Camera
     static void SetRoll(float Roll) { Instance().m_Roll = Roll; }
 
     static float MovementSpeed() { return Instance().m_MovementSpeed; }
-    static void SetMovementSpeed(float MovementSpeed) { Instance().m_MovementSpeed = MovementSpeed; }
+    static void SetMovementSpeed(float MovementSpeed)
+    {
+        Instance().m_MovementSpeed = MovementSpeed;
+    }
 
     static float RotationSpeed() { return Instance().m_RotationSpeed; }
-    static void SetRotationSpeed(float RotationSpeed) { Instance().m_RotationSpeed = RotationSpeed; }
+    static void SetRotationSpeed(float RotationSpeed)
+    {
+        Instance().m_RotationSpeed = RotationSpeed;
+    }
 
     static glm::vec3 Position() { return Instance().m_Position; }
-    static void SetPosition(glm::vec3 Position) { Instance().m_Position = Position; }
+    static void SetPosition(glm::vec3 Position)
+    {
+        Instance().m_Position = Position;
+    }
 
     static glm::vec3 Direction() { return Instance().m_Direction; }
-    static void SetDirection(glm::vec3 Direction) { Instance().m_Direction = Direction; }
+    static void SetDirection(glm::vec3 Direction)
+    {
+        Instance().m_Direction = Direction;
+    }
 
     static glm::mat4 ViewMatrix() { return Instance().m_ViewMatrix; }
-    static void SetViewMatrix(glm::mat4 ViewMatrix) { Instance().m_ViewMatrix = ViewMatrix; }
+    static void SetViewMatrix(glm::mat4 ViewMatrix)
+    {
+        Instance().m_ViewMatrix = ViewMatrix;
+    }
 
     static glm::mat4 ProjMatrix() { return Instance().m_ProjMatrix; }
-    static void SetProjMatrix(glm::mat4 ProjMatrix) { Instance().m_ProjMatrix = ProjMatrix; }
+    static void SetProjMatrix(glm::mat4 ProjMatrix)
+    {
+        Instance().m_ProjMatrix = ProjMatrix;
+    }
 
   public:
 };

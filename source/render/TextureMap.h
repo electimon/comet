@@ -4,7 +4,7 @@
 
 class TextureMap
 {
-public:
+  public:
     static TextureMap &Instance()
     {
         static TextureMap s_Instance;
@@ -22,7 +22,7 @@ public:
     static glm::vec2 GetBottomLeft(int index);
     static glm::vec2 GetBottomRight(int index);
 
-private:
+  private:
     TextureMap() {}
     TextureMap(TextureMap const &);
     void operator=(TextureMap const &) {}

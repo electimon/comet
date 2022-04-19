@@ -6,7 +6,7 @@
 
 class EntityHandler
 {
-public:
+  public:
     inline static auto &Instance()
     {
         static EntityHandler instance;
@@ -18,7 +18,7 @@ public:
     static void RemoveEntityFromQueue(Entity *entity);
     static void UpdateEntities();
 
-private:
+  private:
     EntityHandler() {}
     EntityHandler(EntityHandler const &);
     void operator=(EntityHandler const &);

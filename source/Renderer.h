@@ -11,7 +11,7 @@
 
 class Renderer
 {
-public:
+  public:
     inline static auto &Instance()
     {
         static Renderer instance;
@@ -29,7 +29,7 @@ public:
     static void UpdateMeshInQueue(const glm::ivec3 &index);
     static void DeleteMeshFromQueue(const glm::ivec3 &index);
 
-private:
+  private:
     Renderer() {}
     Renderer(Renderer const &);
     void operator=(Renderer const &);

@@ -30,7 +30,8 @@ Block World::GetBlock(const glm::ivec3 &worldPos)
     glm::ivec3 index = GetChunkIndex(worldPos);
     glm::ivec3 chunkCoord = GetChunkCoord(worldPos);
 
-    if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
+    if (Instance().m_ChunkDataMap.find(index) !=
+        Instance().m_ChunkDataMap.end())
     {
         return Instance().m_ChunkDataMap.at(index).GetBlock(chunkCoord);
     }
@@ -50,9 +51,11 @@ void World::SetBlock(const glm::ivec3 &worldPos, Block block)
     glm::ivec3 index = GetChunkIndex(worldPos);
     glm::ivec3 chunkCoord = GetChunkCoord(worldPos);
 
-    if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
+    if (Instance().m_ChunkDataMap.find(index) !=
+        Instance().m_ChunkDataMap.end())
     {
-        Instance().m_ChunkDataMap.at(index).SetBlock({chunkCoord.x, chunkCoord.y, chunkCoord.z}, block);
+        Instance().m_ChunkDataMap.at(index).SetBlock(
+            {chunkCoord.x, chunkCoord.y, chunkCoord.z}, block);
 
         Instance().m_ChunkDataMap.at(index).GenerateMesh();
 
@@ -95,13 +98,16 @@ glm::ivec3 World::GetChunkIndex(const glm::ivec3 &worldPos)
 {
     glm::ivec3 chunkIndex(0, 0, 0);
 
-    chunkIndex.x = std::floor(static_cast<double>(worldPos.x) / static_cast<double>(CHUNK_WIDTH));
-    chunkIndex.z = std::floor(static_cast<double>(worldPos.z) / static_cast<double>(CHUNK_WIDTH));
+    chunkIndex.x = std::floor(static_cast<double>(worldPos.x) /
+                              static_cast<double>(CHUNK_WIDTH));
+    chunkIndex.z = std::floor(static_cast<double>(worldPos.z) /
+                              static_cast<double>(CHUNK_WIDTH));
 
     return chunkIndex;
 }
 
-void World::ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerChunkIndex)
+void World::ProcessRequestedChunks(int renderDistance,
+                                   const glm::ivec3 &centerChunkIndex)
 {
     glm::ivec3 index;
     std::unordered_set<glm::ivec3> chunksGenerated;
@@ -123,14 +129,16 @@ void World::ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerC
         {
             index = {x, 0, z};
             chunksGenerated.insert(index);
-            if (Instance().m_ChunkDataMap.find(index) == Instance().m_ChunkDataMap.end())
+            if (Instance().m_ChunkDataMap.find(index) ==
+                Instance().m_ChunkDataMap.end())
             {
                 Instance().m_ChunksToGenerate.insert(index);
             }
         }
     }
 
-    std::cout << "Generating " << Instance().m_ChunksToGenerate.size() << " chunks" << std::endl;
+    std::cout << "Generating " << Instance().m_ChunksToGenerate.size()
+              << " chunks" << std::endl;
 
     // Removes chunk data
     for (const auto &[index, chunk] : Instance().m_ChunkDataMap)
@@ -148,7 +156,8 @@ void World::ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerC
         {
             index = {x, 0, z};
             chunksRendered.insert(index);
-            if (Instance().m_ChunkRenderMap.find(index) == Instance().m_ChunkRenderMap.end())
+            if (Instance().m_ChunkRenderMap.find(index) ==
+                Instance().m_ChunkRenderMap.end())
             {
                 Instance().m_ChunksToRender.insert(index);
             }
@@ -191,12 +200,20 @@ void World::WorldThread()
             chunk->GenerateMesh();
             world.m_ChunkRenderMap.insert_or_assign(index, chunk);
 
-            Mesh solidMesh = Mesh(&chunk->SolidGeometry()->Vertices, &chunk->SolidGeometry()->Indices, &world.m_Shader);
-            Mesh transparentMesh = Mesh(&chunk->TransparentGeometry()->Vertices, &chunk->TransparentGeometry()->Indices, &world.m_Shader);
+            Mesh solidMesh =
+                Mesh(&chunk->SolidGeometry()->Vertices,
+                     &chunk->SolidGeometry()->Indices, &world.m_Shader);
+            Mesh transparentMesh =
+                Mesh(&chunk->TransparentGeometry()->Vertices,
+                     &chunk->TransparentGeometry()->Indices, &world.m_Shader);
 
             // Adding to Renderer
             Renderer::AddMeshToQueue(index, solidMesh);
-            Renderer::AddMeshToQueue({index.x, index.y + 1, index.z}, transparentMesh);
+            if (transparentMesh.Count() > 0)
+            {
+                Renderer::AddMeshToQueue({index.x, index.y + 1, index.z},
+                                         transparentMesh);
+            }
         }
         world.m_ChunksToRender.clear();
 

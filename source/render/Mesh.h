@@ -9,7 +9,8 @@ class Mesh
 {
   public:
     Mesh();
-    Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices, ShaderProgram *shader);
+    Mesh(std::vector<Vertex> *vertices, std::vector<unsigned int> *indices,
+         ShaderProgram *shader);
     ~Mesh();
 
     void Bind();
@@ -51,7 +52,10 @@ class Mesh
     void SetIndices(std::vector<unsigned int> *Indices) { m_Indices = Indices; }
 
     glm::mat4 ModelMatrix() const { return m_ModelMatrix; }
-    void SetModelMatrix(const glm::mat4 &ModelMatrix) { m_ModelMatrix = ModelMatrix; }
+    void SetModelMatrix(const glm::mat4 &ModelMatrix)
+    {
+        m_ModelMatrix = ModelMatrix;
+    }
 
     bool IsPushedToGPU() const { return m_PushedToGPU; }
     void SetPushedToGPU(bool PushedToGPU) { m_PushedToGPU = PushedToGPU; }
