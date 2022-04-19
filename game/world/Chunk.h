@@ -6,6 +6,13 @@
 #include "BlockLibrary.h"
 #include "WorldConfig.h"
 
+struct Geometry
+{
+    std::vector<Vertex> Vertices;
+    std::vector<unsigned int> Indices;
+    unsigned int Offset;
+};
+
 struct Chunk
 {
     Chunk(glm::ivec3 id);
@@ -23,44 +30,36 @@ struct Chunk
 
     void GenerateMesh();
 
-    unsigned char GetBlock(glm::ivec3 chunkPos) { return GetBlock(chunkPos.x, chunkPos.y, chunkPos.z); }
-
-    unsigned char GetBlock(int x, int y, int z)
+    Block GetBlock(glm::ivec3 chunkPos)
     {
-        if (x < 0 || y < 0 || z < 0)
+        if (chunkPos.x < 0 || chunkPos.y < 0 || chunkPos.z < 0)
         {
-            return 0;
+            return Block(0, true);
         }
-        if (x == CHUNK_WIDTH || y == CHUNK_HEIGHT || z == CHUNK_WIDTH)
+        if (chunkPos.x == CHUNK_WIDTH || chunkPos.y == CHUNK_HEIGHT || chunkPos.z == CHUNK_WIDTH)
         {
-            return 0;
+            return Block(0, true);
         }
 
-        return m_BlockData.at(x * CHUNK_HEIGHT * CHUNK_WIDTH + y * CHUNK_WIDTH + z);
+        return m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH + chunkPos.y * CHUNK_WIDTH + chunkPos.z);
     }
 
-    inline void SetBlock(const glm::ivec3 &chunkPos, unsigned char blockID)
+    inline void SetBlock(const glm::ivec3 &chunkPos, Block block)
     {
-        m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH + chunkPos.y * CHUNK_WIDTH + chunkPos.z) = blockID;
-    }
-
-    inline void SetBlock(int x, int y, int z, unsigned char blockID)
-    {
-        m_BlockData.at(x * CHUNK_HEIGHT * CHUNK_WIDTH + y * CHUNK_WIDTH + z) = blockID;
+        m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH + chunkPos.y * CHUNK_WIDTH + chunkPos.z) = block;
     }
 
     inline void SetHeight(int x, int z, int y) { m_HeightData.at(CHUNK_WIDTH * x + z) = y; }
-
     float GetHeight(int x, int z) { return m_HeightData.at(CHUNK_WIDTH * x + z); }
 
   private:
     // testing new data format
-    std::array<unsigned char, CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT> m_BlockData;
+    std::array<Block, CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT> m_BlockData;
     // only used during generation, not needed when saving chunk
     std::array<int, CHUNK_WIDTH * CHUNK_WIDTH> m_HeightData;
 
-    std::vector<Vertex> m_Vertices;
-    std::vector<unsigned int> m_Indices;
+    Geometry m_SolidGeometry;
+    Geometry m_TransparentGeometry;
 
     // Flag to check if the chunk needs to be saved to disk or not
     bool m_Modified = false;
@@ -75,6 +74,6 @@ struct Chunk
     bool IsGenerated() const { return m_Generated; }
     void SetGenerated(bool Generated) { m_Generated = Generated; }
 
-    std::vector<Vertex> *GetVertices() { return &m_Vertices; }
-    std::vector<unsigned int> *GetIndices() { return &m_Indices; }
+    Geometry *SolidGeometry() { return &m_SolidGeometry; }
+    Geometry *TransparentGeometry() { return &m_TransparentGeometry; }
 };

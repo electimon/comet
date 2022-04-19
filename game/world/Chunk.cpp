@@ -12,22 +12,25 @@
 
 Chunk::Chunk(glm::ivec3 id) : m_Chunk(id)
 {
-    m_BlockData.fill(0);
+    m_BlockData.fill(Block(0, true));
     m_HeightData.fill(0);
 
-    m_Vertices.reserve(100000);
-    m_Indices.reserve(100000);
+    m_SolidGeometry.Vertices.reserve(20000);
+    m_SolidGeometry.Indices.reserve(20000);
+    m_TransparentGeometry.Vertices.reserve(20000);
+    m_TransparentGeometry.Indices.reserve(20000);
 }
 
 Chunk::~Chunk()
 {
-    if (m_Modified)
-    {
-        std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " +
-                                    std::to_string(m_Chunk.z) + ".chunk");
-        std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, ""));
-        blockDataFile.close();
-    }
+    // if (m_Modified)
+    // {
+    //     std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " "
+    //     +
+    //                                 std::to_string(m_Chunk.z) + ".chunk");
+    //     std::copy(m_BlockData.begin(), m_BlockData.end(), std::ostream_iterator<unsigned char>(blockDataFile, ""));
+    //     blockDataFile.close();
+    // }
 }
 
 void Chunk::Generate()
@@ -35,11 +38,11 @@ void Chunk::Generate()
     if (std::filesystem::exists(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " +
                                 std::to_string(m_Chunk.z) + ".chunk"))
     {
-        std::cout << "Loading chunk, reading chunk from disk...\n";
+        // std::cout << "Loading chunk, reading chunk from disk...\n";
 
-        std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " +
-                               std::to_string(m_Chunk.z) + ".chunk";
-        std::basic_ifstream<char> blockDataFile(filename.c_str());
+        // std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " +
+        //                        std::to_string(m_Chunk.z) + ".chunk";
+        // std::basic_ifstream<char> blockDataFile(filename.c_str());
 
         // This will need to be redone once a more optimized method of
         // saving chunks is made.
@@ -83,15 +86,15 @@ void Chunk::GenerateSurface()
 
             SetHeight(x, z, height);
 
-            SetBlock(x, y, z, BlockID::Grass);    // grass
-            SetBlock(x, y - 1, z, BlockID::Dirt); // dirt
-            SetBlock(x, y - 2, z, BlockID::Dirt); // dirt
-            SetBlock(x, y - 3, z, BlockID::Dirt); // dirt
+            SetBlock({x, y, z}, Block(ID::Grass, false));    // grass
+            SetBlock({x, y - 1, z}, Block(ID::Dirt, false)); // dirt
+            SetBlock({x, y - 2, z}, Block(ID::Dirt, false)); // dirt
+            SetBlock({x, y - 3, z}, Block(ID::Dirt, false)); // dirt
 
             // fill chunk under dirt with stone
             for (int i = 0; i < y - 3; i++)
             {
-                SetBlock(x, i, z, BlockID::Stone);
+                SetBlock({x, i, z}, Block(ID::Stone, false));
             }
         }
     }
@@ -111,10 +114,12 @@ void Chunk::GenerateTrees()
         {
             y = GetHeight(x, z);
 
+            // Check if generating a tree above water level
             if (y < water_height + 3 || water_height > mountain_height)
                 continue;
 
-            if (GetBlock(x, y - 1, z) == BlockID::Air)
+            // Check to not generate a floating tree
+            if (GetBlock({x, y - 1, z}).ID() == ID::Air)
                 continue;
 
             noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
@@ -122,86 +127,68 @@ void Chunk::GenerateTrees()
 
             if (noise1 > 0.9f && noise2 > 0.1f)
             {
-                SetBlock(x, y, z, BlockID::Dirt);
-                SetBlock(x, y + 1, z, BlockID::Log);
-                SetBlock(x, y + 2, z, BlockID::Log);
+                SetBlock({x, y, z}, Block(ID::Dirt, false));
+                SetBlock({x, y + 1, z}, Block(ID::Log, false));
+                SetBlock({x, y + 2, z}, Block(ID::Log, false));
                 if (noise1 > 0.95f)
                 {
-                    SetBlock(x, y + 3, z, BlockID::Log);
+                    SetBlock({x, y + 3, z}, Block(ID::Log, false));
                     y += 1;
                 }
-                {
-                    SetBlock(x - 2, y + 3, z - 1, BlockID::Leaves);
-                    SetBlock(x - 2, y + 3, z, BlockID::Leaves);
-                    SetBlock(x - 2, y + 3, z + 1, BlockID::Leaves);
+                SetBlock({x - 2, y + 3, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x - 2, y + 3, z}, Block(ID::Leaves, true));
+                SetBlock({x - 2, y + 3, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 3, z - 2}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 3, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 3, z}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 3, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 3, z + 2}, Block(ID::Leaves, true));
+                SetBlock({x, y + 3, z - 2}, Block(ID::Leaves, true));
+                SetBlock({x, y + 3, z - 1}, Block(ID::Leaves, true));
 
-                    SetBlock(x - 1, y + 3, z - 2, BlockID::Leaves);
-                    SetBlock(x - 1, y + 3, z - 1, BlockID::Leaves);
-                    SetBlock(x - 1, y + 3, z, BlockID::Leaves);
-                    SetBlock(x - 1, y + 3, z + 1, BlockID::Leaves);
-                    SetBlock(x - 1, y + 3, z + 2, BlockID::Leaves);
+                SetBlock({x, y + 3, z}, Block(ID::Log, false));
 
-                    SetBlock(x, y + 3, z - 2, BlockID::Leaves);
-                    SetBlock(x, y + 3, z - 1, BlockID::Leaves);
-                    SetBlock(x, y + 3, z, 5);
-                    SetBlock(x, y + 3, z + 1, BlockID::Leaves);
-                    SetBlock(x, y + 3, z + 2, BlockID::Leaves);
-
-                    SetBlock(x + 1, y + 3, z - 2, BlockID::Leaves);
-                    SetBlock(x + 1, y + 3, z - 1, BlockID::Leaves);
-                    SetBlock(x + 1, y + 3, z, BlockID::Leaves);
-                    SetBlock(x + 1, y + 3, z + 1, BlockID::Leaves);
-                    SetBlock(x + 1, y + 3, z + 2, BlockID::Leaves);
-
-                    SetBlock(x + 2, y + 3, z - 1, BlockID::Leaves);
-                    SetBlock(x + 2, y + 3, z, BlockID::Leaves);
-                    SetBlock(x + 2, y + 3, z + 1, BlockID::Leaves);
-                }
-                {
-                    SetBlock(x - 2, y + 4, z - 1, BlockID::Leaves);
-                    SetBlock(x - 2, y + 4, z, BlockID::Leaves);
-                    SetBlock(x - 2, y + 4, z + 1, BlockID::Leaves);
-
-                    SetBlock(x - 1, y + 4, z - 2, BlockID::Leaves);
-                    SetBlock(x - 1, y + 4, z - 1, BlockID::Leaves);
-                    SetBlock(x - 1, y + 4, z, BlockID::Leaves);
-                    SetBlock(x - 1, y + 4, z + 1, BlockID::Leaves);
-                    SetBlock(x - 1, y + 4, z + 2, BlockID::Leaves);
-
-                    SetBlock(x, y + 4, z - 2, BlockID::Leaves);
-                    SetBlock(x, y + 4, z - 1, BlockID::Leaves);
-                    SetBlock(x, y + 4, z, BlockID::Leaves);
-                    SetBlock(x, y + 4, z + 1, BlockID::Leaves);
-                    SetBlock(x, y + 4, z + 2, BlockID::Leaves);
-
-                    SetBlock(x + 1, y + 4, z - 2, BlockID::Leaves);
-                    SetBlock(x + 1, y + 4, z - 1, BlockID::Leaves);
-                    SetBlock(x + 1, y + 4, z, BlockID::Leaves);
-                    SetBlock(x + 1, y + 4, z + 1, BlockID::Leaves);
-                    SetBlock(x + 1, y + 4, z + 2, BlockID::Leaves);
-
-                    SetBlock(x + 2, y + 4, z - 1, BlockID::Leaves);
-                    SetBlock(x + 2, y + 4, z, BlockID::Leaves);
-                    SetBlock(x + 2, y + 4, z + 1, BlockID::Leaves);
-                }
-                {
-                    SetBlock(x - 1, y + 5, z, BlockID::Leaves);
-
-                    SetBlock(x, y + 5, z - 1, BlockID::Leaves);
-                    SetBlock(x, y + 5, z, BlockID::Leaves);
-                    SetBlock(x, y + 5, z + 1, BlockID::Leaves);
-
-                    SetBlock(x + 1, y + 5, z, BlockID::Leaves);
-                }
-                {
-                    SetBlock(x - 1, y + 6, z, BlockID::Leaves);
-
-                    SetBlock(x, y + 6, z - 1, BlockID::Leaves);
-                    SetBlock(x, y + 6, z, BlockID::Leaves);
-                    SetBlock(x, y + 6, z + 1, BlockID::Leaves);
-
-                    SetBlock(x + 1, y + 6, z, BlockID::Leaves);
-                }
+                SetBlock({x, y + 3, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x, y + 3, z + 2}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 3, z - 2}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 3, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 3, z}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 3, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 3, z + 2}, Block(ID::Leaves, true));
+                SetBlock({x + 2, y + 3, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x + 2, y + 3, z}, Block(ID::Leaves, true));
+                SetBlock({x + 2, y + 3, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x - 2, y + 4, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x - 2, y + 4, z}, Block(ID::Leaves, true));
+                SetBlock({x - 2, y + 4, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 4, z - 2}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 4, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 4, z}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 4, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 4, z + 2}, Block(ID::Leaves, true));
+                SetBlock({x, y + 4, z - 2}, Block(ID::Leaves, true));
+                SetBlock({x, y + 4, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x, y + 4, z}, Block(ID::Leaves, true));
+                SetBlock({x, y + 4, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x, y + 4, z + 2}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 4, z - 2}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 4, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 4, z}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 4, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 4, z + 2}, Block(ID::Leaves, true));
+                SetBlock({x + 2, y + 4, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x + 2, y + 4, z}, Block(ID::Leaves, true));
+                SetBlock({x + 2, y + 4, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 5, z}, Block(ID::Leaves, true));
+                SetBlock({x, y + 5, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x, y + 5, z}, Block(ID::Leaves, true));
+                SetBlock({x, y + 5, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 5, z}, Block(ID::Leaves, true));
+                SetBlock({x - 1, y + 6, z}, Block(ID::Leaves, true));
+                SetBlock({x, y + 6, z - 1}, Block(ID::Leaves, true));
+                SetBlock({x, y + 6, z}, Block(ID::Leaves, true));
+                SetBlock({x, y + 6, z + 1}, Block(ID::Leaves, true));
+                SetBlock({x + 1, y + 6, z}, Block(ID::Leaves, true));
             }
         }
     }
@@ -216,22 +203,22 @@ void Chunk::GenerateBedrock()
         {
             noise = ChunkGenerator::GetFastNoise(x, z);
 
-            SetBlock(x, 0, z, BlockID::Bedrock);
+            SetBlock({x, 0, z}, Block(ID::Bedrock, false));
 
             if (noise > 0.20f)
-                SetBlock(x, 1, z, BlockID::Bedrock);
+                SetBlock({x, 1, z}, Block(ID::Bedrock, false));
             else
                 continue;
             if (noise > 0.40f)
-                SetBlock(x, 2, z, BlockID::Bedrock);
+                SetBlock({x, 2, z}, Block(ID::Bedrock, false));
             else
                 continue;
             if (noise > 0.60f)
-                SetBlock(x, 3, z, BlockID::Bedrock);
+                SetBlock({x, 3, z}, Block(ID::Bedrock, false));
             else
                 continue;
             if (noise > 0.80f)
-                SetBlock(x, 4, z, BlockID::Bedrock);
+                SetBlock({x, 4, z}, Block(ID::Bedrock, false));
         }
     }
 }
@@ -246,13 +233,13 @@ void Chunk::GenerateCaves()
         {
             for (int z = 0; z < CHUNK_WIDTH; z++)
             {
-                if (GetBlock(x, y, z) != 1)
+                if (GetBlock({x, y, z}).ID() != 1)
                     continue;
 
                 noise = ChunkGenerator::GetCaveNoise(x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH);
 
                 if (noise > 0.8f)
-                    SetBlock(x, y, z, BlockID::Air);
+                    SetBlock({x, y, z}, Block(ID::Air, true));
             }
         }
     }
@@ -270,7 +257,7 @@ void Chunk::GenerateWater()
             {
                 for (unsigned int i = y + 1; i < WATER_HEIGHT + 1; i++)
                 {
-                    SetBlock(x, i, z, BlockID::Water);
+                    SetBlock({x, i, z}, Block(ID::Water, true));
                 }
             }
         }
@@ -289,16 +276,16 @@ void Chunk::GenerateSand()
             noise = ChunkGenerator::GetBiomeNoise(x, z);
             if (y < WATER_HEIGHT + 4)
             {
-                SetBlock(x, y, z, BlockID::Sand);
-                SetBlock(x, y - 1, z, BlockID::Sand);
-                SetBlock(x, y - 2, z, BlockID::Sand);
+                SetBlock({x, y, z}, Block(ID::Sand, false));
+                SetBlock({x, y - 1, z}, Block(ID::Sand, false));
+                SetBlock({x, y - 2, z}, Block(ID::Sand, false));
             }
 
             if (y == WATER_HEIGHT + 4 && noise > 0.5f)
             {
-                SetBlock(x, y, z, BlockID::Sand);
-                SetBlock(x, y - 1, z, BlockID::Sand);
-                SetBlock(x, y - 2, z, BlockID::Sand);
+                SetBlock({x, y, z}, Block(ID::Sand, false));
+                SetBlock({x, y - 1, z}, Block(ID::Sand, false));
+                SetBlock({x, y - 2, z}, Block(ID::Sand, false));
             }
         }
     }
@@ -306,12 +293,16 @@ void Chunk::GenerateSand()
 
 void Chunk::GenerateMesh()
 {
-    m_Vertices.clear();
-    m_Indices.clear();
-    unsigned int offset = 0;
+    m_SolidGeometry.Vertices.clear();
+    m_SolidGeometry.Indices.clear();
+    m_SolidGeometry.Offset = 0;
 
-    unsigned char currentBlock;
+    m_TransparentGeometry.Vertices.clear();
+    m_TransparentGeometry.Indices.clear();
+    m_TransparentGeometry.Offset = 0;
 
+    Block currentBlock;
+    Block pxBlock, nxBlock, pyBlock, nyBlock, pzBlock, nzBlock;
     bool px, nx, py, ny, pz, nz;
 
     for (int x = 0; x < CHUNK_WIDTH; x++)
@@ -320,61 +311,72 @@ void Chunk::GenerateMesh()
         {
             for (int z = 0; z < CHUNK_WIDTH; z++)
             {
-                currentBlock = GetBlock(x, y, z);
+                currentBlock = GetBlock({x, y, z});
 
                 // If the block is air, add no geometry
-                if (currentBlock == BlockID::Air)
+                if (currentBlock.ID() == ID::Air)
                 {
                     continue;
                 }
 
+                Geometry &geometry = currentBlock.IsTransparent() ? m_TransparentGeometry : m_SolidGeometry;
+                unsigned int &offset = currentBlock.IsTransparent() ? m_TransparentGeometry.Offset : m_SolidGeometry.Offset;
+
                 // Get indices of texture for given block ID
-                std::array<unsigned char, 6> blockIndices = BlockTextures::GetIndices(currentBlock);
+                std::array<unsigned char, 6> blockIndices = BlockTextures::GetIndices(currentBlock.ID());
 
-                // Check if blocks are surrounding in current chunk
-                px = GetBlock(x + 1, y, z) == BlockID::Air;
-                nx = GetBlock(x - 1, y, z) == BlockID::Air;
-                py = GetBlock(x, y + 1, z) == BlockID::Air;
-                ny = GetBlock(x, y - 1, z) == BlockID::Air;
-                pz = GetBlock(x, y, z + 1) == BlockID::Air;
-                nz = GetBlock(x, y, z - 1) == BlockID::Air;
-
-                // If on the edge of a chunk, check neighboring chunk for block
+                // Getting block IDs of surrounding blocks
                 if (x == 0)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y, z + m_Chunk.z * CHUNK_WIDTH}) !=
-                        BlockID::Air)
-                    {
-                        nx = false;
-                    }
+                    pxBlock = GetBlock({x + 1, y, z});
+                    nxBlock = World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y, z + m_Chunk.z * CHUNK_WIDTH});
                 }
-                if (x == CHUNK_WIDTH - 1)
+                else
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y, z + m_Chunk.z * CHUNK_WIDTH}) !=
-                        BlockID::Air)
+                    if (x == CHUNK_WIDTH - 1)
                     {
-                        px = false;
+                        pxBlock = World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y, z + m_Chunk.z * CHUNK_WIDTH});
+                        nxBlock = GetBlock({x - 1, y, z});
                     }
-                }
-                if (z == 0)
-                {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH - 1}) !=
-                        BlockID::Air)
+                    else
                     {
-                        nz = false;
-                    }
-                }
-                if (z == CHUNK_WIDTH - 1)
-                {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH + 1}) !=
-                        BlockID::Air)
-                    {
-                        pz = false;
+                        pxBlock = GetBlock({x + 1, y, z});
+                        nxBlock = GetBlock({x - 1, y, z});
                     }
                 }
 
+                pyBlock = GetBlock({x, y + 1, z});
+                nyBlock = GetBlock({x, y - 1, z});
+
+                if (z == 0)
+                {
+                    pzBlock = GetBlock({x, y, z + 1});
+                    nzBlock = World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH - 1});
+                }
+                else
+                {
+                    if (z == CHUNK_WIDTH - 1)
+                    {
+                        pzBlock = World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH + 1});
+                        nzBlock = GetBlock({x, y, z - 1});
+                    }
+                    else
+                    {
+                        pzBlock = GetBlock({x, y, z + 1});
+                        nzBlock = GetBlock({x, y, z - 1});
+                    }
+                }
+
+                // Determining if side should be rendered
+                px = pxBlock.IsTransparent();
+                nx = nxBlock.IsTransparent();
+                py = pyBlock.IsTransparent();
+                ny = nyBlock.IsTransparent();
+                pz = pzBlock.IsTransparent();
+                nz = nzBlock.IsTransparent();
+
                 // Render all sides of leaves
-                if (currentBlock == BlockID::Leaves)
+                if (currentBlock.IsTransparent())
                 {
                     px = true;
                     nx = true;
@@ -382,119 +384,141 @@ void Chunk::GenerateMesh()
                     ny = true;
                     pz = true;
                     nz = true;
+                    if (currentBlock.ID() == ID::Water)
+                    {
+                        px = false;
+                        nx = false;
+                        ny = false;
+                        pz = false;
+                        nz = false;
+                        if (pyBlock.ID() == ID::Air)
+                        {
+                            py = true;
+                        }
+                        else
+                        {
+                            py = false;
+                        }
+                    }
                 }
 
                 // +X Quad
                 if (px)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(m_Vertices.end(),
-                                      {
-                                          Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
-                                                 TextureMap::GetTopRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
-                                          Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
-                                                 TextureMap::GetBottomRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
-                                          Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
-                                                 TextureMap::GetBottomLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
-                                          Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
-                                                 TextureMap::GetTopLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
-                                      });
+                    geometry.Indices.insert(geometry.Indices.end(),
+                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    geometry.Vertices.insert(
+                        geometry.Vertices.end(),
+                        {
+                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[0]),
+                                   {+1.0f, 0.0f, 0.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[0]),
+                                   {+1.0f, 0.0f, 0.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[0]),
+                                   {+1.0f, 0.0f, 0.0f}),
+                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[0]),
+                                   {+1.0f, 0.0f, 0.0f}),
+                        });
                     offset += 4;
                 }
 
                 // -X Quad
                 if (nx)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(m_Vertices.end(),
-                                      {
-                                          Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
-                                                 TextureMap::GetTopRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
-                                          Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
-                                                 TextureMap::GetTopLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
-                                          Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
-                                                 TextureMap::GetBottomLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
-                                          Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
-                                                 TextureMap::GetBottomRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
-                                      });
+                    geometry.Indices.insert(geometry.Indices.end(),
+                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    geometry.Vertices.insert(
+                        geometry.Vertices.end(),
+                        {
+                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[1]),
+                                   {-1.0f, 0.0f, 0.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[1]),
+                                   {-1.0f, 0.0f, 0.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[1]),
+                                   {-1.0f, 0.0f, 0.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[1]),
+                                   {-1.0f, 0.0f, 0.0f}),
+                        });
                     offset += 4;
                 }
 
                 // +Y Quad
                 if (py)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(m_Vertices.end(),
-                                      {
-                                          Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
-                                                 TextureMap::GetTopLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
-                                          Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
-                                                 TextureMap::GetTopRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
-                                          Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
-                                                 TextureMap::GetBottomRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
-                                          Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
-                                                 TextureMap::GetBottomLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
-                                      });
+                    geometry.Indices.insert(geometry.Indices.end(),
+                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    geometry.Vertices.insert(
+                        geometry.Vertices.end(),
+                        {
+                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopLeft(blockIndices[2]),
+                                   {0.0f, +1.0f, 0.0f}),
+                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopRight(blockIndices[2]),
+                                   {0.0f, +1.0f, 0.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetBottomRight(blockIndices[2]),
+                                   {0.0f, +1.0f, 0.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetBottomLeft(blockIndices[2]),
+                                   {0.0f, +1.0f, 0.0f}),
+                        });
                     offset += 4;
                 }
 
                 // -Y Quad
                 if (ny)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(m_Vertices.end(),
-                                      {
-                                          Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
-                                                 TextureMap::GetTopRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
-                                          Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
-                                                 TextureMap::GetBottomRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
-                                          Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
-                                                 TextureMap::GetBottomLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
-                                          Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
-                                                 TextureMap::GetTopLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
-                                      });
+                    geometry.Indices.insert(geometry.Indices.end(),
+                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    geometry.Vertices.insert(
+                        geometry.Vertices.end(),
+                        {
+                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[3]),
+                                   {0.0f, -1.0f, 0.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[3]),
+                                   {0.0f, -1.0f, 0.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[3]),
+                                   {0.0f, -1.0f, 0.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[3]),
+                                   {0.0f, -1.0f, 0.0f}),
+                        });
                     offset += 4;
                 }
 
                 // +Z Quad
                 if (pz)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(m_Vertices.end(),
-                                      {
-                                          Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
-                                                 TextureMap::GetTopRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
-                                          Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
-                                                 TextureMap::GetTopLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
-                                          Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
-                                                 TextureMap::GetBottomLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
-                                          Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
-                                                 TextureMap::GetBottomRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
-                                      });
+                    geometry.Indices.insert(geometry.Indices.end(),
+                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    geometry.Vertices.insert(
+                        geometry.Vertices.end(),
+                        {
+                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[4]),
+                                   {0.0f, 0.0f, +1.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopLeft(blockIndices[4]),
+                                   {0.0f, 0.0f, +1.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomLeft(blockIndices[4]),
+                                   {0.0f, 0.0f, +1.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[4]),
+                                   {0.0f, 0.0f, +1.0f}),
+                        });
                     offset += 4;
                 }
 
                 // -Z Quad
                 if (nz)
                 {
-                    m_Indices.insert(m_Indices.end(),
-                                     {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    m_Vertices.insert(m_Vertices.end(),
-                                      {
-                                          Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
-                                                 TextureMap::GetTopRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
-                                          Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
-                                                 TextureMap::GetBottomRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
-                                          Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
-                                                 TextureMap::GetBottomLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
-                                          Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
-                                                 TextureMap::GetTopLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
-                                      });
+                    geometry.Indices.insert(geometry.Indices.end(),
+                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
+                    geometry.Vertices.insert(
+                        geometry.Vertices.end(),
+                        {
+                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopRight(blockIndices[5]),
+                                   {0.0f, 0.0f, -1.0f}),
+                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomRight(blockIndices[5]),
+                                   {0.0f, 0.0f, -1.0f}),
+                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[5]),
+                                   {0.0f, 0.0f, -1.0f}),
+                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[5]),
+                                   {0.0f, 0.0f, -1.0f}),
+                        });
                     offset += 4;
                 }
             }
