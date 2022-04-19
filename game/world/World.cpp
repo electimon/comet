@@ -57,6 +57,7 @@ void World::SetBlock(const glm::ivec3 &worldPos, Block block)
         Instance().m_ChunkDataMap.at(index).GenerateMesh();
 
         Renderer::UpdateMeshInQueue(index);
+        Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
 
         return;
     }
@@ -106,11 +107,12 @@ void World::ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerC
     glm::ivec3 index;
     std::unordered_set<glm::ivec3> chunksGenerated;
     std::unordered_set<glm::ivec3> chunksRendered;
+    int chunksToRenderAhead = 1;
 
-    int lowerx = -1 + centerChunkIndex.x - renderDistance;
-    int lowerz = -1 + centerChunkIndex.z - renderDistance;
-    int upperx = 2 + centerChunkIndex.x + renderDistance;
-    int upperz = 2 + centerChunkIndex.z + renderDistance;
+    int lowerx = -chunksToRenderAhead + centerChunkIndex.x - renderDistance;
+    int lowerz = -chunksToRenderAhead + centerChunkIndex.z - renderDistance;
+    int upperx = 1 + chunksToRenderAhead + centerChunkIndex.x + renderDistance;
+    int upperz = 1 + chunksToRenderAhead + centerChunkIndex.z + renderDistance;
 
     const auto &world = Instance();
 

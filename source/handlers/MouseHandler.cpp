@@ -21,7 +21,10 @@ void MouseHandler::SetupCallbacks()
     glfwSetCursorPosCallback(glfwGetCurrentContext(), CursorPosCallbackWrapper);
 }
 
-void MouseHandler::ScrollCallback(double xoffset, double yoffset) {}
+void MouseHandler::ScrollCallback(double xoffset, double yoffset)
+{
+    m_ScrollOffset += yoffset;
+}
 
 void MouseHandler::MouseButtonCallback(int button, int action, int mods)
 {

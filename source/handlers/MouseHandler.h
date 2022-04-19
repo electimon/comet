@@ -49,4 +49,10 @@ class MouseHandler
     bool m_LeftHold = false;
     bool m_RightClick = false;
     bool m_RightHold = false;
+
+    double m_ScrollOffset;
+
+  public:
+    static double ScrollOffset() { return Instance().m_ScrollOffset; }
+    static void SetScrollOffset(double ScrollOffset) { Instance().m_ScrollOffset = ScrollOffset; }
 };

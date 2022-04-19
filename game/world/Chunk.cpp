@@ -378,31 +378,15 @@ void Chunk::GenerateMesh()
                 pz = pzBlock.IsTransparent();
                 nz = nzBlock.IsTransparent();
 
-                // Render all sides of leaves
-                if (currentBlock.IsTransparent())
+                // Water rendering
+                if (currentBlock.ID() == ID::Water)
                 {
-                    px = true;
-                    nx = true;
-                    py = true;
-                    ny = true;
-                    pz = true;
-                    nz = true;
-                    if (currentBlock.ID() == ID::Water)
-                    {
-                        px = false;
-                        nx = false;
-                        ny = false;
-                        pz = false;
-                        nz = false;
-                        if (pyBlock.ID() == ID::Air)
-                        {
-                            py = true;
-                        }
-                        else
-                        {
-                            py = false;
-                        }
-                    }
+                    px = pxBlock.ID() == ID::Water ? false : true;
+                    nx = nxBlock.ID() == ID::Water ? false : true;
+                    py = pyBlock.ID() == ID::Water ? false : true;
+                    ny = nyBlock.ID() == ID::Water ? false : true;
+                    pz = pzBlock.ID() == ID::Water ? false : true;
+                    nz = nzBlock.ID() == ID::Water ? false : true;
                 }
 
                 // +X Quad
