@@ -3,7 +3,7 @@
 #include <comet.pch>
 
 // Enum for convenience
-enum BlockID
+enum ID
 {
     Air,         // 0
     Stone,       // 1
