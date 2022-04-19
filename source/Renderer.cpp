@@ -4,15 +4,11 @@ void Renderer::Initialize()
 {
     Instance();
 
-    // Enables culling of the back faces
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-
-    // Enables depth testing
     glEnable(GL_DEPTH_TEST);
-
-    // Enables transparency
     glEnable(GL_BLEND);
+
+    glCullFace(GL_BACK);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
@@ -51,7 +47,7 @@ void Renderer::DrawMeshQueue()
 
     for (auto &mesh : Instance().m_MeshMap)
     {
-        shaderID = mesh.second.GetShader()->GetID();
+        shaderID = mesh.second.Shader()->GetID();
 
         mesh.second.Update();
 
@@ -60,14 +56,14 @@ void Renderer::DrawMeshQueue()
 
         // Uniforms
         glUniform3iv(glGetUniformLocation(shaderID, "u_Index"), 1, &mesh.first[0]);
-        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.second.GetTransparency());
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.second.GetModelMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::GetViewMatrix()[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::GetProjMatrix()[0][0]);
+        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.second.Transparency());
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.second.ModelMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::ViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::ProjMatrix()[0][0]);
         glUniform1i(glGetUniformLocation(shaderID, "u_Texture"), 0);
 
         // Drawing mesh
-        glDrawElements(GL_TRIANGLES, mesh.second.GetCount(), GL_UNSIGNED_INT, (void *)0);
+        glDrawElements(GL_TRIANGLES, mesh.second.Count(), GL_UNSIGNED_INT, (void *)0);
     }
 }
 

@@ -2,7 +2,7 @@
 
 #include <comet.pch>
 
-#include "Shader.h"
+#include "ShaderProgram.h"
 #include "Vertex.h"
 
 class Mesh
