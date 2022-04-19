@@ -4,8 +4,8 @@ void Renderer::Initialize()
 {
     Instance();
 
-    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
 
     glCullFace(GL_BACK);
@@ -31,10 +31,7 @@ void Renderer::NewFrame()
     glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f, 0.0f);
 }
 
-void Renderer::SwapBuffers()
-{
-    glfwSwapBuffers(WindowHandler::GetGLFWWindow());
-}
+void Renderer::SwapBuffers() { glfwSwapBuffers(WindowHandler::GetGLFWWindow()); }
 
 void Renderer::DrawMeshQueue()
 {
@@ -45,25 +42,60 @@ void Renderer::DrawMeshQueue()
     // Binding the texture map
     glBindTexture(GL_TEXTURE_2D, 1);
 
-    for (auto &mesh : Instance().m_MeshMap)
-    {
-        shaderID = mesh.second.Shader()->GetID();
+    // Solid Geometry Loop
+    glEnable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
 
-        mesh.second.Update();
+    for (auto &[index, mesh] : Instance().m_MeshMap)
+    {
+        if (index.y == 1)
+            continue;
+
+        shaderID = mesh.Shader()->GetID();
+
+        mesh.Update();
 
         // Binding the next mesh in queue
-        mesh.second.Bind();
+        mesh.Bind();
 
         // Uniforms
-        glUniform3iv(glGetUniformLocation(shaderID, "u_Index"), 1, &mesh.first[0]);
-        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.second.Transparency());
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.second.ModelMatrix()[0][0]);
+        glUniform3iv(glGetUniformLocation(shaderID, "u_Index"), 1, &index[0]);
+        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.Transparency());
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.ModelMatrix()[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::ViewMatrix()[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::ProjMatrix()[0][0]);
         glUniform1i(glGetUniformLocation(shaderID, "u_Texture"), 0);
 
         // Drawing mesh
-        glDrawElements(GL_TRIANGLES, mesh.second.Count(), GL_UNSIGNED_INT, (void *)0);
+        glDrawElements(GL_TRIANGLES, mesh.Count(), GL_UNSIGNED_INT, (void *)0);
+    }
+
+    // Transparent Geometry Loop
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+
+    for (auto &[index, mesh] : Instance().m_MeshMap)
+    {
+        if (index.y == 0)
+            continue;
+
+        shaderID = mesh.Shader()->GetID();
+
+        mesh.Update();
+
+        // Binding the next mesh in queue
+        mesh.Bind();
+
+        // Uniforms
+        glUniform3iv(glGetUniformLocation(shaderID, "u_Index"), 1, &index[0]);
+        glUniform1f(glGetUniformLocation(shaderID, "u_Transparency"), mesh.Transparency());
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ModelMatrix"), 1, GL_FALSE, &mesh.ModelMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ViewMatrix"), 1, GL_FALSE, &Camera::ViewMatrix()[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_ProjMatrix"), 1, GL_FALSE, &Camera::ProjMatrix()[0][0]);
+        glUniform1i(glGetUniformLocation(shaderID, "u_Texture"), 0);
+
+        // Drawing mesh
+        glDrawElements(GL_TRIANGLES, mesh.Count(), GL_UNSIGNED_INT, (void *)0);
     }
 }
 
