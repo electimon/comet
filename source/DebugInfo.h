@@ -7,18 +7,18 @@
 
 class DebugInfo
 {
-public:
-  inline static auto &Instance()
-  {
-    static DebugInfo instance;
-    return instance;
-  }
+  public:
+    inline static auto &Instance()
+    {
+        static DebugInfo instance;
+        return instance;
+    }
 
-  static void Initialize();
-  static void DrawFrame();
+    static void Initialize();
+    static void DrawFrame();
 
-private:
-  DebugInfo() {}
-  DebugInfo(DebugInfo const &);
-  void operator=(DebugInfo const &);
+  private:
+    DebugInfo() {}
+    DebugInfo(DebugInfo const &);
+    void operator=(DebugInfo const &);
 };

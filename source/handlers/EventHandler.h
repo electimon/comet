@@ -4,18 +4,18 @@
 
 class EventHandler
 {
-public:
-  inline static auto &Instance()
-  {
-    static EventHandler instance;
-    return instance;
-  }
+  public:
+    inline static auto &Instance()
+    {
+        static EventHandler instance;
+        return instance;
+    }
 
-  static void Initialize();
-  static void PollEvents();
+    static void Initialize();
+    static void PollEvents();
 
-private:
-  EventHandler() {}
-  EventHandler(EventHandler const &);
-  void operator=(EventHandler const &);
+  private:
+    EventHandler() {}
+    EventHandler(EventHandler const &);
+    void operator=(EventHandler const &);
 };

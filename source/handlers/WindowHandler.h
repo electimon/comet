@@ -5,29 +5,29 @@
 
 class WindowHandler
 {
-public:
-  inline static auto &Instance()
-  {
-    static WindowHandler instance;
-    return instance;
-  }
+  public:
+    inline static auto &Instance()
+    {
+        static WindowHandler instance;
+        return instance;
+    }
 
-  static void Initialize();
-  static void CenterWindow();
-  static void SetupCallbacks();
+    static void Initialize();
+    static void CenterWindow();
+    static void SetupCallbacks();
 
-  static bool ShouldWindowClose();
-  static GLFWwindow *GetGLFWWindow();
+    static bool ShouldWindowClose();
+    static GLFWwindow *GetGLFWWindow();
 
-  int CreateWindow();
+    int CreateWindow();
 
-private:
-  WindowHandler() {}
-  WindowHandler(WindowHandler const &);
-  void operator=(WindowHandler const &) {}
+  private:
+    WindowHandler() {}
+    WindowHandler(WindowHandler const &);
+    void operator=(WindowHandler const &) {}
 
-  void WindowSizeCallback(int width, int height);
-  void FramebufferSizeCallback(int width, int height);
+    void WindowSizeCallback(int width, int height);
+    void FramebufferSizeCallback(int width, int height);
 
-  GLFWwindow *p_GLFWwindow = nullptr;
+    GLFWwindow *p_GLFWwindow = nullptr;
 };
