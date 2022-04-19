@@ -24,7 +24,7 @@ void Camera::Move()
 {
     Camera &camera = Instance();
 
-    float magnitude = camera.m_MovementSensitivity * Engine::GetTimeDelta();
+    float magnitude = camera.m_MovementSpeed * Engine::TimeDelta();
     glm::vec3 movementDirection = {0.0f, 0.0f, 0.0f};
 
     // Used so when walking forward vertical movement doesn't occur.
@@ -84,8 +84,8 @@ void Camera::Rotate()
     // The delta x and delta y variables from the mouse handler are an
     // accumulation of movement over each frame, and this function is
     // run each frame as well, so no need to rely on a dt.
-    camera.m_Yaw += (MouseHandler::GetDeltaX() * camera.m_RotationSensitivity) / 300.0;
-    camera.m_Pitch += (MouseHandler::GetDeltaY() * camera.m_RotationSensitivity) / 300.0;
+    camera.m_Yaw += (MouseHandler::GetDeltaX() * camera.m_RotationSpeed) / 300.0;
+    camera.m_Pitch += (MouseHandler::GetDeltaY() * camera.m_RotationSpeed) / 300.0;
 
     // Keep yaw angle from getting to imprecise
     if (camera.m_Yaw > glm::radians(360.0f))
