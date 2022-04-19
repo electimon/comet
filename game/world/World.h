@@ -2,7 +2,7 @@
 
 #include <comet.pch>
 
-#include "render/Shader.h"
+#include "render/ShaderProgram.h"
 
 #include "BlockLibrary.h"
 #include "Chunk.h"
