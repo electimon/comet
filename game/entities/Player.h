@@ -11,7 +11,7 @@
 
 class Player : public Entity
 {
-public:
+  public:
     Player();
     ~Player();
 
@@ -26,7 +26,7 @@ public:
         while (glm::length(direction) < 5.0f)
         {
             direction += glm::normalize(direction) * step;
-            if (World::GetBlock(round(position + direction)) != 0)
+            if (World::GetBlock(round(position + direction)).ID() != 0)
             {
                 World::SetBlock(round(position + direction), 0);
                 return;
@@ -46,7 +46,7 @@ public:
         while (glm::length(direction) < 5.0f)
         {
             direction += glm::normalize(direction) * step;
-            if (World::GetBlock(round(position + direction)) != 0)
+            if (World::GetBlock(round(position + direction)).ID() != 0)
             {
                 if (first)
                 {
@@ -66,8 +66,11 @@ public:
     int RenderDistance() const { return m_RenderDistance; }
     void SetRenderDistance(int RenderDistance) { m_RenderDistance = RenderDistance; }
 
-private:
-    // glm::vec3 m_Position;
-    glm::ivec3 m_ChunkIndex;
+    glm::ivec3 ChunkIndex() const { return m_ChunkIndex; }
+    void SetChunkIndex(const glm::ivec3 &ChunkIndex) { m_ChunkIndex = ChunkIndex; }
+
+  private:
+    // Purposfully setting this to an invalid index so that an update happens when spawning in chunk 0, 0, 0
+    glm::ivec3 m_ChunkIndex = {0, 1, 0};
     int m_RenderDistance;
 };
