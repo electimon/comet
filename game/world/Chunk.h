@@ -13,7 +13,6 @@ struct Chunk
 
     // For use by world manager
     void Generate();
-    void GenerateGeometry();
 
     void GenerateSurface();
     void GenerateTrees();
@@ -23,21 +22,8 @@ struct Chunk
     void GenerateSand();
 
     void GenerateMesh();
-    void GenerateMesh2();
 
-    std::vector<Vertex> *GetVertices()
-    {
-        return &m_Vertices;
-    }
-    std::vector<unsigned int> *GetIndices()
-    {
-        return &m_Indices;
-    }
-
-    unsigned char GetBlock(glm::ivec3 chunkPos)
-    {
-        return GetBlock(chunkPos.x, chunkPos.y, chunkPos.z);
-    }
+    unsigned char GetBlock(glm::ivec3 chunkPos) { return GetBlock(chunkPos.x, chunkPos.y, chunkPos.z); }
 
     unsigned char GetBlock(int x, int y, int z)
     {
@@ -63,20 +49,9 @@ struct Chunk
         m_BlockData.at(x * CHUNK_HEIGHT * CHUNK_WIDTH + y * CHUNK_WIDTH + z) = blockID;
     }
 
-    inline void SetHeight(int x, int z, int y)
-    {
-        m_HeightData.at(CHUNK_WIDTH * x + z) = y;
-    }
+    inline void SetHeight(int x, int z, int y) { m_HeightData.at(CHUNK_WIDTH * x + z) = y; }
 
-    float GetHeight(int x, int z)
-    {
-        return m_HeightData.at(CHUNK_WIDTH * x + z);
-    }
-
-    void MakeModified()
-    {
-        m_Modified = true;
-    }
+    float GetHeight(int x, int z) { return m_HeightData.at(CHUNK_WIDTH * x + z); }
 
   private:
     // testing new data format
@@ -92,4 +67,14 @@ struct Chunk
     bool m_Generated = false;
 
     glm::ivec3 m_Chunk = {0, 0, 0};
+
+  public:
+    bool IsModified() const { return m_Modified; }
+    void SetModified(bool Modified) { m_Modified = Modified; }
+
+    bool IsGenerated() const { return m_Generated; }
+    void SetGenerated(bool Generated) { m_Generated = Generated; }
+
+    std::vector<Vertex> *GetVertices() { return &m_Vertices; }
+    std::vector<unsigned int> *GetIndices() { return &m_Indices; }
 };

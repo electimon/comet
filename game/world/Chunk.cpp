@@ -7,6 +7,7 @@
 #include "ChunkGenerator.h"
 #include "Timer.h"
 #include "World.h"
+#include "world/BlockLibrary.h"
 #include "world/WorldConfig.h"
 
 Chunk::Chunk(glm::ivec3 id) : m_Chunk(id)
@@ -58,10 +59,6 @@ void Chunk::Generate()
 
     m_Generated = true;
 }
-void Chunk::GenerateGeometry()
-{
-    GenerateMesh();
-}
 
 void Chunk::GenerateSurface()
 {
@@ -86,15 +83,15 @@ void Chunk::GenerateSurface()
 
             SetHeight(x, z, height);
 
-            SetBlock(x, y, z, 2);     // grass
-            SetBlock(x, y - 1, z, 3); // dirt
-            SetBlock(x, y - 2, z, 3); // dirt
-            SetBlock(x, y - 3, z, 3); // dirt
+            SetBlock(x, y, z, BlockID::Grass);    // grass
+            SetBlock(x, y - 1, z, BlockID::Dirt); // dirt
+            SetBlock(x, y - 2, z, BlockID::Dirt); // dirt
+            SetBlock(x, y - 3, z, BlockID::Dirt); // dirt
 
             // fill chunk under dirt with stone
             for (int i = 0; i < y - 3; i++)
             {
-                SetBlock(x, i, z, 1);
+                SetBlock(x, i, z, BlockID::Stone);
             }
         }
     }
@@ -117,7 +114,7 @@ void Chunk::GenerateTrees()
             if (y < water_height + 3 || water_height > mountain_height)
                 continue;
 
-            if (GetBlock(x, y - 1, z) == 0)
+            if (GetBlock(x, y - 1, z) == BlockID::Air)
                 continue;
 
             noise1 = ChunkGenerator::GetFastNoise((m_Chunk.x * CHUNK_WIDTH) + x, (m_Chunk.z * CHUNK_WIDTH) + z);
@@ -125,84 +122,85 @@ void Chunk::GenerateTrees()
 
             if (noise1 > 0.9f && noise2 > 0.1f)
             {
-                SetBlock(x, y + 1, z, 5);
-                SetBlock(x, y + 2, z, 5);
+                SetBlock(x, y, z, BlockID::Dirt);
+                SetBlock(x, y + 1, z, BlockID::Log);
+                SetBlock(x, y + 2, z, BlockID::Log);
                 if (noise1 > 0.95f)
                 {
-                    SetBlock(x, y + 3, z, 5);
+                    SetBlock(x, y + 3, z, BlockID::Log);
                     y += 1;
                 }
                 {
-                    SetBlock(x - 2, y + 3, z - 1, 6);
-                    SetBlock(x - 2, y + 3, z, 6);
-                    SetBlock(x - 2, y + 3, z + 1, 6);
+                    SetBlock(x - 2, y + 3, z - 1, BlockID::Leaves);
+                    SetBlock(x - 2, y + 3, z, BlockID::Leaves);
+                    SetBlock(x - 2, y + 3, z + 1, BlockID::Leaves);
 
-                    SetBlock(x - 1, y + 3, z - 2, 6);
-                    SetBlock(x - 1, y + 3, z - 1, 6);
-                    SetBlock(x - 1, y + 3, z, 6);
-                    SetBlock(x - 1, y + 3, z + 1, 6);
-                    SetBlock(x - 1, y + 3, z + 2, 6);
+                    SetBlock(x - 1, y + 3, z - 2, BlockID::Leaves);
+                    SetBlock(x - 1, y + 3, z - 1, BlockID::Leaves);
+                    SetBlock(x - 1, y + 3, z, BlockID::Leaves);
+                    SetBlock(x - 1, y + 3, z + 1, BlockID::Leaves);
+                    SetBlock(x - 1, y + 3, z + 2, BlockID::Leaves);
 
-                    SetBlock(x, y + 3, z - 2, 6);
-                    SetBlock(x, y + 3, z - 1, 6);
+                    SetBlock(x, y + 3, z - 2, BlockID::Leaves);
+                    SetBlock(x, y + 3, z - 1, BlockID::Leaves);
                     SetBlock(x, y + 3, z, 5);
-                    SetBlock(x, y + 3, z + 1, 6);
-                    SetBlock(x, y + 3, z + 2, 6);
+                    SetBlock(x, y + 3, z + 1, BlockID::Leaves);
+                    SetBlock(x, y + 3, z + 2, BlockID::Leaves);
 
-                    SetBlock(x + 1, y + 3, z - 2, 6);
-                    SetBlock(x + 1, y + 3, z - 1, 6);
-                    SetBlock(x + 1, y + 3, z, 6);
-                    SetBlock(x + 1, y + 3, z + 1, 6);
-                    SetBlock(x + 1, y + 3, z + 2, 6);
+                    SetBlock(x + 1, y + 3, z - 2, BlockID::Leaves);
+                    SetBlock(x + 1, y + 3, z - 1, BlockID::Leaves);
+                    SetBlock(x + 1, y + 3, z, BlockID::Leaves);
+                    SetBlock(x + 1, y + 3, z + 1, BlockID::Leaves);
+                    SetBlock(x + 1, y + 3, z + 2, BlockID::Leaves);
 
-                    SetBlock(x + 2, y + 3, z - 1, 6);
-                    SetBlock(x + 2, y + 3, z, 6);
-                    SetBlock(x + 2, y + 3, z + 1, 6);
+                    SetBlock(x + 2, y + 3, z - 1, BlockID::Leaves);
+                    SetBlock(x + 2, y + 3, z, BlockID::Leaves);
+                    SetBlock(x + 2, y + 3, z + 1, BlockID::Leaves);
                 }
                 {
-                    SetBlock(x - 2, y + 4, z - 1, 6);
-                    SetBlock(x - 2, y + 4, z, 6);
-                    SetBlock(x - 2, y + 4, z + 1, 6);
+                    SetBlock(x - 2, y + 4, z - 1, BlockID::Leaves);
+                    SetBlock(x - 2, y + 4, z, BlockID::Leaves);
+                    SetBlock(x - 2, y + 4, z + 1, BlockID::Leaves);
 
-                    SetBlock(x - 1, y + 4, z - 2, 6);
-                    SetBlock(x - 1, y + 4, z - 1, 6);
-                    SetBlock(x - 1, y + 4, z, 6);
-                    SetBlock(x - 1, y + 4, z + 1, 6);
-                    SetBlock(x - 1, y + 4, z + 2, 6);
+                    SetBlock(x - 1, y + 4, z - 2, BlockID::Leaves);
+                    SetBlock(x - 1, y + 4, z - 1, BlockID::Leaves);
+                    SetBlock(x - 1, y + 4, z, BlockID::Leaves);
+                    SetBlock(x - 1, y + 4, z + 1, BlockID::Leaves);
+                    SetBlock(x - 1, y + 4, z + 2, BlockID::Leaves);
 
-                    SetBlock(x, y + 4, z - 2, 6);
-                    SetBlock(x, y + 4, z - 1, 6);
-                    SetBlock(x, y + 4, z, 6);
-                    SetBlock(x, y + 4, z + 1, 6);
-                    SetBlock(x, y + 4, z + 2, 6);
+                    SetBlock(x, y + 4, z - 2, BlockID::Leaves);
+                    SetBlock(x, y + 4, z - 1, BlockID::Leaves);
+                    SetBlock(x, y + 4, z, BlockID::Leaves);
+                    SetBlock(x, y + 4, z + 1, BlockID::Leaves);
+                    SetBlock(x, y + 4, z + 2, BlockID::Leaves);
 
-                    SetBlock(x + 1, y + 4, z - 2, 6);
-                    SetBlock(x + 1, y + 4, z - 1, 6);
-                    SetBlock(x + 1, y + 4, z, 6);
-                    SetBlock(x + 1, y + 4, z + 1, 6);
-                    SetBlock(x + 1, y + 4, z + 2, 6);
+                    SetBlock(x + 1, y + 4, z - 2, BlockID::Leaves);
+                    SetBlock(x + 1, y + 4, z - 1, BlockID::Leaves);
+                    SetBlock(x + 1, y + 4, z, BlockID::Leaves);
+                    SetBlock(x + 1, y + 4, z + 1, BlockID::Leaves);
+                    SetBlock(x + 1, y + 4, z + 2, BlockID::Leaves);
 
-                    SetBlock(x + 2, y + 4, z - 1, 6);
-                    SetBlock(x + 2, y + 4, z, 6);
-                    SetBlock(x + 2, y + 4, z + 1, 6);
+                    SetBlock(x + 2, y + 4, z - 1, BlockID::Leaves);
+                    SetBlock(x + 2, y + 4, z, BlockID::Leaves);
+                    SetBlock(x + 2, y + 4, z + 1, BlockID::Leaves);
                 }
                 {
-                    SetBlock(x - 1, y + 5, z, 6);
+                    SetBlock(x - 1, y + 5, z, BlockID::Leaves);
 
-                    SetBlock(x, y + 5, z - 1, 6);
-                    SetBlock(x, y + 5, z, 6);
-                    SetBlock(x, y + 5, z + 1, 6);
+                    SetBlock(x, y + 5, z - 1, BlockID::Leaves);
+                    SetBlock(x, y + 5, z, BlockID::Leaves);
+                    SetBlock(x, y + 5, z + 1, BlockID::Leaves);
 
-                    SetBlock(x + 1, y + 5, z, 6);
+                    SetBlock(x + 1, y + 5, z, BlockID::Leaves);
                 }
                 {
-                    SetBlock(x - 1, y + 6, z, 6);
+                    SetBlock(x - 1, y + 6, z, BlockID::Leaves);
 
-                    SetBlock(x, y + 6, z - 1, 6);
-                    SetBlock(x, y + 6, z, 6);
-                    SetBlock(x, y + 6, z + 1, 6);
+                    SetBlock(x, y + 6, z - 1, BlockID::Leaves);
+                    SetBlock(x, y + 6, z, BlockID::Leaves);
+                    SetBlock(x, y + 6, z + 1, BlockID::Leaves);
 
-                    SetBlock(x + 1, y + 6, z, 6);
+                    SetBlock(x + 1, y + 6, z, BlockID::Leaves);
                 }
             }
         }
@@ -218,22 +216,22 @@ void Chunk::GenerateBedrock()
         {
             noise = ChunkGenerator::GetFastNoise(x, z);
 
-            SetBlock(x, 0, z, 8);
+            SetBlock(x, 0, z, BlockID::Bedrock);
 
             if (noise > 0.20f)
-                SetBlock(x, 1, z, 8);
+                SetBlock(x, 1, z, BlockID::Bedrock);
             else
                 continue;
             if (noise > 0.40f)
-                SetBlock(x, 2, z, 8);
+                SetBlock(x, 2, z, BlockID::Bedrock);
             else
                 continue;
             if (noise > 0.60f)
-                SetBlock(x, 3, z, 8);
+                SetBlock(x, 3, z, BlockID::Bedrock);
             else
                 continue;
             if (noise > 0.80f)
-                SetBlock(x, 4, z, 8);
+                SetBlock(x, 4, z, BlockID::Bedrock);
         }
     }
 }
@@ -254,7 +252,7 @@ void Chunk::GenerateCaves()
                 noise = ChunkGenerator::GetCaveNoise(x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH);
 
                 if (noise > 0.8f)
-                    SetBlock(x, y, z, 0);
+                    SetBlock(x, y, z, BlockID::Air);
             }
         }
     }
@@ -272,7 +270,7 @@ void Chunk::GenerateWater()
             {
                 for (unsigned int i = y + 1; i < WATER_HEIGHT + 1; i++)
                 {
-                    SetBlock(x, i, z, 4);
+                    SetBlock(x, i, z, BlockID::Water);
                 }
             }
         }
@@ -291,16 +289,16 @@ void Chunk::GenerateSand()
             noise = ChunkGenerator::GetBiomeNoise(x, z);
             if (y < WATER_HEIGHT + 4)
             {
-                SetBlock(x, y, z, 7);
-                SetBlock(x, y - 1, z, 7);
-                SetBlock(x, y - 2, z, 7);
+                SetBlock(x, y, z, BlockID::Sand);
+                SetBlock(x, y - 1, z, BlockID::Sand);
+                SetBlock(x, y - 2, z, BlockID::Sand);
             }
 
             if (y == WATER_HEIGHT + 4 && noise > 0.5f)
             {
-                SetBlock(x, y, z, 7);
-                SetBlock(x, y - 1, z, 7);
-                SetBlock(x, y - 2, z, 7);
+                SetBlock(x, y, z, BlockID::Sand);
+                SetBlock(x, y - 1, z, BlockID::Sand);
+                SetBlock(x, y - 2, z, BlockID::Sand);
             }
         }
     }
@@ -312,7 +310,7 @@ void Chunk::GenerateMesh()
     m_Indices.clear();
     unsigned int offset = 0;
 
-    unsigned char blockID;
+    unsigned char currentBlock;
 
     bool px, nx, py, ny, pz, nz;
 
@@ -322,59 +320,69 @@ void Chunk::GenerateMesh()
         {
             for (int z = 0; z < CHUNK_WIDTH; z++)
             {
-                if (GetBlock(x, y, z) == 0)
+                currentBlock = GetBlock(x, y, z);
+
+                // If the block is air, add no geometry
+                if (currentBlock == BlockID::Air)
                 {
                     continue;
                 }
 
-                blockID = GetBlock(x, y, z);
-                std::array<unsigned char, 6> blockIndices = BlockLibrary::GetIndices(blockID);
+                // Get indices of texture for given block ID
+                std::array<unsigned char, 6> blockIndices = BlockTextures::GetIndices(currentBlock);
 
-                px = GetBlock(x + 1, y, z) == 0;
-                nx = GetBlock(x - 1, y, z) == 0;
-                py = GetBlock(x, y + 1, z) == 0;
-                ny = GetBlock(x, y - 1, z) == 0;
-                pz = GetBlock(x, y, z + 1) == 0;
-                nz = GetBlock(x, y, z - 1) == 0;
+                // Check if blocks are surrounding in current chunk
+                px = GetBlock(x + 1, y, z) == BlockID::Air;
+                nx = GetBlock(x - 1, y, z) == BlockID::Air;
+                py = GetBlock(x, y + 1, z) == BlockID::Air;
+                ny = GetBlock(x, y - 1, z) == BlockID::Air;
+                pz = GetBlock(x, y, z + 1) == BlockID::Air;
+                nz = GetBlock(x, y, z - 1) == BlockID::Air;
 
+                // If on the edge of a chunk, check neighboring chunk for block
                 if (x == 0)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y, z + m_Chunk.z * CHUNK_WIDTH}) != 0)
+                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH - 1, y, z + m_Chunk.z * CHUNK_WIDTH}) !=
+                        BlockID::Air)
                     {
                         nx = false;
                     }
                 }
                 if (x == CHUNK_WIDTH - 1)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y, z + m_Chunk.z * CHUNK_WIDTH}) != 0)
+                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH + 1, y, z + m_Chunk.z * CHUNK_WIDTH}) !=
+                        BlockID::Air)
                     {
                         px = false;
                     }
                 }
                 if (z == 0)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH - 1}) != 0)
+                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH - 1}) !=
+                        BlockID::Air)
                     {
                         nz = false;
                     }
                 }
                 if (z == CHUNK_WIDTH - 1)
                 {
-                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH + 1}) != 0)
+                    if (World::GetBlock({x + m_Chunk.x * CHUNK_WIDTH, y, z + m_Chunk.z * CHUNK_WIDTH + 1}) !=
+                        BlockID::Air)
                     {
                         pz = false;
                     }
                 }
 
-                // if (blockID == 6)
-                //{
-                //     px = true;
-                //     nx = true;
-                //     py = true;
-                //     ny = true;
-                //     pz = true;
-                //     nz = true;
-                // }
+                // Render all sides of leaves
+                if (currentBlock == BlockID::Leaves)
+                {
+                    px = true;
+                    nx = true;
+                    py = true;
+                    ny = true;
+                    pz = true;
+                    nz = true;
+                }
 
                 // +X Quad
                 if (px)
@@ -492,8 +500,4 @@ void Chunk::GenerateMesh()
             }
         }
     }
-}
-
-void Chunk::GenerateMesh2()
-{
 }
