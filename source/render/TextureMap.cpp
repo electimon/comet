@@ -4,55 +4,55 @@ void TextureMap::Initialize() { Instance(); }
 
 void TextureMap::Configure(int width, int height, int resolution)
 {
-    TextureMap &map = Instance();
+  TextureMap &map = Instance();
 
-    map.m_Width = width;
-    map.m_Height = height;
-    map.m_Resolution = resolution;
+  map.m_Width = width;
+  map.m_Height = height;
+  map.m_Resolution = resolution;
 
-    float x, y, left, bottom, right, top;
+  float x, y, left, bottom, right, top;
 
-    for (int j = 0; j < map.m_Height; j += resolution)
+  for (int j = 0; j < map.m_Height; j += resolution)
+  {
+    for (int i = 0; i < map.m_Width; i += resolution)
     {
-        for (int i = 0; i < map.m_Width; i += resolution)
-        {
-            x = static_cast<float>(i);
-            y = static_cast<float>(j);
+      x = static_cast<float>(i);
+      y = static_cast<float>(j);
 
-            left = x / static_cast<float>(map.m_Width);
-            bottom = y / static_cast<float>(map.m_Height);
+      left = x / static_cast<float>(map.m_Width);
+      bottom = y / static_cast<float>(map.m_Height);
 
-            right = (x + static_cast<float>(resolution)) /
-                    static_cast<float>(map.m_Width);
-            top = (y + static_cast<float>(resolution)) /
-                  static_cast<float>(map.m_Height);
+      right = (x + static_cast<float>(resolution)) /
+              static_cast<float>(map.m_Width);
+      top = (y + static_cast<float>(resolution)) /
+            static_cast<float>(map.m_Height);
 
-            map.m_Coords.push_back({left, right, bottom, top});
-        }
+      map.m_Coords.push_back({left, right, bottom, top});
     }
+  }
 }
 
 std::vector<std::vector<float>> TextureMap::GetTextureCoordinates()
 {
-    return Instance().m_Coords;
+  return Instance().m_Coords;
 }
 
 glm::vec2 TextureMap::GetTopLeft(int index)
 {
-    return {Instance().m_Coords[index][0], Instance().m_Coords[index][2]};
+  return {Instance().m_Coords[index][0], Instance().m_Coords[index][2]};
 }
 
 glm::vec2 TextureMap::GetTopRight(int index)
 {
-    return {Instance().m_Coords[index][1], Instance().m_Coords[index][2]};
+  return {Instance().m_Coords[index][1], Instance().m_Coords[index][2]};
 }
 
 glm::vec2 TextureMap::GetBottomLeft(int index)
 {
-    return {Instance().m_Coords[index][0], Instance().m_Coords[index][3]};
+  return {Instance().m_Coords[index][0], Instance().m_Coords[index][3]};
 }
 
 glm::vec2 TextureMap::GetBottomRight(int index)
 {
-    return {Instance().m_Coords[index][1], Instance().m_Coords[index][3]};
+  return {Instance().m_Coords[index][1], Instance().m_Coords[index][3]};
 }

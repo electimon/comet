@@ -5,22 +5,22 @@
 
 class ShaderProgram
 {
-  public:
-    ShaderProgram();
-    ShaderProgram(const char *vertFile, const char *fragFile);
-    ~ShaderProgram();
+public:
+  ShaderProgram();
+  ShaderProgram(const char *vertFile, const char *fragFile);
+  ~ShaderProgram();
 
-    void Bind();
-    void Unbind();
+  void Bind();
+  void Unbind();
 
-    void Create(const char *vertFile, const char *fragFile);
-    void Delete();
+  void Create(const char *vertFile, const char *fragFile);
+  void Delete();
 
-    unsigned int GetID();
+  unsigned int GetID();
 
-    int GetUniformLocation(const std::string &name);
+  int GetUniformLocation(const std::string &name);
 
-  private:
-    unsigned int m_ID;
-    std::unordered_map<std::string, int> m_UniformMap;
+private:
+  unsigned int m_ID;
+  std::unordered_map<std::string, int> m_UniformMap;
 };

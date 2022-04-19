@@ -4,10 +4,10 @@ void ErrorHandler::Initialize() { Instance(); }
 
 void ErrorHandler::SetupCallbacks()
 {
-    // TODO
+  // TODO
 }
 
 void ErrorHandler::ErrorCallback(int error_code, const char *description)
 {
-    // TODO
+  // TODO
 }

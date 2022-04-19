@@ -6,22 +6,22 @@
 
 class EntityHandler
 {
-  public:
-    inline static auto &Instance()
-    {
-        static EntityHandler instance;
-        return instance;
-    }
+public:
+  inline static auto &Instance()
+  {
+    static EntityHandler instance;
+    return instance;
+  }
 
-    static void Initialize();
-    static void AddEntityToQueue(Entity *entity);
-    static void RemoveEntityFromQueue(Entity *entity);
-    static void UpdateEntities();
+  static void Initialize();
+  static void AddEntityToQueue(Entity *entity);
+  static void RemoveEntityFromQueue(Entity *entity);
+  static void UpdateEntities();
 
-  private:
-    EntityHandler() {}
-    EntityHandler(EntityHandler const &);
-    void operator=(EntityHandler const &);
+private:
+  EntityHandler() {}
+  EntityHandler(EntityHandler const &);
+  void operator=(EntityHandler const &);
 
-    std::unordered_set<Entity *> m_Entities;
+  std::unordered_set<Entity *> m_Entities;
 };

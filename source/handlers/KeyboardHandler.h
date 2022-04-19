@@ -5,20 +5,20 @@
 
 class KeyboardHandler
 {
-  public:
-    inline static auto &Instance()
-    {
-        static KeyboardHandler instance;
-        return instance;
-    }
+public:
+  inline static auto &Instance()
+  {
+    static KeyboardHandler instance;
+    return instance;
+  }
 
-    static void Initialize();
-    static void SetupCallbacks();
+  static void Initialize();
+  static void SetupCallbacks();
 
-  private:
-    KeyboardHandler() {}
-    KeyboardHandler(KeyboardHandler const &);
-    void operator=(KeyboardHandler const &);
+private:
+  KeyboardHandler() {}
+  KeyboardHandler(KeyboardHandler const &);
+  void operator=(KeyboardHandler const &);
 
-    void KeyCallback(int key, int scancode, int action, int mods);
+  void KeyCallback(int key, int scancode, int action, int mods);
 };
