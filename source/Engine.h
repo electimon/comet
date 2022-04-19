@@ -19,7 +19,7 @@
 
 class Engine
 {
-public:
+  public:
     inline static auto &Instance()
     {
         static Engine instance;
@@ -30,11 +30,8 @@ public:
     static void Finalize();
 
     static void MainThread();
-    static double GetTimeDelta() { return Instance().m_TimeDelta; }
-    static bool ShouldClose() { return Instance().m_ShouldClose; }
-    static void CloseWindow() { Instance().m_ShouldClose = true; }
 
-private:
+  private:
     Engine() {}
     Engine(Engine const &);
     void operator=(Engine const &);
@@ -42,4 +39,14 @@ private:
     bool m_ShouldClose = false;
     double m_TimeDelta = 0.0; // ms
     double m_TimeLast = 0.0;  // ms
+
+  public:
+    static bool IsShouldClose() { return Instance().m_ShouldClose; }
+    static void SetShouldClose(bool ShouldClose) { Instance().m_ShouldClose = ShouldClose; }
+
+    static double TimeDelta() { return Instance().m_TimeDelta; }
+    static void SetTimeDelta(double TimeDelta) { Instance().m_TimeDelta = TimeDelta; }
+
+    static double TimeLast() { return Instance().m_TimeLast; }
+    static void SetTimeLast(double TimeLast) { Instance().m_TimeLast = TimeLast; }
 };

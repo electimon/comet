@@ -60,7 +60,7 @@ void Engine::MainThread()
         Instance().m_TimeLast = glfwGetTime();
     }
 
-    Engine::CloseWindow();
+    Engine::SetShouldClose(true);
 
     Finalize();
 }
