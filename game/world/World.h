@@ -11,7 +11,6 @@
 #include "Renderer.h"
 #include "WorldConfig.h"
 
-
 class World
 {
   public:
@@ -29,31 +28,18 @@ class World
     static glm::ivec3 GetChunkCoord(const glm::ivec3 &worldPos);
     static glm::ivec3 GetChunkIndex(const glm::ivec3 &worldPos);
 
-    static void SetShader(const Shader &shader)
-    {
-        Instance().m_Shader = shader;
-    }
-    static void SetSeed(int seed)
-    {
-        ChunkGenerator::SetSeed(seed);
-    }
+    static void SetShader(const ShaderProgram &shader) { Instance().m_Shader = shader; }
+    static void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
     static void ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerChunkIndex);
 
     // Shader Functions
-    const Shader &GetShader()
-    {
-        return m_Shader;
-    }
+    const ShaderProgram &GetShader() { return m_Shader; }
     static void WorldThread();
 
   private:
-    World()
-    {
-    }
+    World() {}
     World(World const &);
-    void operator=(World const &)
-    {
-    }
+    void operator=(World const &) {}
 
     // This will be a temporary cache of the loaded chunks.
     // Functionallity to check for saved data on disk will eventually be
@@ -67,7 +53,7 @@ class World
     std::unordered_set<glm::ivec3> m_ChunksToRender;
     std::unordered_set<glm::ivec3> m_ChunksToUnrender;
 
-    Shader m_Shader;
+    ShaderProgram m_Shader;
     int m_Seed;
 
     std::mutex m_Lock;

@@ -1,4 +1,5 @@
 #include "World.h"
+#include "world/BlockLibrary.h"
 
 void World::Initialize()
 {
@@ -6,7 +7,7 @@ void World::Initialize()
     Instance().m_Thread = std::thread(&World::WorldThread);
 
     ChunkGenerator::Initialize();
-    BlockLibrary::Initialize();
+    BlockTextures::Initialize();
 }
 
 void World::Finalize()
@@ -126,6 +127,8 @@ void World::ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerC
         }
     }
 
+    std::cout << "Generating " << Instance().m_ChunksToGenerate.size() << " chunks" << std::endl;
+
     // Removes chunk data
     for (const auto &[index, chunk] : Instance().m_ChunkDataMap)
     {
@@ -163,7 +166,7 @@ void World::WorldThread()
 {
     auto &world = Instance();
 
-    while (!Engine::ShouldClose())
+    while (!Engine::IsShouldClose())
     {
         // Generates chunks
         for (const auto &index : Instance().m_ChunksToGenerate)
@@ -182,7 +185,7 @@ void World::WorldThread()
                 return;
 
             Chunk *chunk = &world.m_ChunkDataMap.at(index);
-            chunk->GenerateGeometry();
+            chunk->GenerateMesh();
             world.m_ChunkRenderMap.insert_or_assign(index, chunk);
             Mesh mesh = Mesh(chunk->GetVertices(), chunk->GetIndices(), &world.m_Shader);
 
