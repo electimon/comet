@@ -29,7 +29,7 @@ class Engine
     static void Initialize();
     static void Finalize();
 
-    static void MainThread();
+    static void Thread();
 
   private:
     Engine() {}

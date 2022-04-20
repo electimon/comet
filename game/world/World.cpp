@@ -9,7 +9,10 @@ void World::Initialize()
 
     ChunkGenerator::Initialize();
     BlockTextures::Initialize();
+}
 
+void World::Thread()
+{
     Instance().m_Thread = std::thread(&World::WorldThread);
 }
 

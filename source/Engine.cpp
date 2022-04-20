@@ -16,7 +16,6 @@ void Engine::Initialize()
     TextureMap::Initialize();
     Renderer::Initialize();
     Camera::Initialize();
-    DebugInfo::Initialize();
 }
 
 void Engine::Finalize()
@@ -25,7 +24,7 @@ void Engine::Finalize()
     glfwTerminate();
 }
 
-void Engine::MainThread()
+void Engine::Thread()
 {
     while (!Engine::IsShouldClose())
     {
@@ -46,15 +45,20 @@ void Engine::MainThread()
 
         // ALL DRAWING SHOULD HAPPEN AFTER ANY ENTITY MOVEMENT
 
+
         // Drawing the mesh render queue
         Renderer::DrawMeshQueue();
         // Draw UI after everything else
-        DebugInfo::DrawFrame();
+        Renderer::DrawInterfaceQueue();
+
+
 
         // Swaps buffers to display new drawn frame
         Renderer::SwapBuffers();
         // Poll events for next frame
         EventHandler::PollEvents();
+
+
 
         Instance().m_TimeDelta = glfwGetTime() - Instance().m_TimeLast;
         Instance().m_TimeLast = glfwGetTime();

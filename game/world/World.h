@@ -21,6 +21,7 @@ class World
     }
 
     static void Initialize();
+    static void Thread();
     static void Finalize();
 
     static Block GetBlock(const glm::ivec3 &worldPos);
