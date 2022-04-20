@@ -6,6 +6,10 @@
 #include "BlockLibrary.h"
 #include "WorldConfig.h"
 
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/array.hpp>
+#include <sstream>
+
 struct Geometry
 {
     std::vector<Vertex> Vertices;
@@ -76,4 +80,8 @@ struct Chunk
 
     Geometry *SolidGeometry() { return &m_SolidGeometry; }
     Geometry *TransparentGeometry() { return &m_TransparentGeometry; }
+
+    template <class Archive> void save(Archive &ar) const { ar(m_BlockData); }
+
+    template <class Archive> void load(Archive &ar) { ar(m_BlockData); }
 };

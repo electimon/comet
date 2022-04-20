@@ -88,6 +88,7 @@ void World::SetBlock(const glm::ivec3 &worldPos, Block block)
     {
         Instance().m_ChunkDataMap.at(index).SetBlock({chunkCoord.x, chunkCoord.y, chunkCoord.z}, block);
         Instance().m_ChunkDataMap.at(index).GenerateMesh();
+        Instance().m_ChunkDataMap.at(index).SetModified(true);
 
         if (block.IsTransparent())
         {
@@ -210,6 +211,7 @@ void World::Generate()
     for (const auto &index : Instance().m_ChunksToGenerate)
     {
         // Generates chunk data
+        // TODO: chunk destructor is called here, big memory issue here
         world.m_ChunkDataMap.insert_or_assign(index, Chunk(index));
         world.m_ChunkDataMap.at(index).Generate();
     }

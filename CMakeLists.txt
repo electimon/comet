@@ -24,6 +24,7 @@ include_directories(
     libraries/imgui/include
     libraries/stb_image/include
     libraries/FastNoiseLite/include
+    libraries/cereal/include
 
 )
 

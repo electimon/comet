@@ -14,6 +14,8 @@ class Block
     bool IsTransparent() const { return m_Transparent; }
     void SetTransparent(bool Transparent) { m_Transparent = Transparent; }
 
+    template <class Archive> void serialize(Archive &ar) { ar(m_ID, m_Transparent); }
+
   private:
     unsigned char m_ID;
     bool m_Transparent;

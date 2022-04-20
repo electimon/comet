@@ -1,5 +1,7 @@
 #include "Chunk.h"
 
+#include <string>
+
 #include "Renderer.h"
 #include "render/TextureMap.h"
 #include "render/Vertex.h"
@@ -10,51 +12,43 @@
 #include "world/BlockLibrary.h"
 #include "world/WorldConfig.h"
 
+#include <cereal/archives/binary.hpp>
+
 Chunk::Chunk(glm::ivec3 id) : m_Chunk(id)
 {
     m_BlockData.fill(Block(0, true));
     m_HeightData.fill(0);
 
-    m_SolidGeometry.Vertices.reserve(20000);
-    m_SolidGeometry.Indices.reserve(20000);
-    m_TransparentGeometry.Vertices.reserve(20000);
-    m_TransparentGeometry.Indices.reserve(20000);
+    m_SolidGeometry.Vertices.reserve(7000);
+    m_SolidGeometry.Indices.reserve(7000);
+    m_TransparentGeometry.Vertices.reserve(7000);
+    m_TransparentGeometry.Indices.reserve(7000);
 }
 
 Chunk::~Chunk()
 {
-    // if (m_Modified)
-    // {
-    //     std::ofstream blockDataFile(".\\world\\" + std::to_string(m_Chunk.x)
-    //     + " " + std::to_string(m_Chunk.y) + " "
-    //     +
-    //                                 std::to_string(m_Chunk.z) + ".chunk");
-    //     std::copy(m_BlockData.begin(), m_BlockData.end(),
-    //     std::ostream_iterator<unsigned char>(blockDataFile, ""));
-    //     blockDataFile.close();
-    // }
+    if (m_Modified)
+    {
+        std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.z) + ".bin";
+        std::ofstream os(filename, std::ios::binary);
+        cereal::BinaryOutputArchive archive(os);
+        archive(m_BlockData);
+    }
 }
 
 void Chunk::Generate()
 {
-    if (std::filesystem::exists(".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.y) + " " +
-                                std::to_string(m_Chunk.z) + ".chunk"))
+    std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.z) + ".bin";
+    if (std::filesystem::exists(filename))
     {
-        // std::cout << "Loading chunk, reading chunk from disk...\n";
-
-        // std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " "
-        // + std::to_string(m_Chunk.y) + " " +
-        //                        std::to_string(m_Chunk.z) + ".chunk";
-        // std::basic_ifstream<char> blockDataFile(filename.c_str());
-
-        // This will need to be redone once a more optimized method of
-        // saving chunks is made.
-        // m_BlockData = std::vector<unsigned char>(
-        // (std::istreambuf_iterator<char>(blockDataFile)),
-        // std::istreambuf_iterator<char>());
+        std::cout << "Chunk file found, loading chunk...\n";
+        std::ifstream is(filename, std::ios::binary);
+        cereal::BinaryInputArchive archive(is);
+        archive(m_BlockData);
     }
     else
     {
+        std::cout << "Chunk file not found, generating new chunk...\n";
         // World Generation
         GenerateSurface();
         GenerateBedrock();
