@@ -105,17 +105,17 @@ glm::ivec3 World::GetChunkIndex(const glm::ivec3 &worldPos)
     return chunkIndex;
 }
 
-void World::ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerChunkIndex)
+void World::ProcessRequestedChunks(const glm::ivec3 &centerChunkIndex)
 {
     glm::ivec3 index;
     std::unordered_set<glm::ivec3> chunksGenerated;
     std::unordered_set<glm::ivec3> chunksRendered;
     int chunksToRenderAhead = 1;
 
-    int lowerx = -chunksToRenderAhead + centerChunkIndex.x - renderDistance;
-    int lowerz = -chunksToRenderAhead + centerChunkIndex.z - renderDistance;
-    int upperx = 1 + chunksToRenderAhead + centerChunkIndex.x + renderDistance;
-    int upperz = 1 + chunksToRenderAhead + centerChunkIndex.z + renderDistance;
+    int lowerx = -chunksToRenderAhead + centerChunkIndex.x - Instance().m_RenderDistance;
+    int lowerz = -chunksToRenderAhead + centerChunkIndex.z - Instance().m_RenderDistance;
+    int upperx = 1 + chunksToRenderAhead + centerChunkIndex.x + Instance().m_RenderDistance;
+    int upperz = 1 + chunksToRenderAhead + centerChunkIndex.z + Instance().m_RenderDistance;
 
     const auto &world = Instance();
 

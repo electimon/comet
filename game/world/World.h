@@ -32,11 +32,14 @@ class World
     static void SetShader(const ShaderProgram &shader) { Instance().m_Shader = shader; }
     static void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
     static int Seed() { return Instance().m_Seed; }
-    static void ProcessRequestedChunks(int renderDistance, const glm::ivec3 &centerChunkIndex);
+    static void ProcessRequestedChunks(const glm::ivec3 &centerChunkIndex);
 
     // Shader Functions
     const ShaderProgram &GetShader() { return m_Shader; }
     static void WorldThread();
+
+    static int RenderDistance() { return Instance().m_RenderDistance; }
+    static void SetRenderDistance(int RenderDistance) { Instance().m_RenderDistance = RenderDistance; }
 
   private:
     World() {}
@@ -57,6 +60,7 @@ class World
 
     ShaderProgram m_Shader;
     int m_Seed;
+    int m_RenderDistance;
 
     std::mutex m_Lock;
 
