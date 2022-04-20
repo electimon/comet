@@ -24,11 +24,11 @@ int main(void)
     World::Initialize();
     World::SetSeed(1);
     World::SetShader(blockShader);
+    World::SetRenderDistance(8);
 
     Player player;
     player.SetPosition({0.0f, 60.0f, 0.0f});
     Camera::SetPosition({0.0f, 60.0f, 0.0f});
-    player.SetRenderDistance(3);
 
     RenderMenu rendermenu;
 
