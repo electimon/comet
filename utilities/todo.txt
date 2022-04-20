@@ -1,9 +1,12 @@
 03/29/2022
 # easier
-- collision
-- day/night cycle
-- clouds
+- crosshair overlay
+- selected block indicator
+- day/night cycle (possible overlay)
 - cave generation
 
 # difficult
-- transparent water
+- cloud generation
+- collision system
+- sort transparent meshes before rendering
+- block update system
