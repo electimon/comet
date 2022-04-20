@@ -3,6 +3,7 @@
 #include <comet.pch>
 
 #include "handlers/WindowHandler.h"
+#include "handlers/InterfaceHandler.h"
 
 #include "render/Mesh.h"
 #include "render/ShaderProgram.h"
@@ -23,6 +24,7 @@ class Renderer
     static void SwapBuffers();
 
     static void DrawMeshQueue();
+    static void DrawInterfaceQueue();
 
     static void ProcessMeshQueues();
     static void AddMeshToQueue(const glm::ivec3 &index, const Mesh &mesh);
