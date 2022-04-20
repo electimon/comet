@@ -22,6 +22,16 @@ class RenderMenu : public Interface
             MouseHandler::CaptureCursor();
         }
         ImGui::SameLine();
+        if (ImGui::Button("Reset Renderer"))
+        {
+            Renderer::ResetRenderer();
+            World::Finalize();
+            Renderer::SetResetting(false);
+
+            World::Initialize();
+            World::InitializeThread();
+        }
+        ImGui::SameLine();
         if (ImGui::Button("Exit"))
         {
             Engine::SetShouldClose(true);
@@ -34,6 +44,7 @@ class RenderMenu : public Interface
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
         ImGui::SameLine();
+
         if (ImGui::Button("Filled"))
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -57,10 +68,7 @@ class RenderMenu : public Interface
             Renderer::SetBackgroundColor(dummyfloatvec2);
         }
 
-        if (ImGui::Button("Reset Renderer"))
-        {
-            Renderer::ResetRenderer();
-        }
+        ImGui::Text("Performance: %.1f FPS", ImGui::GetIO().Framerate);
 
         ImGui::End();
     }
