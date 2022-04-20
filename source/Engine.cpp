@@ -10,7 +10,6 @@ void Engine::Initialize()
     KeyboardHandler::Initialize();
     MouseHandler::Initialize();
     ErrorHandler::Initialize();
-    // EntityHandler::Initialize();
 
     // Rendering Components
     TextureMap::Initialize();

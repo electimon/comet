@@ -9,7 +9,6 @@
 #include "handlers/MouseHandler.h"
 
 #include "Camera.h"
-#include "DebugInfo.h"
 #include "Renderer.h"
 #include "render/ShaderProgram.h"
 #include "render/Texture.h"
