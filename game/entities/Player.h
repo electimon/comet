@@ -2,6 +2,7 @@
 
 #include <comet.pch>
 
+#include "Renderer.h"
 #include "handlers/Entity.h"
 #include "handlers/EntityHandler.h"
 #include "handlers/MouseHandler.h"
@@ -19,7 +20,9 @@ class Player : public Entity
 
     void PlaceBlock();
     void BreakBlock();
-    void ProcessScrolling();
+    void ProcessClicks();
+    void ProcessKeys();
+    void ProcessScrolls();
 
     void GetRequestedChunks();
 
@@ -29,6 +32,7 @@ class Player : public Entity
     glm::ivec3 m_ChunkIndex = {0, 1, 0};
     int m_RenderDistance;
     Block m_SelectedBlock = 1;
+    bool m_InWater;
 
     double oldOffset = 0.0;
     double newOffset = 0.0;
@@ -42,6 +46,9 @@ class Player : public Entity
 
     Block SelectedBlock() const { return m_SelectedBlock; }
     void SetSelectedBlock(const Block &SelectedBlock) { m_SelectedBlock = SelectedBlock; }
+
+    bool IsInWater() const { return m_InWater; }
+    void SetInWater(bool InWater) { m_InWater = InWater; }
 
 
 };

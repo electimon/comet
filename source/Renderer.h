@@ -29,10 +29,15 @@ class Renderer
     static void UpdateMeshInQueue(const glm::ivec3 &index);
     static void DeleteMeshFromQueue(const glm::ivec3 &index);
 
+    static glm::vec3 OverlayColor() { return Instance().m_OverlayColor; }
+    static void SetOverlayColor(const glm::vec3 &OverlayColor) { Instance().m_OverlayColor = OverlayColor; }
+
   private:
     Renderer() {}
     Renderer(Renderer const &);
     void operator=(Renderer const &);
+
+    glm::vec3 m_OverlayColor;
 
     std::unordered_map<glm::ivec3, Mesh> m_MeshMap;
 

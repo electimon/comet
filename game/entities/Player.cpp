@@ -11,23 +11,23 @@ Player::~Player() {}
 
 void Player::Update()
 {
-    if (MouseHandler::GetLeftClick())
-    {
-        Player::BreakBlock();
-    }
-    else if (MouseHandler::GetRightClick())
-    {
-        Player::PlaceBlock();
-    }
+    ProcessClicks(); 
+    ProcessKeys();
+    ProcessScrolls();
 
-    if (glfwGetKey(WindowHandler::GetGLFWWindow(), GLFW_KEY_HOME))
-    {
-        Camera::SetPosition({0.0f, 100.0f, 0.0f});
-    }
-
-    ProcessScrolling();
 
     m_Position = Camera::Position();
+    Block blockInsideOf = World::GetBlock(round(m_Position));
+    if (blockInsideOf.ID() == ID::Water)
+    {
+        SetInWater(true);
+        Renderer::SetOverlayColor({-0.1f, -0.1f, 0.3f});
+    }
+    else
+    {
+        SetInWater(false);
+        Renderer::SetOverlayColor({0.0f, 0.0f, 0.0f});
+    }
 
     GetRequestedChunks();
 }
@@ -90,7 +90,27 @@ void Player::BreakBlock()
     }
 }
 
-void Player::ProcessScrolling()
+void Player::ProcessClicks()
+{
+    if (MouseHandler::GetLeftClick())
+    {
+        Player::BreakBlock();
+    }
+    else if (MouseHandler::GetRightClick())
+    {
+        Player::PlaceBlock();
+    }
+}
+
+void Player::ProcessKeys()
+{
+    if (glfwGetKey(WindowHandler::GetGLFWWindow(), GLFW_KEY_HOME))
+    {
+        Camera::SetPosition({0.0f, 100.0f, 0.0f});
+    }
+}
+
+void Player::ProcessScrolls()
 {
     newOffset = MouseHandler::ScrollOffset();
 
