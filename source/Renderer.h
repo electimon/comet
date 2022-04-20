@@ -34,12 +34,16 @@ class Renderer
     static glm::vec3 OverlayColor() { return Instance().m_OverlayColor; }
     static void SetOverlayColor(const glm::vec3 &OverlayColor) { Instance().m_OverlayColor = OverlayColor; }
 
+    static glm::vec3 BackgroundColor() { return Instance().m_BackgroundColor; }
+    static void SetBackgroundColor(const glm::vec3 &BackgroundColor) { Instance().m_BackgroundColor = BackgroundColor; }
+
   private:
     Renderer() {}
     Renderer(Renderer const &);
     void operator=(Renderer const &);
 
     glm::vec3 m_OverlayColor;
+    glm::vec3 m_BackgroundColor;
 
     std::unordered_map<glm::ivec3, Mesh> m_MeshMap;
 

@@ -21,25 +21,17 @@ void Renderer::Initialize()
 
     ImGui_ImplGlfw_InitForOpenGL(WindowHandler::GetGLFWWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
+
+    Instance().m_BackgroundColor = glm::vec3(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f);
 }
 
 void Renderer::NewFrame()
 {
-    // Switch between triangle rendering modes with keys L and N
-    if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_L) == GLFW_PRESS)
-    {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }
-    if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_N) == GLFW_PRESS)
-    {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
-
     // Clearing the color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Background color
-    glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f, 0.0f);
+    glClearColor(Instance().m_BackgroundColor.x, Instance().m_BackgroundColor.y, Instance().m_BackgroundColor.z, 0.0f);
 }
 
 void Renderer::SwapBuffers() { glfwSwapBuffers(WindowHandler::GetGLFWWindow()); }
