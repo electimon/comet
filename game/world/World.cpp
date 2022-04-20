@@ -1,7 +1,36 @@
 #include "World.h"
+
 #include "world/BlockLibrary.h"
 #include "world/Chunk.h"
 #include "world/ChunkGenerator.h"
+
+#include "entities/Player.h"
+
+void World::InitializeThread()
+{
+    std::cout << "Initializing world thread...\n";
+
+    Instance().m_Thread = std::thread(&World::Thread);
+}
+
+void World::Thread()
+{
+    World::Initialize();
+    EntityHandler::Initialize();
+
+    auto &world = Instance();
+
+    while (!Engine::IsShouldClose() && !Renderer::IsResetting())
+    {
+        EntityHandler::UpdateEntities();
+
+        Generate();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    std::cout << "Exiting world thread...\n";
+}
 
 void World::Initialize()
 {
@@ -9,11 +38,13 @@ void World::Initialize()
 
     ChunkGenerator::Initialize();
     BlockTextures::Initialize();
-}
 
-void World::Thread()
-{
-    Instance().m_Thread = std::thread(&World::WorldThread);
+    Instance().m_ChunkDataMap.clear();
+    Instance().m_ChunkRenderMap.clear();
+    Instance().m_ChunksToDelete.clear();
+    Instance().m_ChunksToGenerate.clear();
+    Instance().m_ChunksToRender.clear();
+    Instance().m_ChunksToUnrender.clear();
 }
 
 void World::Finalize()
@@ -119,8 +150,6 @@ void World::ProcessRequestedChunks(const glm::ivec3 &centerChunkIndex)
 
     const auto &world = Instance();
 
-    std::lock_guard<std::mutex> locked(Instance().m_Lock);
-
     // Add chunks to generation
     for (int x = lowerx; x < upperx; x++)
     {
@@ -134,8 +163,6 @@ void World::ProcessRequestedChunks(const glm::ivec3 &centerChunkIndex)
             }
         }
     }
-
-    std::cout << "Generating " << Instance().m_ChunksToGenerate.size() << " chunks" << std::endl;
 
     // Removes chunk data
     for (const auto &[index, chunk] : Instance().m_ChunkDataMap)
@@ -170,64 +197,59 @@ void World::ProcessRequestedChunks(const glm::ivec3 &centerChunkIndex)
     }
 }
 
-void World::WorldThread()
+void World::Generate()
 {
     auto &world = Instance();
 
-    while (!Engine::IsShouldClose())
+    // Generates chunks
+    for (const auto &index : Instance().m_ChunksToGenerate)
     {
-        // Generates chunks
-        for (const auto &index : Instance().m_ChunksToGenerate)
-        {
-            // Generates chunk data
-            world.m_ChunkDataMap.insert_or_assign(index, Chunk(index));
-            world.m_ChunkDataMap.at(index).Generate();
-        }
-        world.m_ChunksToGenerate.clear();
-
-        // Renders chunk
-        for (const auto &index : world.m_ChunksToRender)
-        {
-            // Generate Chunk Geometry
-            if (world.m_ChunkDataMap.find(index) == world.m_ChunkDataMap.end())
-                return;
-
-            Chunk *chunk = &world.m_ChunkDataMap.at(index);
-            chunk->GenerateMesh();
-            world.m_ChunkRenderMap.insert_or_assign(index, chunk);
-
-            Mesh solidMesh = Mesh(&chunk->SolidGeometry()->Vertices, &chunk->SolidGeometry()->Indices, &world.m_Shader);
-            Mesh transparentMesh =
-                Mesh(&chunk->TransparentGeometry()->Vertices, &chunk->TransparentGeometry()->Indices, &world.m_Shader);
-
-            // Adding to Renderer
-            Renderer::AddMeshToQueue(index, solidMesh);
-            if (transparentMesh.Count() > 0)
-            {
-                Renderer::AddMeshToQueue({index.x, index.y + 1, index.z}, transparentMesh);
-            }
-        }
-        world.m_ChunksToRender.clear();
-
-        // Deletes chunks
-        for (const auto &index : world.m_ChunksToDelete)
-        {
-            // remove chunk from data
-            world.m_ChunkDataMap.erase(index);
-        }
-        world.m_ChunksToDelete.clear();
-
-        // Unrenders chunk
-        for (const auto &index : world.m_ChunksToUnrender)
-        {
-            // remove mesh from renderer
-            Renderer::DeleteMeshFromQueue(index);
-            Renderer::DeleteMeshFromQueue({index.x, index.y + 1, index.z});
-
-            world.m_ChunkRenderMap.erase(index);
-        }
-        world.m_ChunksToUnrender.clear();
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // Generates chunk data
+        world.m_ChunkDataMap.insert_or_assign(index, Chunk(index));
+        world.m_ChunkDataMap.at(index).Generate();
     }
+    world.m_ChunksToGenerate.clear();
+
+    // Renders chunk
+    for (const auto &index : world.m_ChunksToRender)
+    {
+        // Generate Chunk Geometry
+        if (world.m_ChunkDataMap.find(index) == world.m_ChunkDataMap.end())
+            return;
+
+        Chunk *chunk = &world.m_ChunkDataMap.at(index);
+        chunk->GenerateMesh();
+        world.m_ChunkRenderMap.insert_or_assign(index, chunk);
+
+        Mesh solidMesh = Mesh(&chunk->SolidGeometry()->Vertices, &chunk->SolidGeometry()->Indices, &world.m_Shader);
+        Mesh transparentMesh =
+            Mesh(&chunk->TransparentGeometry()->Vertices, &chunk->TransparentGeometry()->Indices, &world.m_Shader);
+
+        // Adding to Renderer
+        Renderer::AddMeshToQueue(index, solidMesh);
+        if (transparentMesh.Count() > 0)
+        {
+            Renderer::AddMeshToQueue({index.x, index.y + 1, index.z}, transparentMesh);
+        }
+    }
+    world.m_ChunksToRender.clear();
+
+    // Deletes chunks
+    for (const auto &index : world.m_ChunksToDelete)
+    {
+        // remove chunk from data
+        world.m_ChunkDataMap.erase(index);
+    }
+    world.m_ChunksToDelete.clear();
+
+    // Unrenders chunk
+    for (const auto &index : world.m_ChunksToUnrender)
+    {
+        // remove mesh from renderer
+        Renderer::DeleteMeshFromQueue(index);
+        Renderer::DeleteMeshFromQueue({index.x, index.y + 1, index.z});
+
+        world.m_ChunkRenderMap.erase(index);
+    }
+    world.m_ChunksToUnrender.clear();
 }
