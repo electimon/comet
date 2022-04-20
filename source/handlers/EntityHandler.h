@@ -14,8 +14,8 @@ class EntityHandler
     }
 
     static void Initialize();
-    static void AddEntityToQueue(Entity *entity);
-    static void RemoveEntityFromQueue(Entity *entity);
+    static void AddEntity(Entity *entity);
+    static void RemoveEntity(Entity *entity);
     static void UpdateEntities();
 
   private:
