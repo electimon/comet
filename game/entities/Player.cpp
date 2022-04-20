@@ -15,7 +15,6 @@ void Player::Update()
     ProcessKeys();
     ProcessScrolls();
 
-
     m_Position = Camera::Position();
     Block blockInsideOf = World::GetBlock(round(m_Position));
     if (blockInsideOf.ID() == ID::Water && blockInsideOf.ID() != m_LastBlockInsideOf.ID())
@@ -39,14 +38,7 @@ void Player::GetRequestedChunks()
 {
     glm::ivec3 newChunkIndex = World::GetChunkIndex(m_Position);
 
-    // if (newChunkIndex != m_ChunkIndex)
-    // {
-        // Update requested chunks if the chunk index changes
-        // std::cout << "Entered chunk: " << newChunkIndex.x << " " << newChunkIndex.z << "\n";
-
-        // m_ChunkIndex = newChunkIndex;
-        World::ProcessRequestedChunks(newChunkIndex);
-    // }
+    World::ProcessRequestedChunks(newChunkIndex);
 }
 
 void Player::PlaceBlock()
