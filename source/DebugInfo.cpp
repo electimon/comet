@@ -28,10 +28,13 @@ void DebugInfo::DrawFrame()
         ImGui::SameLine();
         if (ImGui::Button("Exit"))
         {
+            Engine::SetShouldClose(true);
         }
 
-        ImGui::SetWindowPos(ImVec2(10.0f, 10.0f));
-        ImGui::SetWindowSize(ImVec2(400.0f, 100.0f));
+        // ImGui::SliderInt("Render Distance")
+
+        // ImGui::SetWindowPos(ImVec2(10.0f, 10.0f));
+        // ImGui::SetWindowSize(ImVec2(400.0f, 100.0f));
 
         ImGui::Text("Application average: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
                     ImGui::GetIO().Framerate);
