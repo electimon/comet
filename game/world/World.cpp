@@ -87,11 +87,16 @@ void World::SetBlock(const glm::ivec3 &worldPos, Block block)
     if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
     {
         Instance().m_ChunkDataMap.at(index).SetBlock({chunkCoord.x, chunkCoord.y, chunkCoord.z}, block);
-
         Instance().m_ChunkDataMap.at(index).GenerateMesh();
 
-        Renderer::UpdateMeshInQueue(index);
-        Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
+        if (block.IsTransparent())
+        {
+            Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
+        }
+        else
+        {
+            Renderer::UpdateMeshInQueue(index);
+        }
 
         return;
     }
