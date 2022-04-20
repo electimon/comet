@@ -4,6 +4,7 @@
 - cave generation
 - cloud generation
 - block update system
+- fix multithreading
 
 # Engine
 - sort transparent meshes before rendering
