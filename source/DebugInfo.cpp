@@ -16,9 +16,21 @@ void DebugInfo::DrawFrame()
     ImGui::NewFrame();
 
     {
-        ImGui::Begin("Debug Info Panel");
+        ImGui::Begin("Main Menu");
+        if (ImGui::IsWindowHovered())
+            Engine::SetUsingGUI(true);
 
-        ImGui::SetWindowPos(ImVec2(0.0f, 0.0f));
+        if (ImGui::Button("Play"))
+        {
+            MouseHandler::CaptureCursor();
+            ImGui::SetWindowCollapsed(true);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Exit"))
+        {
+        }
+
+        ImGui::SetWindowPos(ImVec2(10.0f, 10.0f));
         ImGui::SetWindowSize(ImVec2(400.0f, 100.0f));
 
         ImGui::Text("Application average: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,

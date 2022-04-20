@@ -1,4 +1,5 @@
 #include "MouseHandler.h"
+#include "imgui.h"
 
 void MouseHandler::Initialize() { Instance().SetupCallbacks(); }
 
@@ -21,27 +22,18 @@ void MouseHandler::SetupCallbacks()
     glfwSetCursorPosCallback(glfwGetCurrentContext(), CursorPosCallbackWrapper);
 }
 
-void MouseHandler::ScrollCallback(double xoffset, double yoffset)
-{
-    m_ScrollOffset += yoffset;
-}
+void MouseHandler::ScrollCallback(double xoffset, double yoffset) { m_ScrollOffset += yoffset; }
 
 void MouseHandler::MouseButtonCallback(int button, int action, int mods)
 {
-    // Captures cursor if not currently captured, reguardless of mouse button
-    if (action == GLFW_PRESS && !m_CursorCaptured)
-    {
-        if (glfwRawMouseMotionSupported())
-        {
-            glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-        }
+    // if (Engine::IsUsingGUI())
+    //     return;
 
-        CaptureCursor();
-
-        // Need to center cursor before cursor position callback is run
-        // Prevents a possibly large xpos/ypos when entering the window
-        glfwSetCursorPos(WindowHandler::GetGLFWWindow(), 0.0, 0.0);
-    }
+    // // Captures cursor if not currently captured, reguardless of mouse button
+    // if (action == GLFW_PRESS && !m_CursorCaptured)
+    // {
+    //     CaptureCursor();
+    // }
 }
 
 void MouseHandler::CursorPosCallback(double xpos, double ypos)
@@ -112,8 +104,17 @@ void MouseHandler::ResetStates()
 
 void MouseHandler::CaptureCursor()
 {
+    if (glfwRawMouseMotionSupported())
+    {
+        glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    }
+
     glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     Instance().m_CursorCaptured = true;
+
+    // Need to center cursor before cursor position callback is run
+    // Prevents a possibly large xpos/ypos when entering the window
+    glfwSetCursorPos(WindowHandler::GetGLFWWindow(), 0.0, 0.0);
 }
 void MouseHandler::ReleaseCursor()
 {

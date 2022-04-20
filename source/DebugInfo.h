@@ -2,6 +2,7 @@
 
 #include <comet.pch>
 
+#include "Engine.h"
 #include "Camera.h"
 #include "handlers/WindowHandler.h"
 
