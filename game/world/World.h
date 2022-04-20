@@ -19,10 +19,13 @@ class World
         static World instance;
         return instance;
     }
+    static void InitializeThread();
+    static void Thread();
 
     static void Initialize();
-    static void Thread();
     static void Finalize();
+
+    static void Generate();
 
     static Block GetBlock(const glm::ivec3 &worldPos);
     static void SetBlock(const glm::ivec3 &worldPos, Block block);
@@ -36,7 +39,6 @@ class World
 
     // Shader Functions
     const ShaderProgram &GetShader() { return m_Shader; }
-    static void WorldThread();
 
     static int RenderDistance() { return Instance().m_RenderDistance; }
     static void SetRenderDistance(int RenderDistance) { Instance().m_RenderDistance = RenderDistance; }
