@@ -57,6 +57,11 @@ class RenderMenu : public Interface
             Renderer::SetBackgroundColor(dummyfloatvec2);
         }
 
+        if (ImGui::Button("Reset Renderer"))
+        {
+            Renderer::ResetRenderer();
+        }
+
         ImGui::End();
     }
 
