@@ -1,12 +1,17 @@
-# Game
+# Game ------------------------------------------------------------------------
+
 - selected block indicator
 - day/night cycle (possible overlay)
 - cave generation
 - cloud generation
 - block update system
-- fix multithreading
 
-# Engine
+# Engine ----------------------------------------------------------------------
+
 - sort transparent meshes before rendering
 - collision system
 - crosshair overlay
+
+# Complete --------------------------------------------------------------------
+
+- fix multithreading (wow I hope so)
