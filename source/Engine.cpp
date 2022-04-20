@@ -10,7 +10,7 @@ void Engine::Initialize()
     KeyboardHandler::Initialize();
     MouseHandler::Initialize();
     ErrorHandler::Initialize();
-    EntityHandler::Initialize();
+    // EntityHandler::Initialize();
 
     // Rendering Components
     TextureMap::Initialize();
@@ -38,12 +38,6 @@ void Engine::Thread()
         Camera::Update();
         // Reset accumulated movement
         MouseHandler::ResetMovement();
-
-        // Updates entities with an update function
-        // Moved to separate thread since it is unreleated to rendering
-        EntityHandler::UpdateEntities();
-
-        // ALL DRAWING SHOULD HAPPEN AFTER ANY ENTITY MOVEMENT
 
 
         // Drawing the mesh render queue
