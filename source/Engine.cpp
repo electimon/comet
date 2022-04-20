@@ -27,7 +27,7 @@ void Engine::Finalize()
 
 void Engine::MainThread()
 {
-    while (!glfwWindowShouldClose(glfwGetCurrentContext()))
+    while (!Engine::IsShouldClose())
     {
         // Clears color and depth buffers
         Renderer::NewFrame();
@@ -59,8 +59,4 @@ void Engine::MainThread()
         Instance().m_TimeDelta = glfwGetTime() - Instance().m_TimeLast;
         Instance().m_TimeLast = glfwGetTime();
     }
-
-    Engine::SetShouldClose(true);
-
-    Finalize();
 }

@@ -78,14 +78,23 @@ void WindowHandler::SetupCallbacks()
     auto FrameBufferCallbackWrapper = [](GLFWwindow *window, int width, int height) {
         static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))->FramebufferSizeCallback(width, height);
     };
+    auto WindowCloseCallbackWrapper = [](GLFWwindow *window) {
+        static_cast<WindowHandler *>(glfwGetWindowUserPointer(window))->WindowCloseCallback();
+    };
 
     glfwSetWindowSizeCallback(glfwGetCurrentContext(), WindowSizeCallbackWrapper);
     glfwSetFramebufferSizeCallback(glfwGetCurrentContext(), FrameBufferCallbackWrapper);
+    glfwSetWindowCloseCallback(glfwGetCurrentContext(), WindowCloseCallbackWrapper);
 }
 
 void WindowHandler::WindowSizeCallback(int width, int height) {}
 
 void WindowHandler::FramebufferSizeCallback(int width, int height) { glViewport(0, 0, width, height); }
+
+void WindowHandler::WindowCloseCallback()
+{
+    Engine::SetShouldClose(true);
+}
 
 bool WindowHandler::ShouldWindowClose() { return glfwWindowShouldClose(Instance().p_GLFWwindow); }
 

@@ -24,9 +24,13 @@ int main(void)
     Player player;
     player.SetPosition({0.0f, 60.0f, 0.0f});
     Camera::SetPosition({0.0f, 60.0f, 0.0f});
-    player.SetRenderDistance(8);
+    player.SetRenderDistance(3);
 
     Engine::MainThread();
+
+    // Ending threads
+    World::Finalize();
+    Engine::Finalize();
 
     return 0;
 }

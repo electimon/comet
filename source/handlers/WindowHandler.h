@@ -3,6 +3,8 @@
 #include <comet.pch>
 #include <glad/gl.h>
 
+#include "Engine.h"
+
 class WindowHandler
 {
   public:
@@ -28,6 +30,7 @@ class WindowHandler
 
     void WindowSizeCallback(int width, int height);
     void FramebufferSizeCallback(int width, int height);
+    void WindowCloseCallback();
 
     GLFWwindow *p_GLFWwindow = nullptr;
 };
