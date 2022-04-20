@@ -18,16 +18,19 @@ void Player::Update()
 
     m_Position = Camera::Position();
     Block blockInsideOf = World::GetBlock(round(m_Position));
-    if (blockInsideOf.ID() == ID::Water)
+    if (blockInsideOf.ID() == ID::Water && blockInsideOf.ID() != m_LastBlockInsideOf.ID())
     {
         SetInWater(true);
         Renderer::SetOverlayColor({-0.1f, -0.1f, 0.3f});
     }
-    else
+
+    if (blockInsideOf.ID() != ID::Water && m_LastBlockInsideOf.ID() == ID::Water)
     {
         SetInWater(false);
         Renderer::SetOverlayColor({0.0f, 0.0f, 0.0f});
     }
+
+    m_LastBlockInsideOf = blockInsideOf;
 
     GetRequestedChunks();
 }
@@ -36,14 +39,14 @@ void Player::GetRequestedChunks()
 {
     glm::ivec3 newChunkIndex = World::GetChunkIndex(m_Position);
 
-    if (newChunkIndex != m_ChunkIndex)
-    {
+    // if (newChunkIndex != m_ChunkIndex)
+    // {
         // Update requested chunks if the chunk index changes
-        std::cout << "Entered chunk: " << newChunkIndex.x << " " << newChunkIndex.z << "\n";
+        // std::cout << "Entered chunk: " << newChunkIndex.x << " " << newChunkIndex.z << "\n";
 
-        m_ChunkIndex = newChunkIndex;
-        World::ProcessRequestedChunks(m_RenderDistance, m_ChunkIndex);
-    }
+        // m_ChunkIndex = newChunkIndex;
+        World::ProcessRequestedChunks(newChunkIndex);
+    // }
 }
 
 void Player::PlaceBlock()
