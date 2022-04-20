@@ -36,9 +36,23 @@ void Renderer::NewFrame()
 
 void Renderer::SwapBuffers() { glfwSwapBuffers(WindowHandler::GetGLFWWindow()); }
 
+void Renderer::ResetRenderer()
+{
+    std::lock_guard<std::mutex> locked1(Instance().m_AddMeshQueueLock);
+    std::lock_guard<std::mutex> locked2(Instance().m_DeleteMeshQueueLock);
+    std::lock_guard<std::mutex> locked3(Instance().m_UpdateMeshQueueLock);
+
+    Instance().m_SolidMeshMap.clear();
+    Instance().m_TransparentMeshMap.clear();
+    Instance().m_MeshesToAdd.clear();
+    Instance().m_MeshesToDelete.clear();
+    Instance().m_MeshesToUpdate.clear();
+}
+
 void Renderer::DrawMeshQueue()
 {
     unsigned int shaderID;
+    auto &renderer = Instance();
 
     ProcessMeshQueues();
 
@@ -49,16 +63,8 @@ void Renderer::DrawMeshQueue()
     glEnable(GL_CULL_FACE);
     glDisable(GL_BLEND);
 
-    unsigned int solidMeshCount = 0;
-    unsigned int transparentMeshCount = 0;
-
-    for (auto &[index, mesh] : Instance().m_MeshMap)
+    for (auto &[index, mesh] : Instance().m_SolidMeshMap)
     {
-        if (index.y == 1)
-            continue;
-
-        solidMeshCount++;
-
         shaderID = mesh.Shader()->GetID();
 
         mesh.Update();
@@ -83,13 +89,8 @@ void Renderer::DrawMeshQueue()
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
 
-    for (auto &[index, mesh] : Instance().m_MeshMap)
+    for (auto &[index, mesh] : Instance().m_TransparentMeshMap)
     {
-        if (index.y == 0)
-            continue;
-
-        transparentMeshCount++;
-
         shaderID = mesh.Shader()->GetID();
 
         mesh.Update();
@@ -136,8 +137,16 @@ void Renderer::ProcessMeshQueues()
         std::lock_guard<std::mutex> locked(Instance().m_AddMeshQueueLock);
         for (const auto &[index, mesh] : Instance().m_MeshesToAdd)
         {
-            Instance().m_MeshMap.insert_or_assign(index, mesh);
-            Instance().m_MeshMap.at(index).Initialize();
+            if (index.y == 0)
+            {
+                Instance().m_SolidMeshMap.insert_or_assign(index, mesh);
+                Instance().m_SolidMeshMap.at(index).Initialize();
+            }
+            else
+            {
+                Instance().m_TransparentMeshMap.insert_or_assign(index, mesh);
+                Instance().m_TransparentMeshMap.at(index).Initialize();
+            }
         }
         Instance().m_MeshesToAdd.clear();
     }
@@ -146,7 +155,10 @@ void Renderer::ProcessMeshQueues()
         std::lock_guard<std::mutex> locked(Instance().m_UpdateMeshQueueLock);
         for (const auto &index : Instance().m_MeshesToUpdate)
         {
-            Instance().m_MeshMap.at(index).UpdateGeometry();
+            if (index.y == 0)
+                Instance().m_SolidMeshMap.at(index).UpdateGeometry();
+            else
+                Instance().m_TransparentMeshMap.at(index).UpdateGeometry();
         }
         Instance().m_MeshesToUpdate.clear();
     }
@@ -155,10 +167,21 @@ void Renderer::ProcessMeshQueues()
         std::lock_guard<std::mutex> locked(Instance().m_DeleteMeshQueueLock);
         for (const auto &index : Instance().m_MeshesToDelete)
         {
-            if (Instance().m_MeshMap.find(index) != Instance().m_MeshMap.end())
+            if (index.y == 0)
             {
-                Instance().m_MeshMap.at(index).Finalize();
-                Instance().m_MeshMap.erase(index);
+                if (Instance().m_SolidMeshMap.find(index) != Instance().m_SolidMeshMap.end())
+                {
+                    Instance().m_SolidMeshMap.at(index).Finalize();
+                    Instance().m_SolidMeshMap.erase(index);
+                }
+            }
+            else
+            {
+                if (Instance().m_TransparentMeshMap.find(index) != Instance().m_TransparentMeshMap.end())
+                {
+                    Instance().m_TransparentMeshMap.at(index).Finalize();
+                    Instance().m_TransparentMeshMap.erase(index);
+                }
             }
         }
         Instance().m_MeshesToDelete.clear();

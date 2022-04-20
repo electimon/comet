@@ -27,6 +27,7 @@ class Renderer
     static void DrawInterfaceQueue();
 
     static void ProcessMeshQueues();
+    static void ResetRenderer();
     static void AddMeshToQueue(const glm::ivec3 &index, const Mesh &mesh);
     static void UpdateMeshInQueue(const glm::ivec3 &index);
     static void DeleteMeshFromQueue(const glm::ivec3 &index);
@@ -45,7 +46,8 @@ class Renderer
     glm::vec3 m_OverlayColor;
     glm::vec3 m_BackgroundColor;
 
-    std::unordered_map<glm::ivec3, Mesh> m_MeshMap;
+    std::unordered_map<glm::ivec3, Mesh> m_SolidMeshMap;
+    std::unordered_map<glm::ivec3, Mesh> m_TransparentMeshMap;
 
     // Queues for safe mesh management
     std::unordered_map<glm::ivec3, Mesh> m_MeshesToAdd;
