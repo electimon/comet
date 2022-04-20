@@ -4,14 +4,14 @@
 Player::Player()
 {
     Camera::SetPosition(m_Position);
-    EntityHandler::AddEntityToQueue(this);
+    EntityHandler::AddEntity(this);
 }
 
 Player::~Player() {}
 
 void Player::Update()
 {
-    ProcessClicks(); 
+    ProcessClicks();
     ProcessKeys();
     ProcessScrolls();
 
