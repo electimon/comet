@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+Lock Renderer::QueueLock;
+
 void Renderer::Initialize()
 {
     // Creates the static instance in memory
@@ -34,14 +36,13 @@ void Renderer::NewFrame()
     glClearColor(Instance().m_BackgroundColor.x, Instance().m_BackgroundColor.y, Instance().m_BackgroundColor.z, 0.0f);
 }
 
-void Renderer::SwapBuffers() { glfwSwapBuffers(WindowHandler::GetGLFWWindow()); }
+void Renderer::SwapBuffers() { glfwSwapBuffers(glfwGetCurrentContext()); }
 
 void Renderer::ResetRenderer()
 {
-    std::lock_guard<std::mutex> locked1(Instance().m_AddMeshQueueLock);
-    std::lock_guard<std::mutex> locked2(Instance().m_DeleteMeshQueueLock);
-    std::lock_guard<std::mutex> locked3(Instance().m_UpdateMeshQueueLock);
+    SetResetting(true);
 
+    // Resetting all render queues
     Instance().m_SolidMeshMap.clear();
     Instance().m_TransparentMeshMap.clear();
     Instance().m_MeshesToAdd.clear();
@@ -131,77 +132,77 @@ void Renderer::DrawInterfaceQueue()
     }
 }
 
-void Renderer::ProcessMeshQueues()
-{
-    {
-        std::lock_guard<std::mutex> locked(Instance().m_AddMeshQueueLock);
-        for (const auto &[index, mesh] : Instance().m_MeshesToAdd)
-        {
-            if (index.y == 0)
-            {
-                Instance().m_SolidMeshMap.insert_or_assign(index, mesh);
-                Instance().m_SolidMeshMap.at(index).Initialize();
-            }
-            else
-            {
-                Instance().m_TransparentMeshMap.insert_or_assign(index, mesh);
-                Instance().m_TransparentMeshMap.at(index).Initialize();
-            }
-        }
-        Instance().m_MeshesToAdd.clear();
-    }
-
-    {
-        std::lock_guard<std::mutex> locked(Instance().m_UpdateMeshQueueLock);
-        for (const auto &index : Instance().m_MeshesToUpdate)
-        {
-            if (index.y == 0)
-                Instance().m_SolidMeshMap.at(index).UpdateGeometry();
-            else
-                Instance().m_TransparentMeshMap.at(index).UpdateGeometry();
-        }
-        Instance().m_MeshesToUpdate.clear();
-    }
-
-    {
-        std::lock_guard<std::mutex> locked(Instance().m_DeleteMeshQueueLock);
-        for (const auto &index : Instance().m_MeshesToDelete)
-        {
-            if (index.y == 0)
-            {
-                if (Instance().m_SolidMeshMap.find(index) != Instance().m_SolidMeshMap.end())
-                {
-                    Instance().m_SolidMeshMap.at(index).Finalize();
-                    Instance().m_SolidMeshMap.erase(index);
-                }
-            }
-            else
-            {
-                if (Instance().m_TransparentMeshMap.find(index) != Instance().m_TransparentMeshMap.end())
-                {
-                    Instance().m_TransparentMeshMap.at(index).Finalize();
-                    Instance().m_TransparentMeshMap.erase(index);
-                }
-            }
-        }
-        Instance().m_MeshesToDelete.clear();
-    }
-}
-
 void Renderer::AddMeshToQueue(const glm::ivec3 &index, const Mesh &mesh)
 {
-    std::lock_guard<std::mutex> locked(Instance().m_AddMeshQueueLock);
+    QueueLock.AddQueue.lock();
     Instance().m_MeshesToAdd.insert_or_assign(index, mesh);
+    QueueLock.AddQueue.unlock();
 }
 
 void Renderer::UpdateMeshInQueue(const glm::ivec3 &index)
 {
-    std::lock_guard<std::mutex> locked(Instance().m_UpdateMeshQueueLock);
+    QueueLock.UpdateQueue.lock();
     Instance().m_MeshesToUpdate.insert(index);
+    QueueLock.UpdateQueue.unlock();
 }
 
 void Renderer::DeleteMeshFromQueue(const glm::ivec3 &index)
 {
-    std::lock_guard<std::mutex> locked(Instance().m_DeleteMeshQueueLock);
+    QueueLock.DeleteQueue.lock();
     Instance().m_MeshesToDelete.insert(index);
+    QueueLock.DeleteQueue.unlock();
+}
+
+void Renderer::ProcessMeshQueues()
+{
+    QueueLock.AddQueue.lock();
+    for (const auto &[index, mesh] : Instance().m_MeshesToAdd)
+    {
+        if (index.y == 0)
+        {
+            Instance().m_SolidMeshMap.insert_or_assign(index, mesh);
+            Instance().m_SolidMeshMap.at(index).Initialize();
+        }
+        else
+        {
+            Instance().m_TransparentMeshMap.insert_or_assign(index, mesh);
+            Instance().m_TransparentMeshMap.at(index).Initialize();
+        }
+    }
+    Instance().m_MeshesToAdd.clear();
+    QueueLock.AddQueue.unlock();
+
+    QueueLock.UpdateQueue.lock();
+    for (const auto &index : Instance().m_MeshesToUpdate)
+    {
+        if (index.y == 0)
+            Instance().m_SolidMeshMap.at(index).UpdateGeometry();
+        else
+            Instance().m_TransparentMeshMap.at(index).UpdateGeometry();
+    }
+    Instance().m_MeshesToUpdate.clear();
+    QueueLock.UpdateQueue.unlock();
+
+    QueueLock.DeleteQueue.lock();
+    for (const auto &index : Instance().m_MeshesToDelete)
+    {
+        if (index.y == 0)
+        {
+            if (Instance().m_SolidMeshMap.find(index) != Instance().m_SolidMeshMap.end())
+            {
+                Instance().m_SolidMeshMap.at(index).Finalize();
+                Instance().m_SolidMeshMap.erase(index);
+            }
+        }
+        else
+        {
+            if (Instance().m_TransparentMeshMap.find(index) != Instance().m_TransparentMeshMap.end())
+            {
+                Instance().m_TransparentMeshMap.at(index).Finalize();
+                Instance().m_TransparentMeshMap.erase(index);
+            }
+        }
+    }
+    Instance().m_MeshesToDelete.clear();
+    QueueLock.DeleteQueue.unlock();
 }
