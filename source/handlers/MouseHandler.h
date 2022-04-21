@@ -22,16 +22,8 @@ class MouseHandler
 
     // +x is moving the mouse right
     // +y is moving the mouse forward
-    static double GetDeltaX();
-    static double GetDeltaY();
-
     static void CaptureCursor();
     static void ReleaseCursor();
-
-    static bool GetLeftClick();
-    static bool GetLeftHold();
-    static bool GetRightClick();
-    static bool GetRightHold();
 
   private:
     MouseHandler() {}
@@ -55,5 +47,10 @@ class MouseHandler
 
   public:
     static double ScrollOffset() { return Instance().m_ScrollOffset; }
-    static void SetScrollOffset(double ScrollOffset) { Instance().m_ScrollOffset = ScrollOffset; }
+    static double DeltaX() { return Instance().m_MovementSinceLastFrame[0]; }
+    static double DeltaY() { return Instance().m_MovementSinceLastFrame[1]; }
+    static bool LeftClick() { return Instance().m_LeftClick; }
+    static bool LeftHold() { return Instance().m_LeftHold; }
+    static bool RightClick() { return Instance().m_RightClick; }
+    static bool RightHold() { return Instance().m_RightHold; }
 };

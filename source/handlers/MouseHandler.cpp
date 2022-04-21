@@ -46,7 +46,7 @@ void MouseHandler::CursorPosCallback(double xpos, double ypos)
         m_MovementSinceLastFrame[1] -= ypos;
 
         // Setting cursor back so next callback is relative from center again
-        glfwSetCursorPos(WindowHandler::GetGLFWWindow(), 0.0, 0.0);
+        glfwSetCursorPos(WindowHandler::GLFWWindow(), 0.0, 0.0);
     }
     else
     {
@@ -57,7 +57,7 @@ void MouseHandler::CursorPosCallback(double xpos, double ypos)
 
 void MouseHandler::UpdateStates()
 {
-    if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+    if (glfwGetMouseButton(WindowHandler::GLFWWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
         if (!Instance().m_LeftClick && !Instance().m_LeftHold)
         {
@@ -75,7 +75,7 @@ void MouseHandler::UpdateStates()
         Instance().m_LeftHold = false;
     }
 
-    if (glfwGetMouseButton(WindowHandler::GetGLFWWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+    if (glfwGetMouseButton(WindowHandler::GLFWWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
         if (!Instance().m_RightClick && !Instance().m_RightHold)
         {
@@ -106,31 +106,22 @@ void MouseHandler::CaptureCursor()
 {
     if (glfwRawMouseMotionSupported())
     {
-        glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        glfwSetInputMode(WindowHandler::GLFWWindow(), GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
     }
 
-    glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(WindowHandler::GLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     Instance().m_CursorCaptured = true;
 
     // Need to center cursor before cursor position callback is run
     // Prevents a possibly large xpos/ypos when entering the window
-    glfwSetCursorPos(WindowHandler::GetGLFWWindow(), 0.0, 0.0);
+    glfwSetCursorPos(WindowHandler::GLFWWindow(), 0.0, 0.0);
 }
 void MouseHandler::ReleaseCursor()
 {
-    glfwSetInputMode(WindowHandler::GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(WindowHandler::GLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     Instance().m_CursorCaptured = false;
 }
 
-double MouseHandler::GetDeltaX() { return Instance().m_MovementSinceLastFrame[0]; }
-double MouseHandler::GetDeltaY() { return Instance().m_MovementSinceLastFrame[1]; }
 
-bool MouseHandler::GetLeftClick() { return Instance().m_LeftClick; }
-
-bool MouseHandler::GetLeftHold() { return Instance().m_LeftHold; }
-
-bool MouseHandler::GetRightClick() { return Instance().m_RightClick; }
-
-bool MouseHandler::GetRightHold() { return Instance().m_RightHold; }
 
 void MouseHandler::ResetMovement() { Instance().m_MovementSinceLastFrame = {0.0, 0.0}; }

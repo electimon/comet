@@ -19,7 +19,6 @@ class WindowHandler
     static void SetupCallbacks();
 
     static bool ShouldWindowClose();
-    static GLFWwindow *GetGLFWWindow();
 
     int CreateWindow();
 
@@ -32,5 +31,8 @@ class WindowHandler
     void FramebufferSizeCallback(int width, int height);
     void WindowCloseCallback();
 
-    GLFWwindow *p_GLFWwindow = nullptr;
+    GLFWwindow *m_GLFWWindow = nullptr;
+
+  public:
+    static GLFWwindow *GLFWWindow() { return Instance().m_GLFWWindow; }
 };
