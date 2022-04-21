@@ -49,13 +49,15 @@ void Player::PlaceBlock()
     glm::vec3 position = Camera::Position();
     glm::vec3 positionLast = position;
 
-    bool first = false;
+    bool first = true;
 
     while (glm::length(direction) < 5.0f)
     {
         direction += glm::normalize(direction) * step;
         if (World::GetBlock(round(position + direction)).ID() != 0)
         {
+            // If there is a block on the first check, player is either
+            // inside of a block or way too close.
             if (first)
             {
                 return;
