@@ -15,7 +15,9 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
     m_ID = glCreateProgram();
 
     unsigned int vertexID, fragmentID;
-    int success;
+    int successvert;
+    int successfrag;
+    int successlink;
     char infoLog[512];
 
     // Vertex Shader
@@ -28,8 +30,8 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
         glCompileShader(vertexID);
     }
 
-    glGetShaderiv(vertexID, GL_COMPILE_STATUS, &success);
-    if (!success)
+    glGetShaderiv(vertexID, GL_COMPILE_STATUS, &successvert);
+    if (!successvert)
     {
         glGetShaderInfoLog(vertexID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << "\n";
@@ -45,8 +47,8 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
         glCompileShader(fragmentID);
     }
 
-    glGetShaderiv(fragmentID, GL_COMPILE_STATUS, &success);
-    if (!success)
+    glGetShaderiv(fragmentID, GL_COMPILE_STATUS, &successfrag);
+    if (!successfrag)
     {
         glGetShaderInfoLog(fragmentID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << "\n";
@@ -56,8 +58,9 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
     glAttachShader(m_ID, fragmentID);
     glLinkProgram(m_ID);
 
-    glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
-    if (!success)
+
+    glGetProgramiv(m_ID, GL_LINK_STATUS, &successlink);
+    if (!successlink)
     {
         glGetProgramInfoLog(m_ID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << "\n";
@@ -65,6 +68,11 @@ void ShaderProgram::Create(const char *vertFile, const char *fragFile)
 
     glDeleteShader(vertexID);
     glDeleteShader(fragmentID);
+
+    if (successvert && successfrag && successlink)
+    {
+        std::cout << "Successfully compiled shader: " << m_ID << "\n";
+    }
 }
 
 void ShaderProgram::Delete() { glDeleteProgram(m_ID); }
