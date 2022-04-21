@@ -1,5 +1,6 @@
 #include "Engine.h"
 
+#include "interfaces/CrosshairInterface.h"
 #include "interfaces/RenderInterface.h"
 
 #include "entities/Player.h"
@@ -27,6 +28,7 @@ int main(void)
 
     // Create the debugging menu
     RenderInterface renderInterface;
+    CrosshairInterface crosshairInterface;
 
     // Starting main engine thread
     Engine::Thread();
