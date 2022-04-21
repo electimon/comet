@@ -48,7 +48,7 @@ void Chunk::Generate()
     }
     else
     {
-        std::cout << "Chunk file not found, generating new chunk...\n";
+        // std::cout << "Chunk file not found, generating new chunk...\n";
         // World Generation
         GenerateSurface();
         GenerateBedrock();
@@ -320,7 +320,7 @@ void Chunk::GenerateMesh()
                     currentBlock.IsTransparent() ? m_TransparentGeometry.Offset : m_SolidGeometry.Offset;
 
                 // Get indices of texture for given block ID
-                std::array<unsigned char, 6> blockIndices = BlockTextures::GetIndices(currentBlock.ID());
+                std::array<unsigned char, 6> blockIndices = BlockLibrary::GetIndices(currentBlock.ID());
 
                 // Getting block IDs of surrounding blocks
                 if (x == 0)

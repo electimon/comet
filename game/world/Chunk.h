@@ -82,6 +82,5 @@ struct Chunk
     Geometry *TransparentGeometry() { return &m_TransparentGeometry; }
 
     template <class Archive> void save(Archive &ar) const { ar(m_BlockData); }
-
     template <class Archive> void load(Archive &ar) { ar(m_BlockData); }
 };

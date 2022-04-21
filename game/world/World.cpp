@@ -37,7 +37,7 @@ void World::Initialize()
     std::filesystem::create_directory("world");
 
     ChunkGenerator::Initialize();
-    BlockTextures::Initialize();
+    BlockLibrary::Initialize();
 
     Instance().m_ChunkDataMap.clear();
     Instance().m_ChunkRenderMap.clear();
@@ -92,17 +92,17 @@ void World::SetBlock(const glm::ivec3 &worldPos, Block blockToSet)
         Instance().m_ChunkDataMap.at(index).GenerateMesh();
         Instance().m_ChunkDataMap.at(index).SetModified(true);
 
-        if (blockToSet.IsTransparent() && blockToReplace.IsTransparent())
-        {
-            Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
-            return;
-        }
+        // if (blockToSet.IsTransparent() && blockToReplace.IsTransparent())
+        // {
+        //     Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
+        //     return;
+        // }
 
-        if (!blockToSet.IsTransparent() && !blockToReplace.IsTransparent())
-        {
-            Renderer::UpdateMeshInQueue(index);
-            return;
-        }
+        // if (!blockToSet.IsTransparent() && !blockToReplace.IsTransparent())
+        // {
+        //     Renderer::UpdateMeshInQueue(index);
+        //     return;
+        // }
 
         Renderer::UpdateMeshInQueue(index);
         Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
