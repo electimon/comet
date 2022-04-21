@@ -92,6 +92,11 @@ void Renderer::DrawMeshQueue()
 
     for (auto &[index, mesh] : Instance().m_TransparentMeshMap)
     {
+        // To save some draw calls, if the mesh contains no transparency,
+        // the mesh is skipped in this loop
+        if (!(mesh.Count() > 0))
+            continue;
+
         shaderID = mesh.Shader()->GetID();
 
         mesh.Update();
