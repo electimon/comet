@@ -22,7 +22,7 @@ void World::Thread()
 
     while (!Engine::IsShouldClose() && !Renderer::IsResetting())
     {
-        EntityHandler::UpdateEntities();
+        EntityHandler::Update();
 
         Generate();
 
@@ -74,7 +74,7 @@ Block World::GetBlock(const glm::ivec3 &worldPos)
     }
 }
 
-void World::SetBlock(const glm::ivec3 &worldPos, Block block)
+void World::SetBlock(const glm::ivec3 &worldPos, Block blockToSet)
 {
     if (worldPos.y > CHUNK_HEIGHT)
     {
@@ -86,18 +86,26 @@ void World::SetBlock(const glm::ivec3 &worldPos, Block block)
 
     if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
     {
-        Instance().m_ChunkDataMap.at(index).SetBlock({chunkCoord.x, chunkCoord.y, chunkCoord.z}, block);
+        Block blockToReplace = Instance().m_ChunkDataMap.at(index).GetBlock(chunkCoord);
+
+        Instance().m_ChunkDataMap.at(index).SetBlock({chunkCoord.x, chunkCoord.y, chunkCoord.z}, blockToSet);
         Instance().m_ChunkDataMap.at(index).GenerateMesh();
         Instance().m_ChunkDataMap.at(index).SetModified(true);
 
-        if (block.IsTransparent())
+        if (blockToSet.IsTransparent() && blockToReplace.IsTransparent())
         {
             Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
+            return;
         }
-        else
+
+        if (!blockToSet.IsTransparent() && !blockToReplace.IsTransparent())
         {
             Renderer::UpdateMeshInQueue(index);
+            return;
         }
+
+        Renderer::UpdateMeshInQueue(index);
+        Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
 
         return;
     }
@@ -234,10 +242,7 @@ void World::Generate()
 
         // Adding to Renderer
         Renderer::AddMeshToQueue(index, solidMesh);
-        if (transparentMesh.Count() > 0)
-        {
-            Renderer::AddMeshToQueue({index.x, index.y + 1, index.z}, transparentMesh);
-        }
+        Renderer::AddMeshToQueue({index.x, index.y + 1, index.z}, transparentMesh);
     }
     world.m_ChunksToRender.clear();
 
