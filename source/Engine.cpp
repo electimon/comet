@@ -39,6 +39,9 @@ void Engine::Thread()
         MouseHandler::ResetMovement();
 
 
+        EntityHandler::FrameUpdate();
+
+
         // Drawing the mesh render queue
         Renderer::DrawMeshQueue();
         // Draw UI after everything else
