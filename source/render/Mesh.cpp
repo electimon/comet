@@ -50,11 +50,6 @@ void Mesh::Initialize()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     m_PushedToGPU = true;
-
-    // m_Vertices->clear();
-    // m_Vertices->shrink_to_fit();
-    // m_Indices->clear();
-    // m_Indices->shrink_to_fit();
 }
 
 void Mesh::Update()
