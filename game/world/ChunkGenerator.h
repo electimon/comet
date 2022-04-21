@@ -110,6 +110,7 @@ class ChunkGenerator
         // move all chunk generation into here eventually
     }
 
+    static int Seed() { return Instance().m_Seed; }
     static void SetSeed(int seed)
     {
         Instance().m_Seed = seed;
@@ -147,4 +148,6 @@ class ChunkGenerator
     FastNoiseLite m_OpenSimplex2_4f;
     FastNoiseLite m_OpenSimplex2_8f;
     FastNoiseLite m_OpenSimplex2_16f;
+
+  public:
 };
