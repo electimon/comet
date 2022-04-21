@@ -21,7 +21,7 @@ void Renderer::Initialize()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-    ImGui_ImplGlfw_InitForOpenGL(WindowHandler::GetGLFWWindow(), true);
+    ImGui_ImplGlfw_InitForOpenGL(WindowHandler::GLFWWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
 
     Instance().m_BackgroundColor = glm::vec3(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f);
@@ -137,21 +137,21 @@ void Renderer::DrawInterfaceQueue()
     }
 }
 
-void Renderer::AddMeshToQueue(const glm::ivec3 &index, const Mesh &mesh)
+void Renderer::AddMeshToQueue(glm::ivec3 index, const Mesh &mesh)
 {
     QueueLock.AddQueue.lock();
     Instance().m_MeshesToAdd.insert_or_assign(index, mesh);
     QueueLock.AddQueue.unlock();
 }
 
-void Renderer::UpdateMeshInQueue(const glm::ivec3 &index)
+void Renderer::UpdateMeshInQueue(glm::ivec3 index)
 {
     QueueLock.UpdateQueue.lock();
     Instance().m_MeshesToUpdate.insert(index);
     QueueLock.UpdateQueue.unlock();
 }
 
-void Renderer::DeleteMeshFromQueue(const glm::ivec3 &index)
+void Renderer::DeleteMeshFromQueue(glm::ivec3 index)
 {
     QueueLock.DeleteQueue.lock();
     Instance().m_MeshesToDelete.insert(index);

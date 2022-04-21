@@ -59,7 +59,7 @@ void World::Finalize()
     Instance().m_Thread.join();
 }
 
-Block World::GetBlock(const glm::ivec3 &worldPos)
+Block World::GetBlock(glm::ivec3 worldPos)
 {
     glm::ivec3 index = GetChunkIndex(worldPos);
     glm::ivec3 chunkCoord = GetChunkCoord(worldPos);
@@ -74,7 +74,7 @@ Block World::GetBlock(const glm::ivec3 &worldPos)
     }
 }
 
-void World::SetBlock(const glm::ivec3 &worldPos, Block blockToSet)
+void World::SetBlock(glm::ivec3 worldPos, Block blockToSet)
 {
     if (worldPos.y > CHUNK_HEIGHT)
     {
@@ -92,18 +92,6 @@ void World::SetBlock(const glm::ivec3 &worldPos, Block blockToSet)
         Instance().m_ChunkDataMap.at(index).GenerateMesh();
         Instance().m_ChunkDataMap.at(index).SetModified(true);
 
-        // if (blockToSet.IsTransparent() && blockToReplace.IsTransparent())
-        // {
-        //     Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
-        //     return;
-        // }
-
-        // if (!blockToSet.IsTransparent() && !blockToReplace.IsTransparent())
-        // {
-        //     Renderer::UpdateMeshInQueue(index);
-        //     return;
-        // }
-
         Renderer::UpdateMeshInQueue(index);
         Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
 
@@ -115,32 +103,29 @@ void World::SetBlock(const glm::ivec3 &worldPos, Block blockToSet)
     }
 }
 
-glm::ivec3 World::GetChunkCoord(const glm::ivec3 &worldPos)
+glm::ivec3 World::GetChunkCoord(glm::ivec3 worldPos)
 {
-    glm::ivec3 chunkIndex = GetChunkIndex(worldPos);
-    glm::ivec3 chunkPos = worldPos;
-
-    while (chunkPos.x < 0)
+    while (worldPos.x < 0)
     {
-        chunkPos.x += CHUNK_WIDTH;
+        worldPos.x += CHUNK_WIDTH;
     }
-    while (chunkPos.x > CHUNK_WIDTH - 1)
+    while (worldPos.x > CHUNK_WIDTH - 1)
     {
-        chunkPos.x -= CHUNK_WIDTH;
+        worldPos.x -= CHUNK_WIDTH;
     }
-    while (chunkPos.z < 0)
+    while (worldPos.z < 0)
     {
-        chunkPos.z += CHUNK_WIDTH;
+        worldPos.z += CHUNK_WIDTH;
     }
-    while (chunkPos.z > CHUNK_WIDTH - 1)
+    while (worldPos.z > CHUNK_WIDTH - 1)
     {
-        chunkPos.z -= CHUNK_WIDTH;
+        worldPos.z -= CHUNK_WIDTH;
     }
 
-    return chunkPos;
+    return worldPos;
 }
 
-glm::ivec3 World::GetChunkIndex(const glm::ivec3 &worldPos)
+glm::ivec3 World::GetChunkIndex(glm::ivec3 worldPos)
 {
     glm::ivec3 chunkIndex(0, 0, 0);
 
@@ -150,7 +135,7 @@ glm::ivec3 World::GetChunkIndex(const glm::ivec3 &worldPos)
     return chunkIndex;
 }
 
-void World::ProcessRequestedChunks(const glm::ivec3 &centerChunkIndex)
+void World::ProcessRequestedChunks(glm::ivec3 centerChunkIndex)
 {
     glm::ivec3 index;
     std::unordered_set<glm::ivec3> chunksGenerated;
@@ -221,6 +206,7 @@ void World::Generate()
         // Generates chunk data
         // TODO: chunk destructor is called here, big memory issue here
         world.m_ChunkDataMap.insert_or_assign(index, Chunk(index));
+        world.m_ChunkDataMap.at(index).Allocate();
         world.m_ChunkDataMap.at(index).Generate();
     }
     world.m_ChunksToGenerate.clear();

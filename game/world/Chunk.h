@@ -23,6 +23,7 @@ struct Chunk
     ~Chunk();
 
     // For use by world manager
+    void Allocate();
     void Generate();
 
     void GenerateSurface();
@@ -48,7 +49,7 @@ struct Chunk
         return m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH + chunkPos.y * CHUNK_WIDTH + chunkPos.z);
     }
 
-    inline void SetBlock(const glm::ivec3 &chunkPos, Block block)
+    inline void SetBlock(glm::ivec3 chunkPos, Block block)
     {
         m_BlockData.at(chunkPos.x * CHUNK_HEIGHT * CHUNK_WIDTH + chunkPos.y * CHUNK_WIDTH + chunkPos.z) = block;
     }
@@ -57,8 +58,8 @@ struct Chunk
     float GetHeight(int x, int z) { return m_HeightData.at(CHUNK_WIDTH * x + z); }
 
   private:
-    // testing new data format
-    std::array<Block, CHUNK_WIDTH * CHUNK_WIDTH * CHUNK_HEIGHT> m_BlockData;
+    std::array<Block, CHUNK_SIZE> m_BlockData;
+
     // only used during generation, not needed when saving chunk
     std::array<int, CHUNK_WIDTH * CHUNK_WIDTH> m_HeightData;
 

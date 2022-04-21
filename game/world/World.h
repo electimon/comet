@@ -27,15 +27,15 @@ class World
 
     static void Generate();
 
-    static Block GetBlock(const glm::ivec3 &worldPos);
-    static void SetBlock(const glm::ivec3 &worldPos, Block block);
-    static glm::ivec3 GetChunkCoord(const glm::ivec3 &worldPos);
-    static glm::ivec3 GetChunkIndex(const glm::ivec3 &worldPos);
+    static Block GetBlock(glm::ivec3 worldPos);
+    static void SetBlock(glm::ivec3 worldPos, Block block);
+    static glm::ivec3 GetChunkCoord(glm::ivec3 worldPos);
+    static glm::ivec3 GetChunkIndex(glm::ivec3 worldPos);
 
     static void SetShader(const ShaderProgram &shader) { Instance().m_Shader = shader; }
     static void SetSeed(int seed) { ChunkGenerator::SetSeed(seed); }
     static int Seed() { return Instance().m_Seed; }
-    static void ProcessRequestedChunks(const glm::ivec3 &centerChunkIndex);
+    static void ProcessRequestedChunks(glm::ivec3 centerChunkIndex);
 
     // Shader Functions
     const ShaderProgram &GetShader() { return m_Shader; }

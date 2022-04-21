@@ -14,16 +14,7 @@
 
 #include <cereal/archives/binary.hpp>
 
-Chunk::Chunk(glm::ivec3 id) : m_Chunk(id)
-{
-    m_BlockData.fill(Block(0, true));
-    m_HeightData.fill(0);
-
-    m_SolidGeometry.Vertices.reserve(7000);
-    m_SolidGeometry.Indices.reserve(7000);
-    m_TransparentGeometry.Vertices.reserve(7000);
-    m_TransparentGeometry.Indices.reserve(7000);
-}
+Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {}
 
 Chunk::~Chunk()
 {
@@ -36,6 +27,17 @@ Chunk::~Chunk()
     }
 }
 
+void Chunk::Allocate()
+{
+    m_BlockData.fill(Block(0, true));
+    m_HeightData.fill(0);
+
+    m_SolidGeometry.Vertices.reserve(7000);
+    m_SolidGeometry.Indices.reserve(7000);
+    m_TransparentGeometry.Vertices.reserve(7000);
+    m_TransparentGeometry.Indices.reserve(7000);
+}
+
 void Chunk::Generate()
 {
     std::string filename = ".\\world\\" + std::to_string(m_Chunk.x) + " " + std::to_string(m_Chunk.z) + ".bin";
@@ -45,9 +47,13 @@ void Chunk::Generate()
         std::ifstream is(filename, std::ios::binary);
         cereal::BinaryInputArchive archive(is);
         archive(m_BlockData);
+
+        SetGenerated(false);
     }
     else
     {
+        // Timer timer("Generate()");
+
         // std::cout << "Chunk file not found, generating new chunk...\n";
         // World Generation
         GenerateSurface();
@@ -56,9 +62,9 @@ void Chunk::Generate()
         GenerateTrees();
         GenerateSand();
         GenerateWater();
-    }
 
-    m_Generated = true;
+        SetGenerated(true);
+    }
 }
 
 void Chunk::GenerateSurface()
@@ -289,6 +295,8 @@ void Chunk::GenerateSand()
 
 void Chunk::GenerateMesh()
 {
+    // Timer timer("GenerateMesh()");
+
     m_SolidGeometry.Vertices.clear();
     m_SolidGeometry.Indices.clear();
     m_SolidGeometry.Offset = 0;
@@ -388,18 +396,17 @@ void Chunk::GenerateMesh()
                 {
                     geometry.Indices.insert(geometry.Indices.end(),
                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    geometry.Vertices.insert(
-                        geometry.Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[0]),
-                                   {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[0]),
-                                   {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[0]),
-                                   {+1.0f, 0.0f, 0.0f}),
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[0]),
-                                   {+1.0f, 0.0f, 0.0f}),
-                        });
+                    geometry.Vertices.insert(geometry.Vertices.end(),
+                                             {
+                                                 Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
+                                                        TextureMap::TopRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                                                 Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
+                                                        TextureMap::BottomRight(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                                                 Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
+                                                        TextureMap::BottomLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                                                 Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
+                                                        TextureMap::TopLeft(blockIndices[0]), {+1.0f, 0.0f, 0.0f}),
+                                             });
                     offset += 4;
                 }
 
@@ -408,18 +415,17 @@ void Chunk::GenerateMesh()
                 {
                     geometry.Indices.insert(geometry.Indices.end(),
                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    geometry.Vertices.insert(
-                        geometry.Vertices.end(),
-                        {
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[1]),
-                                   {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[1]),
-                                   {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[1]),
-                                   {-1.0f, 0.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[1]),
-                                   {-1.0f, 0.0f, 0.0f}),
-                        });
+                    geometry.Vertices.insert(geometry.Vertices.end(),
+                                             {
+                                                 Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
+                                                        TextureMap::TopRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                                                 Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
+                                                        TextureMap::TopLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                                                 Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
+                                                        TextureMap::BottomLeft(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                                                 Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
+                                                        TextureMap::BottomRight(blockIndices[1]), {-1.0f, 0.0f, 0.0f}),
+                                             });
                     offset += 4;
                 }
 
@@ -428,18 +434,17 @@ void Chunk::GenerateMesh()
                 {
                     geometry.Indices.insert(geometry.Indices.end(),
                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    geometry.Vertices.insert(
-                        geometry.Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopLeft(blockIndices[2]),
-                                   {0.0f, +1.0f, 0.0f}),
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopRight(blockIndices[2]),
-                                   {0.0f, +1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetBottomRight(blockIndices[2]),
-                                   {0.0f, +1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetBottomLeft(blockIndices[2]),
-                                   {0.0f, +1.0f, 0.0f}),
-                        });
+                    geometry.Vertices.insert(geometry.Vertices.end(),
+                                             {
+                                                 Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
+                                                        TextureMap::TopLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                                                 Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
+                                                        TextureMap::TopRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                                                 Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
+                                                        TextureMap::BottomRight(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                                                 Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
+                                                        TextureMap::BottomLeft(blockIndices[2]), {0.0f, +1.0f, 0.0f}),
+                                             });
                     offset += 4;
                 }
 
@@ -448,18 +453,17 @@ void Chunk::GenerateMesh()
                 {
                     geometry.Indices.insert(geometry.Indices.end(),
                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    geometry.Vertices.insert(
-                        geometry.Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[3]),
-                                   {0.0f, -1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[3]),
-                                   {0.0f, -1.0f, 0.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[3]),
-                                   {0.0f, -1.0f, 0.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[3]),
-                                   {0.0f, -1.0f, 0.0f}),
-                        });
+                    geometry.Vertices.insert(geometry.Vertices.end(),
+                                             {
+                                                 Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
+                                                        TextureMap::TopRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                                                 Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
+                                                        TextureMap::BottomRight(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                                                 Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
+                                                        TextureMap::BottomLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                                                 Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
+                                                        TextureMap::TopLeft(blockIndices[3]), {0.0f, -1.0f, 0.0f}),
+                                             });
                     offset += 4;
                 }
 
@@ -468,18 +472,17 @@ void Chunk::GenerateMesh()
                 {
                     geometry.Indices.insert(geometry.Indices.end(),
                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    geometry.Vertices.insert(
-                        geometry.Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopRight(blockIndices[4]),
-                                   {0.0f, 0.0f, +1.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z + 0.5f}, TextureMap::GetTopLeft(blockIndices[4]),
-                                   {0.0f, 0.0f, +1.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomLeft(blockIndices[4]),
-                                   {0.0f, 0.0f, +1.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z + 0.5f}, TextureMap::GetBottomRight(blockIndices[4]),
-                                   {0.0f, 0.0f, +1.0f}),
-                        });
+                    geometry.Vertices.insert(geometry.Vertices.end(),
+                                             {
+                                                 Vertex({x + 0.5f, y + 0.5f, z + 0.5f},
+                                                        TextureMap::TopRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                                                 Vertex({x - 0.5f, y + 0.5f, z + 0.5f},
+                                                        TextureMap::TopLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                                                 Vertex({x - 0.5f, y - 0.5f, z + 0.5f},
+                                                        TextureMap::BottomLeft(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                                                 Vertex({x + 0.5f, y - 0.5f, z + 0.5f},
+                                                        TextureMap::BottomRight(blockIndices[4]), {0.0f, 0.0f, +1.0f}),
+                                             });
                     offset += 4;
                 }
 
@@ -488,21 +491,25 @@ void Chunk::GenerateMesh()
                 {
                     geometry.Indices.insert(geometry.Indices.end(),
                                             {0 + offset, 1 + offset, 2 + offset, 2 + offset, 3 + offset, 0 + offset});
-                    geometry.Vertices.insert(
-                        geometry.Vertices.end(),
-                        {
-                            Vertex({x + 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopRight(blockIndices[5]),
-                                   {0.0f, 0.0f, -1.0f}),
-                            Vertex({x + 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomRight(blockIndices[5]),
-                                   {0.0f, 0.0f, -1.0f}),
-                            Vertex({x - 0.5f, y - 0.5f, z - 0.5f}, TextureMap::GetBottomLeft(blockIndices[5]),
-                                   {0.0f, 0.0f, -1.0f}),
-                            Vertex({x - 0.5f, y + 0.5f, z - 0.5f}, TextureMap::GetTopLeft(blockIndices[5]),
-                                   {0.0f, 0.0f, -1.0f}),
-                        });
+                    geometry.Vertices.insert(geometry.Vertices.end(),
+                                             {
+                                                 Vertex({x + 0.5f, y + 0.5f, z - 0.5f},
+                                                        TextureMap::TopRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                                                 Vertex({x + 0.5f, y - 0.5f, z - 0.5f},
+                                                        TextureMap::BottomRight(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                                                 Vertex({x - 0.5f, y - 0.5f, z - 0.5f},
+                                                        TextureMap::BottomLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                                                 Vertex({x - 0.5f, y + 0.5f, z - 0.5f},
+                                                        TextureMap::TopLeft(blockIndices[5]), {0.0f, 0.0f, -1.0f}),
+                                             });
                     offset += 4;
                 }
             }
         }
     }
+
+    // std::cout << "Solid Vertices: " << m_SolidGeometry.Vertices.size() << "\n";
+    // std::cout << "Solid Indices: " << m_SolidGeometry.Indices.size() << "\n";
+    // std::cout << "Transparent Vertices: " << m_TransparentGeometry.Vertices.size() << "\n";
+    // std::cout << "Transparent Indices: " << m_TransparentGeometry.Indices.size() << "\n\n";
 }
