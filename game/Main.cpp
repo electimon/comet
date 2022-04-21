@@ -15,16 +15,9 @@ int main(void)
     // as well as the core OpenGL context.
     Engine::Initialize();
 
-    // Shader/Texture Setup
-    ShaderProgram blockShader("../game/shaders/block.vert", "../game/shaders/block.frag");
-    Texture texture("../game/textures/terrain.png");
-    TextureMap::Configure(texture.Width(), texture.Height(), 16);
-
     // Starting world thread and configuring
+    World::Initialize();
     World::InitializeThread();
-    World::SetSeed(1);
-    World::SetShader(blockShader);
-    World::SetRenderDistance(8);
 
     // Create player entity and add it to the entity handler
     // Entity handler is now on the world thread
