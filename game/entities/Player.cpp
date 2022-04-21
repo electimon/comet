@@ -100,7 +100,7 @@ void Player::ProcessClicks()
 
 void Player::ProcessKeys()
 {
-    if (glfwGetKey(WindowHandler::GLFWWindow(), GLFW_KEY_HOME))
+    if (glfwGetKey(WindowHandler::Window(), GLFW_KEY_HOME))
     {
         Camera::SetPosition({0.0f, 100.0f, 0.0f});
     }

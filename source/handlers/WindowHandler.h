@@ -36,7 +36,7 @@ class WindowHandler
     int m_WindowWidth;
 
   public:
-    static GLFWwindow *GLFWWindow() { return Instance().m_Window; }
+    static GLFWwindow *Window() { return Instance().m_Window; }
 
     static int WindowHeight() { return Instance().m_WindowHeight; }
     static void SetWindowHeight(int WindowHeight) { Instance().m_WindowHeight = WindowHeight; }

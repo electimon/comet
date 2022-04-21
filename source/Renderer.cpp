@@ -21,7 +21,7 @@ void Renderer::Initialize()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-    ImGui_ImplGlfw_InitForOpenGL(WindowHandler::GLFWWindow(), true);
+    ImGui_ImplGlfw_InitForOpenGL(WindowHandler::Window(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
 
     Instance().m_BackgroundColor = glm::vec3(135.0f / 255.0f, 206.0f / 255.0f, 250.0f / 255.0f);
