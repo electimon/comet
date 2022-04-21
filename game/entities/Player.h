@@ -17,6 +17,7 @@ class Player : public Entity
     ~Player();
 
     void Update() override;
+    void FrameUpdate() override;
 
     void PlaceBlock();
     void BreakBlock();

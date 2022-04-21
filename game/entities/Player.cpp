@@ -4,12 +4,15 @@
 Player::Player()
 {
     Camera::SetPosition(m_Position);
-    EntityHandler::AddEntity(this);
+    EntityHandler::AddToUpdater(this);
+    EntityHandler::AddToFrameUpdater(this);
 }
 
 Player::~Player() {}
 
-void Player::Update()
+void Player::Update() { GetRequestedChunks(); }
+
+void Player::FrameUpdate()
 {
     ProcessClicks();
     ProcessKeys();
@@ -30,8 +33,6 @@ void Player::Update()
     }
 
     m_LastBlockInsideOf = blockInsideOf;
-
-    GetRequestedChunks();
 }
 
 void Player::GetRequestedChunks()
@@ -79,7 +80,7 @@ void Player::BreakBlock()
         direction += glm::normalize(direction) * step;
         if (World::GetBlock(round(position + direction)).ID() != 0)
         {
-            World::SetBlock(round(position + direction), Block(0));
+            World::SetBlock(round(position + direction), Block(0, true));
             return;
         }
     }
