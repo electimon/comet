@@ -5,6 +5,7 @@
 
 class Timer
 {
+  public:
     Timer();
     Timer(const std::string &scope);
     ~Timer();
