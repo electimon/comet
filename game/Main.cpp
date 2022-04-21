@@ -1,6 +1,6 @@
 #include "Engine.h"
 
-#include "interfaces/RenderMenu.h"
+#include "interfaces/RenderInterface.h"
 
 #include "entities/Player.h"
 
@@ -21,7 +21,7 @@ int main(void)
     TextureMap::Configure(texture.Width(), texture.Height(), 16);
 
     // Create the debugging menu
-    RenderMenu rendermenu;
+    RenderInterface renderInterface;
 
     // Starting world thread and configuring
     World::InitializeThread();
@@ -34,7 +34,6 @@ int main(void)
     Player player;
     player.SetPosition({0.0f, 60.0f, 0.0f});
     Camera::SetPosition({0.0f, 60.0f, 0.0f});
-    EntityHandler::AddEntity(&player);
 
     // Starting main engine thread
     Engine::Thread();
