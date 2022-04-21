@@ -16,11 +16,11 @@ class TextureMap
 
     static void Initialize();
     static void Configure(int width, int height, int resolution);
-    static std::vector<std::vector<float>> GetTextureCoordinates();
-    static glm::vec2 GetTopLeft(int index);
-    static glm::vec2 GetTopRight(int index);
-    static glm::vec2 GetBottomLeft(int index);
-    static glm::vec2 GetBottomRight(int index);
+    static std::vector<std::vector<float>> TextureCoordinates();
+    static glm::vec2 TopLeft(int index);
+    static glm::vec2 TopRight(int index);
+    static glm::vec2 BottomLeft(int index);
+    static glm::vec2 BottomRight(int index);
 
   private:
     TextureMap() {}
