@@ -10,6 +10,7 @@
 #include "Engine.h"
 #include "Renderer.h"
 #include "WorldConfig.h"
+#include "render/Texture.h"
 
 class World
 {
@@ -61,6 +62,7 @@ class World
     std::unordered_set<glm::ivec3> m_ChunksToUnrender;
 
     ShaderProgram m_Shader;
+    Texture m_Texture;
     int m_Seed;
     int m_RenderDistance;
 
