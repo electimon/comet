@@ -31,12 +31,12 @@ class WindowHandler
     void FramebufferSizeCallback(int width, int height);
     void WindowCloseCallback();
 
-    GLFWwindow *m_GLFWWindow = nullptr;
+    GLFWwindow *m_Window = nullptr;
     int m_WindowHeight;
     int m_WindowWidth;
 
   public:
-    static GLFWwindow *GLFWWindow() { return Instance().m_GLFWWindow; }
+    static GLFWwindow *GLFWWindow() { return Instance().m_Window; }
 
     static int WindowHeight() { return Instance().m_WindowHeight; }
     static void SetWindowHeight(int WindowHeight) { Instance().m_WindowHeight = WindowHeight; }

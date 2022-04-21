@@ -21,8 +21,8 @@ int WindowHandler::CreateWindow()
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     // Create a windowed mode window and its OpenGL context
-    m_GLFWWindow = glfwCreateWindow(1, 1, "Comet (OpenGL 4.6)", NULL, NULL);
-    if (!m_GLFWWindow)
+    m_Window = glfwCreateWindow(1, 1, "Comet (OpenGL 4.6)", NULL, NULL);
+    if (!m_Window)
     {
         std::cout << "[Error] Failed to create OpenGL window.\n";
         glfwTerminate();
@@ -30,7 +30,7 @@ int WindowHandler::CreateWindow()
     }
 
     // Make the window's context current
-    glfwMakeContextCurrent(m_GLFWWindow);
+    glfwMakeContextCurrent(m_Window);
 
     int version = gladLoadGL(glfwGetProcAddress);
     if (version == 0)
@@ -39,12 +39,12 @@ int WindowHandler::CreateWindow()
         return -1;
     }
 
-    glfwSetWindowUserPointer(m_GLFWWindow, this);
+    glfwSetWindowUserPointer(m_Window, this);
     glfwSwapInterval(1);
 
     CenterWindow();
 
-    glfwShowWindow(m_GLFWWindow);
+    glfwShowWindow(m_Window);
 
     return 0;
 }
@@ -99,4 +99,4 @@ void WindowHandler::WindowCloseCallback()
     Engine::SetShouldClose(true);
 }
 
-bool WindowHandler::ShouldWindowClose() { return glfwWindowShouldClose(Instance().m_GLFWWindow); }
+bool WindowHandler::ShouldWindowClose() { return glfwWindowShouldClose(Instance().m_Window); }
