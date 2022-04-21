@@ -1,18 +1,7 @@
 #include "Chunk.h"
 
-#include <string>
-
-#include "Renderer.h"
-#include "render/TextureMap.h"
-#include "render/Vertex.h"
-
-#include "ChunkGenerator.h"
-#include "Timer.h"
 #include "World.h"
-#include "world/BlockLibrary.h"
-#include "world/WorldConfig.h"
 
-#include <cereal/archives/binary.hpp>
 
 Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {}
 
@@ -52,9 +41,6 @@ void Chunk::Generate()
     }
     else
     {
-        // Timer timer("Generate()");
-
-        // std::cout << "Chunk file not found, generating new chunk...\n";
         // World Generation
         GenerateSurface();
         GenerateBedrock();
@@ -295,8 +281,6 @@ void Chunk::GenerateSand()
 
 void Chunk::GenerateMesh()
 {
-    // Timer timer("GenerateMesh()");
-
     m_SolidGeometry.Vertices.clear();
     m_SolidGeometry.Indices.clear();
     m_SolidGeometry.Offset = 0;
