@@ -10,8 +10,8 @@
 
 - sort transparent meshes before rendering
 - collision system
-- crosshair overlay
 
 # Complete --------------------------------------------------------------------
 
+- crosshair overlay
 - fix multithreading (wow I hope so)
