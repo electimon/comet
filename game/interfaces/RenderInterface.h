@@ -2,15 +2,25 @@
 
 #include <comet.pch>
 
+#include "Renderer.h"
 #include "handlers/Interface.h"
 #include "handlers/InterfaceHandler.h"
 
+#include "imgui.h"
+#include "world/ChunkGenerator.h"
 #include "world/World.h"
 
 class RenderInterface : public Interface
 {
   public:
-    RenderInterface() { InterfaceHandler::AddInterface(this); }
+    RenderInterface()
+    {
+        InterfaceHandler::AddInterface(this);
+        m_RenderDistance = World::RenderDistance();
+        m_WorldSeed = ChunkGenerator::Seed();
+        m_OverlayColor = Renderer::OverlayColor();
+        m_BackgroundColor = Renderer::BackgroundColor();
+    }
     ~RenderInterface() {}
 
     void Draw() override
@@ -50,10 +60,11 @@ class RenderInterface : public Interface
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
 
-        if (ImGui::InputInt("Render Distance", &m_RenderDistance))
+        if (ImGui::SliderInt("Render Distance", &m_RenderDistance, 0, 16))
         {
             World::SetRenderDistance(m_RenderDistance);
         }
+
         if (ImGui::InputInt("World Seed", &m_WorldSeed))
         {
             ChunkGenerator::SetSeed(m_WorldSeed);
@@ -74,8 +85,8 @@ class RenderInterface : public Interface
     }
 
   private:
-    int m_RenderDistance = 4;
-    int m_WorldSeed = 4;
-    glm::vec3 m_OverlayColor = {0.0f, 0.0f, 0.0f};
-    glm::vec3 m_BackgroundColor = {0.0f, 0.0f, 0.0f};
+    int m_RenderDistance;
+    int m_WorldSeed;
+    glm::vec3 m_OverlayColor;
+    glm::vec3 m_BackgroundColor;
 };
