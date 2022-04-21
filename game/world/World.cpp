@@ -6,6 +6,31 @@
 
 #include "entities/Player.h"
 
+void World::Initialize()
+{
+    std::filesystem::create_directory("world");
+
+    ChunkGenerator::Initialize();
+    BlockLibrary::Initialize();
+    EntityHandler::Initialize();
+
+    // Shader/Texture Setup
+    ShaderProgram blockShader("../game/shaders/block.vert", "../game/shaders/block.frag");
+    Texture texture("../game/textures/terrain.png");
+    TextureMap::Configure(texture.Width(), texture.Height(), 16);
+
+    World::SetSeed(1);
+    World::SetShader(blockShader);
+    World::SetRenderDistance(8);
+
+    Instance().m_ChunkDataMap.clear();
+    Instance().m_ChunkRenderMap.clear();
+    Instance().m_ChunksToDelete.clear();
+    Instance().m_ChunksToGenerate.clear();
+    Instance().m_ChunksToRender.clear();
+    Instance().m_ChunksToUnrender.clear();
+}
+
 void World::InitializeThread()
 {
     std::cout << "Initializing world thread...\n";
@@ -15,9 +40,6 @@ void World::InitializeThread()
 
 void World::Thread()
 {
-    World::Initialize();
-    EntityHandler::Initialize();
-
     auto &world = Instance();
 
     while (!Engine::IsShouldClose() && !Renderer::IsResetting())
@@ -30,21 +52,6 @@ void World::Thread()
     }
 
     std::cout << "Exiting world thread...\n";
-}
-
-void World::Initialize()
-{
-    std::filesystem::create_directory("world");
-
-    ChunkGenerator::Initialize();
-    BlockLibrary::Initialize();
-
-    Instance().m_ChunkDataMap.clear();
-    Instance().m_ChunkRenderMap.clear();
-    Instance().m_ChunksToDelete.clear();
-    Instance().m_ChunksToGenerate.clear();
-    Instance().m_ChunksToRender.clear();
-    Instance().m_ChunksToUnrender.clear();
 }
 
 void World::Finalize()
