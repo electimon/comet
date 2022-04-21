@@ -60,6 +60,9 @@ void WindowHandler::CenterWindow()
     int newWindowWidth = int(videoMode->width / 1.5);
     int newWindowHeight = int(newWindowWidth / 16 * 9);
 
+    SetWindowWidth(newWindowWidth);
+    SetWindowHeight(newWindowHeight);
+
     glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
 
     glfwSetWindowPos(glfwGetCurrentContext(), monitorX + (videoMode->width - newWindowWidth) / 2,
