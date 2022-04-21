@@ -7,11 +7,11 @@
 
 #include "world/World.h"
 
-class RenderMenu : public Interface
+class RenderInterface : public Interface
 {
   public:
-    RenderMenu() { InterfaceHandler::AddInterface(this); }
-    ~RenderMenu() {}
+    RenderInterface() { InterfaceHandler::AddInterface(this); }
+    ~RenderInterface() {}
 
     void Draw() override
     {
@@ -50,22 +50,22 @@ class RenderMenu : public Interface
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
 
-        if (ImGui::InputInt("Render Distance", &dummyvar1))
+        if (ImGui::InputInt("Render Distance", &m_RenderDistance))
         {
-            World::SetRenderDistance(dummyvar1);
+            World::SetRenderDistance(m_RenderDistance);
         }
-        if (ImGui::InputInt("World Seed", &dummyvar2))
+        if (ImGui::InputInt("World Seed", &m_WorldSeed))
         {
-            ChunkGenerator::SetSeed(dummyvar2);
+            ChunkGenerator::SetSeed(m_WorldSeed);
         }
 
-        if (ImGui::SliderFloat3("Overlay Color", &dummyfloatvec1[0], -1.0f, 1.0f))
+        if (ImGui::SliderFloat3("Overlay Color", &m_OverlayColor[0], -1.0f, 1.0f))
         {
-            Renderer::SetOverlayColor(dummyfloatvec1);
+            Renderer::SetOverlayColor(m_OverlayColor);
         }
-        if (ImGui::SliderFloat3("Background Color", &dummyfloatvec2[0], 0.0f, 1.0f))
+        if (ImGui::SliderFloat3("Background Color", &m_BackgroundColor[0], 0.0f, 1.0f))
         {
-            Renderer::SetBackgroundColor(dummyfloatvec2);
+            Renderer::SetBackgroundColor(m_BackgroundColor);
         }
 
         ImGui::Text("Performance: %.1f FPS", ImGui::GetIO().Framerate);
@@ -74,8 +74,8 @@ class RenderMenu : public Interface
     }
 
   private:
-    int dummyvar1 = 4;
-    int dummyvar2 = 4;
-    glm::vec3 dummyfloatvec1 = {0.0f, 0.0f, 0.0f};
-    glm::vec3 dummyfloatvec2 = {0.0f, 0.0f, 0.0f};
+    int m_RenderDistance = 4;
+    int m_WorldSeed = 4;
+    glm::vec3 m_OverlayColor = {0.0f, 0.0f, 0.0f};
+    glm::vec3 m_BackgroundColor = {0.0f, 0.0f, 0.0f};
 };
