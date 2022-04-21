@@ -88,11 +88,11 @@ void Player::BreakBlock()
 
 void Player::ProcessClicks()
 {
-    if (MouseHandler::GetLeftClick())
+    if (MouseHandler::LeftClick())
     {
         Player::BreakBlock();
     }
-    else if (MouseHandler::GetRightClick())
+    else if (MouseHandler::RightClick())
     {
         Player::PlaceBlock();
     }
@@ -100,7 +100,7 @@ void Player::ProcessClicks()
 
 void Player::ProcessKeys()
 {
-    if (glfwGetKey(WindowHandler::GetGLFWWindow(), GLFW_KEY_HOME))
+    if (glfwGetKey(WindowHandler::GLFWWindow(), GLFW_KEY_HOME))
     {
         Camera::SetPosition({0.0f, 100.0f, 0.0f});
     }
