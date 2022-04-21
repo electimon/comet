@@ -9,6 +9,7 @@ class Entity
     ~Entity() {}
 
     virtual void Update() {}
+    virtual void FrameUpdate() {}
 
   protected:
     glm::vec3 m_Position = {0.0f, 0.0f, 0.0f};
