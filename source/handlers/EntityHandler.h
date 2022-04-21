@@ -21,7 +21,9 @@ class EntityHandler
     static void AddToFrameUpdater(Entity *entity);
     static void RemoveFromFrameUpdater(Entity *entity);
 
+    // Should be called from the game loop, not the engine loop
     static void Update();
+    // Should be called from the engine loop, not the game loop
     static void FrameUpdate();
 
   private:
