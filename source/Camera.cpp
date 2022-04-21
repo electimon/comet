@@ -83,8 +83,8 @@ void Camera::Rotate()
     // The delta x and delta y variables from the mouse handler are an
     // accumulation of movement over each frame, and this function is
     // run each frame as well, so no need to rely on a dt.
-    camera.m_Yaw += (MouseHandler::GetDeltaX() * camera.m_RotationSpeed) / 300.0;
-    camera.m_Pitch += (MouseHandler::GetDeltaY() * camera.m_RotationSpeed) / 300.0;
+    camera.m_Yaw += (MouseHandler::DeltaX() * camera.m_RotationSpeed) / 300.0;
+    camera.m_Pitch += (MouseHandler::DeltaY() * camera.m_RotationSpeed) / 300.0;
 
     // Keep yaw angle from getting to imprecise
     if (camera.m_Yaw > glm::radians(360.0f))
