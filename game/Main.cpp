@@ -20,9 +20,6 @@ int main(void)
     Texture texture("../game/textures/terrain.png");
     TextureMap::Configure(texture.Width(), texture.Height(), 16);
 
-    // Create the debugging menu
-    RenderInterface renderInterface;
-
     // Starting world thread and configuring
     World::InitializeThread();
     World::SetSeed(1);
@@ -34,6 +31,9 @@ int main(void)
     Player player;
     player.SetPosition({0.0f, 60.0f, 0.0f});
     Camera::SetPosition({0.0f, 60.0f, 0.0f});
+
+    // Create the debugging menu
+    RenderInterface renderInterface;
 
     // Starting main engine thread
     Engine::Thread();
