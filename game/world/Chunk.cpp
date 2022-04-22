@@ -355,14 +355,6 @@ void Chunk::GenerateMesh()
                     }
                 }
 
-                // Determining if side should be rendered
-                px = pxBlock.IsTransparent();
-                nx = nxBlock.IsTransparent();
-                py = pyBlock.IsTransparent();
-                ny = nyBlock.IsTransparent();
-                pz = pzBlock.IsTransparent();
-                nz = nzBlock.IsTransparent();
-
                 if (currentBlock.IsTransparent())
                 {
                     px = true;
@@ -372,6 +364,14 @@ void Chunk::GenerateMesh()
                     pz = true;
                     nz = true;
                 }
+
+                // Determining if side should be rendered
+                px = pxBlock.IsTransparent();
+                nx = nxBlock.IsTransparent();
+                py = pyBlock.IsTransparent();
+                ny = nyBlock.IsTransparent();
+                pz = pzBlock.IsTransparent();
+                nz = nzBlock.IsTransparent();
 
                 // Water rendering
                 if (currentBlock.ID() == ID::Water)
