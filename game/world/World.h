@@ -27,6 +27,8 @@ class World
     static void Finalize();
 
     static void Generate();
+    static void GenerateSolidMesh(glm::ivec3 index, Chunk *chunk);
+    static void GenerateTransparentMesh(glm::ivec3 index, Chunk *chunk);
 
     static Block GetBlock(glm::ivec3 worldPos);
     static void SetBlock(glm::ivec3 worldPos, Block block);

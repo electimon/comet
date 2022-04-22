@@ -93,11 +93,10 @@ void World::SetBlock(glm::ivec3 worldPos, Block blockToSet)
 
     if (Instance().m_ChunkDataMap.find(index) != Instance().m_ChunkDataMap.end())
     {
-        Block blockToReplace = Instance().m_ChunkDataMap.at(index).GetBlock(chunkCoord);
-
+        // Block blockToReplace = Instance().m_ChunkDataMap.at(index).GetBlock(chunkCoord);
         Instance().m_ChunkDataMap.at(index).SetBlock({chunkCoord.x, chunkCoord.y, chunkCoord.z}, blockToSet);
-        Instance().m_ChunkDataMap.at(index).GenerateMesh();
         Instance().m_ChunkDataMap.at(index).SetModified(true);
+        Instance().m_ChunkDataMap.at(index).GenerateMesh();
 
         Renderer::UpdateMeshInQueue(index);
         Renderer::UpdateMeshInQueue({index.x, index.y + 1, index.z});
@@ -229,13 +228,8 @@ void World::Generate()
         chunk->GenerateMesh();
         world.m_ChunkRenderMap.insert_or_assign(index, chunk);
 
-        Mesh solidMesh = Mesh(&chunk->SolidGeometry()->Vertices, &chunk->SolidGeometry()->Indices, &world.m_Shader);
-        Mesh transparentMesh =
-            Mesh(&chunk->TransparentGeometry()->Vertices, &chunk->TransparentGeometry()->Indices, &world.m_Shader);
-
-        // Adding to Renderer
-        Renderer::AddMeshToQueue(index, solidMesh);
-        Renderer::AddMeshToQueue({index.x, index.y + 1, index.z}, transparentMesh);
+        GenerateSolidMesh(index, chunk);
+        GenerateTransparentMesh(index, chunk);
     }
     world.m_ChunksToRender.clear();
 
@@ -257,4 +251,16 @@ void World::Generate()
         world.m_ChunkRenderMap.erase(index);
     }
     world.m_ChunksToUnrender.clear();
+}
+
+void World::GenerateSolidMesh(glm::ivec3 index, Chunk *chunk)
+{
+    Mesh mesh(&chunk->SolidGeometry()->Vertices, &chunk->SolidGeometry()->Indices, &Instance().m_Shader);
+    Renderer::AddMeshToQueue(index, mesh);
+}
+
+void World::GenerateTransparentMesh(glm::ivec3 index, Chunk *chunk)
+{
+    Mesh mesh(&chunk->TransparentGeometry()->Vertices, &chunk->TransparentGeometry()->Indices, &Instance().m_Shader);
+    Renderer::AddMeshToQueue({index.x, index.y + 1, index.z}, mesh);
 }
