@@ -2,7 +2,6 @@
 
 #include "World.h"
 
-
 Chunk::Chunk(glm::ivec3 id) : m_Chunk(id) {}
 
 Chunk::~Chunk()
@@ -363,6 +362,16 @@ void Chunk::GenerateMesh()
                 ny = nyBlock.IsTransparent();
                 pz = pzBlock.IsTransparent();
                 nz = nzBlock.IsTransparent();
+
+                if (currentBlock.IsTransparent())
+                {
+                    px = true;
+                    nx = true;
+                    py = true;
+                    ny = true;
+                    pz = true;
+                    nz = true;
+                }
 
                 // Water rendering
                 if (currentBlock.ID() == ID::Water)
