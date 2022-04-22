@@ -31,11 +31,11 @@ void Mesh::Initialize()
     glBindVertexArray(m_VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, 2 * m_Vertices->size() * sizeof(Vertex), (void *)0, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 10000 * sizeof(Vertex), (void *)0, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, m_Vertices->size() * sizeof(Vertex), m_Vertices->data());
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * m_Indices->size() * sizeof(unsigned int), (void *)0, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 10000 * sizeof(unsigned int), (void *)0, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_Indices->size() * sizeof(unsigned int), m_Indices->data());
 
     glEnableVertexAttribArray(0);
