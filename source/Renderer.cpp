@@ -160,51 +160,58 @@ void Renderer::DeleteMeshFromQueue(glm::ivec3 index)
 
 void Renderer::ProcessMeshQueues()
 {
+    // Adding meshes to the queue
     QueueLock.AddQueue.lock();
     for (const auto &[index, mesh] : Instance().m_MeshesToAdd)
     {
-        if (index.y == 0)
-        {
-            Instance().m_SolidMeshMap.insert_or_assign(index, mesh);
-            Instance().m_SolidMeshMap.at(index).Initialize();
-        }
-        else
+        if (index.y > 0)
         {
             Instance().m_TransparentMeshMap.insert_or_assign(index, mesh);
             Instance().m_TransparentMeshMap.at(index).Initialize();
+        }
+        else
+        {
+            Instance().m_SolidMeshMap.insert_or_assign(index, mesh);
+            Instance().m_SolidMeshMap.at(index).Initialize();
         }
     }
     Instance().m_MeshesToAdd.clear();
     QueueLock.AddQueue.unlock();
 
+    // Updating meshes in the queue
     QueueLock.UpdateQueue.lock();
     for (const auto &index : Instance().m_MeshesToUpdate)
     {
-        if (index.y == 0)
-            Instance().m_SolidMeshMap.at(index).UpdateGeometry();
-        else
+        if (index.y > 0)
+        {
             Instance().m_TransparentMeshMap.at(index).UpdateGeometry();
+        }
+        else
+        {
+            Instance().m_SolidMeshMap.at(index).UpdateGeometry();
+        }
     }
     Instance().m_MeshesToUpdate.clear();
     QueueLock.UpdateQueue.unlock();
 
+    // Deleting meshes in the queue
     QueueLock.DeleteQueue.lock();
     for (const auto &index : Instance().m_MeshesToDelete)
     {
-        if (index.y == 0)
-        {
-            if (Instance().m_SolidMeshMap.find(index) != Instance().m_SolidMeshMap.end())
-            {
-                Instance().m_SolidMeshMap.at(index).Finalize();
-                Instance().m_SolidMeshMap.erase(index);
-            }
-        }
-        else
+        if (index.y > 0)
         {
             if (Instance().m_TransparentMeshMap.find(index) != Instance().m_TransparentMeshMap.end())
             {
                 Instance().m_TransparentMeshMap.at(index).Finalize();
                 Instance().m_TransparentMeshMap.erase(index);
+            }
+        }
+        else
+        {
+            if (Instance().m_SolidMeshMap.find(index) != Instance().m_SolidMeshMap.end())
+            {
+                Instance().m_SolidMeshMap.at(index).Finalize();
+                Instance().m_SolidMeshMap.erase(index);
             }
         }
     }
