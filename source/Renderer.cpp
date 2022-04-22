@@ -52,6 +52,8 @@ void Renderer::ResetRenderer()
 
 void Renderer::DrawMeshQueue()
 {
+    unsigned int drawCalls = 0;
+
     unsigned int shaderID;
     auto &renderer = Instance();
 
@@ -84,6 +86,7 @@ void Renderer::DrawMeshQueue()
 
         // Drawing mesh
         glDrawElements(GL_TRIANGLES, mesh.Count(), GL_UNSIGNED_INT, (void *)0);
+        drawCalls++;
     }
 
     // Transparent Geometry Loop
@@ -114,7 +117,9 @@ void Renderer::DrawMeshQueue()
 
         // Drawing mesh
         glDrawElements(GL_TRIANGLES, mesh.Count(), GL_UNSIGNED_INT, (void *)0);
+        drawCalls++;
     }
+    Instance().m_DrawCallsPerFrame = drawCalls;
 }
 
 void Renderer::DrawInterfaceQueue()

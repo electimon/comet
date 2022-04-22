@@ -80,6 +80,7 @@ class RenderInterface : public Interface
         }
 
         ImGui::Text("Performance: %.1f FPS", ImGui::GetIO().Framerate);
+        ImGui::Text("Draws/Frame: %d", Renderer::DrawCallsPerFrame());
 
         ImGui::End();
     }
