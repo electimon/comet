@@ -1,4 +1,4 @@
-#version 460
+#version 450
 
 in vec3 v_Position;
 in vec2 v_TextureCoordinates;
